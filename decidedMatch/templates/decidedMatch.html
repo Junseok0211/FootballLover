@@ -1,0 +1,68 @@
+
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if errormessage %}
+<script language="javascript">
+alert("{{ errormessage }}")
+</script>
+{% endif %}
+{% if message %}
+<script language="javascript">
+alert("{{ message }}")
+</script>
+{% endif %}
+
+
+
+<table class="table">
+  <thead class="table-success">
+    <tr>
+      <th scope="col-2">#</th>
+      <th scope="col-2" style="text-align: center;">시간</th>
+      <th scope="col-2" style="text-align: center;">홈팀</th>
+      <th scope="col-2" style="text-align: center;">상대팀</th>
+      <th scope="col-2" style="text-align: center;">장소</th>
+      <th scope="col-2" style="text-align: center;">기타</th>
+
+    </tr>
+  </thead>
+      <script>
+        var i = 0; 
+      </script>
+      {% for match in matches %}
+      <script>
+        i += 1;
+      </script>
+    <tbody>
+      <tr>
+        <th scope="row">
+          <strong>
+          <script>
+            document.write(i)
+          </script>
+          </strong>
+        </th>
+        {% autoescape on %}
+        <td style="text-align: center;"> {{ match.timeFrom|date:"Y년 M d일 H:i" }} - {{match.timeTo|date:"H:i"}} </td>
+        {% endautoescape %}
+        <td style="text-align: center;"> {{ match.myTeam }} </td>
+        <td style="text-align: center;"> {{ match.vsTeam }} </td>
+        <td style="text-align: center;"> {{ match.location }} </td>
+        <td style="text-align: center; margin-top:0;"> 
+          <a href="{% url 'decidedDetail' match.id %}" style="margin-top: 0;">
+            <button class="btn btn-success" style="margin-top:0;">자세히 보기</button>
+          </a> 
+        </td>
+        
+      </tr>
+    </tbody>
+    {% endfor %}
+</table>
+<hr>
+<div class="row md-1">
+    <div class="col-12">
+      <a class="btn btn-outline-dark float-right" href="#" role="button">돌아가기</a>
+    </div>
+  </div>
+{% endblock %}

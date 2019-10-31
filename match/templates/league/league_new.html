@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if errormessage %}
+<script language="javascript">
+alert("{{errormessage}}");
+</script>
+{% endif %}
+<script language="javascript">
+        function formCheck(frm){
+               if(frm.title.value == ""){
+                   alert("제목을 입력해주세요");
+                   frm.title.focus();
+                   return false;
+               }
+               if(frm.location.value == "장소를 선택하세요."){
+                   alert("장소를 선택해주세요");
+                   frm.location.focus();
+                   return false;
+               }
+               if(frm.time_from.value == ""){
+                   alert("시작시간을 입력해주세요");
+                   frm.time_from.focus();
+                   return false;
+               }
+               if (frm.time_to.value == ""){
+                   alert("종료시간을 입력해주세요");
+                   frm.time_to.focus();
+                   return false;
+               }
+               if(frm.content.value == ""){
+                   alert("내용을 입력해주세요.");
+                   frm.content.focus();
+                   return false;
+               }
+        }
+</script>
+
+<div style="border:1px solid lightgray; border-radius: 10px; padding: 10px;">
+    <form action="{% url 'league_create' %}" method="POST" onsubmit="return formCheck(this);">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="title">제목</label>
+            <div class="col-lg-10 col-sm-12">
+            <input class="form-control" id="title" type="text" name = "title" placeholder="제목을 입력하세요" >
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="location">장소</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="form-control" id="location" name="location">
+                <option selected disabled hidden>장소를 선택하세요.</option>
+                <option value="남서울대 다목적구장">남서울대 다목적구장</option>
+                <option value="남서울대 축구장">남서울대 축구장</option>
+            </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_from">시작시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_from" name = "time_from" class="form-control" type="text">
+            </div>
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_to">종료시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_to" name = "time_to" type="text" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="content">내용</label>
+            <div class="col-lg-10 col-sm-12">
+            <textarea class="form-control" id="content" name="content" rows="5" placeholder="내용을 입력하세요"></textarea>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row-reverse bd-highlight">
+            <div class="p-2 bd-highlight">
+                    <button type="reset" class="btn btn-secondary">초기화</button>
+            </div>
+            <div class="p-2 bd-highlight">
+                    <button type="submit" class="btn btn-secondary">글쓰기</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

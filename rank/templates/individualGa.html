@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<div>
+    <button id = "individualRank">개인순위</button>
+    <a href="{% url 'teamRank' %}"><button id = "teamRank">팀순위</button></a>
+</div>
+<div>
+    <a href="{% url 'individualRank' %}"><button id = "score">득점순위</button></a>
+    <button id = "goalAverage">득점률순위</button>
+</div>
+
+<div>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+        <th scope="col">개인순위</th>
+        <th scope="col">이름</th>
+        <th scope="col">소속팀</th>
+        <th scope="col">경기수</th>
+        <th scope="col">득점수</th>
+        <th scope="col">득점률</th>
+        </tr>
+    </thead>
+    <tbody>
+    <script>
+        var i = 0;
+        var j = 1;
+        var goalAverage = 0;
+        var ga = 0;
+    </script>
+    {% for user in gaFnsuser %}
+    <script>
+        i += 1;
+    </script>
+        <tr>
+        <th scope="row">
+        <script>
+            if("{{user.goalAverage}}" == goalAverage){
+                document.write(i-j);
+                j +=1;
+            }
+            else{
+            document.write(i);
+            j = 1;
+            }
+        </script>
+        </th>
+        <td>{{user.name}}</td>
+        <td>{{user.teamname.name}}</td>
+        <td>{{user.matchcount}}</td>
+        <td>{{user.score}}</td>
+        <td>{{user.goalAverage}}</td>
+        </tr>
+    <script>
+        goalAverage = "{{user.goalAverage}}";
+    </script>
+    {% endfor %}
+    
+    </tbody>
+</table>
+</div>
+
+
+
+{% endblock %}

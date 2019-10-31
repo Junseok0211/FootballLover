@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<div>
+    <a href="{% url 'individualRank' %}"><button  class="btn btn-secondary" id = "individualRank">개인순위</button></a>
+</div>
+
+<div id = "scoreRank" class="mt-2">
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+        <th scope="col">순위</th>
+        <th scope="col">팀명</th>
+        <th scope="col">경기</th>
+        <th scope="col">승점</th>
+        <th scope="col">승</th>
+        <th scope="col">무</th>
+        <th scope="col">패</th>
+        <th scope="col">득점</th>
+        <th scope="col">실점</th>
+        <th scope="col">득실차</th>
+        </tr>
+    </thead>
+    <tbody>
+    <script>
+        var i = 0;
+    </script>
+    {% for team in teams %}
+    <script>
+        i += 1;
+    </script>
+        <tr>
+        <th scope="row">
+        <script>
+            document.write(i);
+        </script>
+        </th>
+        <td>{{team.name}}</td>
+        <td>{{team.matchcount}}</td>
+        <td>{{team.point}}</td>
+        <td>{{team.win}}</td>
+        <td>{{team.draw}}</td>
+        <td>{{team.lose}}</td>
+        <td>{{team.gf}}</td>
+        <td>{{team.ga}}</td>
+        <td>{{team.gd}}</td>
+        </tr>
+    {% endfor %}
+    
+    </tbody>
+</table>
+</div>
+
+
+{% endblock %}

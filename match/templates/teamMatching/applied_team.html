@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if message %}
+<script type="text/javascript">
+var message = "{{message}}"
+alert(message);
+</script>
+{% endif %}
+
+<script>
+var i = 0;
+</script>
+
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">팀이름</th>
+      <th scope="col">활동지역</th>
+      <th scope="col">학교</th>
+      <th scope="col">경기수</th>
+      <th scope="col">승</th>
+      <th scope="col">무</th>
+      <th scope="col">패</th>
+      <th scope="col">승점</th>
+      <th scope="col">수락여부</th>
+    </tr>
+  </thead>
+    <tbody>
+      {% for team in applied_teams %}
+      <tr>
+        <th scope="row"><strong>
+          <script>
+            i += 1;
+            document.write(i)
+          </script>
+          </strong></th>
+        <td> 
+          <a href="{% url 'detail' team.team.id %}" style="text-decoration: none;">
+          {{ team.team.name }} 
+          </a>
+        </td>
+        <td> {{ team.team.city }} </td>
+        <td> {{ team.team.school }} </td>
+        <td> {{ team.team.matchcount }} </td>
+        <td> {{ team.team.win }} </td>
+        <td> {{ team.team.draw }} </td>
+        <td> {{ team.team.lose }} </td>
+        <td> 
+        <script type="text/javascript">
+          var win = "{{team.win}}";
+          var draw = "{{player.draw}}";
+          var point = (win*3) + draw;
+          if (isNaN(point)){
+            winningrate = 0;
+          }
+          document.write(point);
+        </script>  
+        </td>
+        <td style="padding-right: 0; margin-right: 0;">
+            <a style="margin-right: 0;" class="btn btn-dark float-right" href="{% url 'match_approve' teamMatching.id team.team.id %}" role="button">매치수락</a>            
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+<div class="row md-1">
+  <div class="col-12">
+    <a class="btn btn-outline-dark float-right" href="{% url 'teamMatching_detail' teamMatching.id %}" role="button">돌아가기</a>
+  </div>
+</div>
+
+{% endblock %}

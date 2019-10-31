@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if errormessage %}
+<script type="text/javascript">
+alert("{{ errormessage }}");
+</script>
+{% endif %}
+<script language="javascript">
+        function formCheck(frm){
+               if(frm.title.value == ""){
+                   alert("제목을 입력해주세요");
+                   frm.title.focus();
+                   return false;
+               }
+            //    if(frm.vs_team.value = "basic"){
+            //         alert("상대팀을 선택해주세요.");
+            //         frm.vs_team.focus();
+            //         return false;
+            //     }
+               if(frm.location.value == "장소를 선택하세요."){
+                   alert("장소를 선택해주세요");
+                   frm.location.focus();
+                   return false;
+               }
+               if(frm.time_from.value == ""){
+                   alert("시작시간을 입력해주세요");
+                   frm.time_from.focus();
+                   return false;
+               }
+               if (frm.time_to.value == ""){
+                   alert("종료시간을 입력해주세요");
+                   frm.time_to.focus();
+                   return false;
+               }
+               if (frm.number.value == ""){
+                   alert("모집인원을 입력해주세요");
+                   frm.number.focus();
+                   return false;
+               }
+               if(frm.rank.value == "용병의 원하시는 실력을 선택하세요."){
+                   alert("용병의 원하시는 실력을 선택해주세요.");
+                   frm.rank.focus();
+                   return false;
+               }
+               if(frm.content.value == ""){
+                   alert("내용을 입력해주세요.");
+                   frm.content.focus();
+                   return false;
+               }
+        }
+</script>
+<div style="border:1px solid lightgray; border-radius: 10px; padding: 10px;">
+    <div class="alert alert-primary" role="alert">
+        용병모집 내용을 수정하실 수 있습니다.
+    </div>
+    <form action="{% url 'recruiting_edit' recruiting.id %}" onsubmit="return formCheck(this);" method="POST">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="title">제목</label>
+            <div class="col-lg-10 col-sm-12">
+            <input class="form-control" id="title" type="text" name = "title" value="{{recruiting.title}}" >
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="vs_team">상대팀</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="form-control" id="vs_team" name="vs_team">
+                <option selected hidden value="basic">상대팀을 선택하세요.</option>
+                {% for team in teams %}
+                <option value="{{team.id}}">{{team}}</option>
+                {% endfor %}
+                <option value="친선경기">친선경기</option>
+            </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="location">장소</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="form-control" id="location" name="location">
+                <option selected disabled hidden>장소를 선택하세요.</option>
+                <option value="남서울대 다목적구장">남서울대 다목적구장</option>
+                <option value="남서울대 축구장">남서울대 축구장</option>
+                <option value="천안축구센터">천안축구센터</option>
+                <option value="단국대 축구장">단국대 축구장</option>
+                <option value="단국대 풋살구장">단국대 풋살구장</option>
+            </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_from">시작시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_from" name = "time_from" class="form-control" type="text">
+            </div>
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_to">종료시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_to" name = "time_to" type="text" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="number">모집인원</label>
+            <div class="col-lg-10 col-sm-12">
+            <input id="number" class="form-control" type="number" name = "number" placeholder="모집인원을 입력하세요">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="rank">실력</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="custom-select" id="rank" name="rank">
+                <option selected disabled hidden>용병의 원하시는 실력을 선택하세요.</option>
+                <option value="상">상</option>
+                <option value="중상">중상</option>
+                <option value="중">중</option>
+                <option value="중하">중하</option>
+                <option value="하">하</option>
+            </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="content">내용</label>
+            <div class="col-lg-10 col-sm-12">
+            <textarea class="form-control" id="content" name="content" rows="5">{{recruiting.content}}</textarea>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row-reverse bd-highlight">
+            <div class="p-2 bd-highlight">
+                    <button type="reset" class="btn btn-secondary">초기화</button>
+            </div>
+            <div class="p-2 bd-highlight">
+                    <button type="submit" class="btn btn-secondary">수정하기</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

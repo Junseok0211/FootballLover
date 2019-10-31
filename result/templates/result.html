@@ -1,0 +1,90 @@
+
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if error %}
+<script language="javascript">
+alert("{{ error }}")
+</script>
+{% endif %}
+{% if message %}
+<script language="javascript">
+alert("{{ message }}")
+</script>
+{% endif %}
+
+<table class="table">
+  <script type="text/javascript">
+    var pryear = null;
+    var prmonth = null;
+    var prdate = null;
+    var year, month, date;
+  </script>
+  {% for match in result %}
+  <thead>
+    <tr class="row">
+      {% autoescape on %}
+      <script type="text/javascript">
+        year = '{{match.timeFrom|date:"Y"}}';
+        month = '{{match.timeFrom|date:"m"}}';
+        date = '{{match.timeFrom|date:"d"}}';
+      </script>
+      {% endautoescape %}
+      
+      {% autoescape on %}
+      <th scope="col" id = "{{match.id}}" class="bg-info col-12" colspan="7">{{match.timeFrom|date:"m월d일"}}</th>
+      {% endautoescape %}
+      <script type="text/javascript">
+        if(year == pryear && month == prmonth && date == prdate){
+          document.getElementById('{{match.id}}').style.display = "none";
+        }
+      </script>
+
+    </tr>
+  </thead>
+      <script>
+        var i = 0; 
+      </script>
+      
+    <tbody>
+      <tr class="bg-light row">
+        <th class="col-2 pl-3" scope="row" style="text-align: left; vertical-align: middle;">
+          <strong>
+            {% autoescape on %}
+            {{match.timeFrom|date:"H:i"}}
+            {% endautoescape %}
+          </strong>
+        </th>
+        <td class="col-md-2 col-4" style="text-align: left; vertical-align: middle; font-family: 'Do Hyeon';"> {{ match.myTeam }} </td>
+        {% if match.myTeamScore >= match.vsTeamScore %}
+        <td class="col-1" style="color:red; vertical-align: middle;"> {{ match.myTeamScore }} </td>
+        <td class="col-1" style="vertical-align: middle;"> {{ match.vsTeamScore }} </td>
+        {% elif match.vsTeamScore >= match.myTeamScore  %}
+        <td class="col-1" style="vertical-align: middle;"> {{ match.myTeamScore }} </td>
+        <td class="col-1"  style="color:Red; vertical-align: middle;"> {{ match.vsTeamScore }} </td>
+      
+        {% else %}
+        <td class="col-1"  style="vertical-align: middle;"> {{ match.myTeamScore }} </td>
+        <td class="col-1"  style="vertical-align: middle;"> {{ match.vsTeamScore }} </td>
+        {% endif %}
+        <td class="col-md-2 col-4" style="text-align: center; vertical-align: middle; font-family: 'Do Hyeon';"> {{ match.vsTeam }} </td>
+        <td class="col-md-2 col-6" style="text-align: center; vertical-align: middle;"> {{ match.match.location }} </td>
+        <td class="col-md-2 col-6 pt-1">
+          <a href="{% url 'decidedDetail' match.match.id %}">
+            <button class="btn btn-info float-right">자세히 보기</button>
+          </a> 
+        </td>
+        
+      </tr>
+    </tbody>
+    {% autoescape on %}
+      <script type="text/javascript">
+        pryear = year;
+        prmonth = month;
+        prdate = date;
+      </script>
+      {% endautoescape %}
+    {% endfor %}
+</table>
+
+{% endblock %}

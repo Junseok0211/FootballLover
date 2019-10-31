@@ -1,0 +1,99 @@
+
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<head>
+{% if error %}
+
+
+<script language="javascript">
+alert("{{ error }}");
+</script>
+{% endif %}
+{% if message %}
+<script language="javascript">
+alert("{{ message }}");
+</script>
+{% endif %}
+
+<script language="javascript">
+    function formCheck(frm){
+          var score;
+          score = "{{score}}";
+          var num = score.length;
+          var scorer;
+          for(var i = 1; i< score.length;i+=3){
+            scorer = "scorer" + String(score[i]);
+            result = document.getElementById(scorer).value;
+            if(result == "득점선수"){
+                alert("득점선수를 선택해주세요");
+                document.getElementById(scorer).focus();
+                return false;
+              }
+          }
+    }
+   </script>
+
+</head>
+
+<table class="table">
+  <thead class="table-success">
+    <tr>
+      <th scope="col-2" style="text-align: center;">시간</th>
+      <th scope="col-2" style="text-align: center;">홈팀</th>
+      <th scope="col-2" style="text-align: center;">상대팀</th>
+      <th scope="col-2" style="text-align: center;">장소</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:lightslategrey 1px solid;">
+      {% autoescape on %}
+      <td style="text-align: center;"> {{ decidedMatch.timeFrom|date:"Y년 M d일 H:i" }} - {{decidedMatch.timeTo|date:"H:i"}} </td>
+      {% endautoescape %}
+      <td style="text-align: center;"> {{ decidedMatch.myTeam }} </td>
+      <td style="text-align: center;"> {{ decidedMatch.vsTeam }} </td>
+      <td style="text-align: center;"> {{ decidedMatch.location }} </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<form action="{% url 'editTeamResult' %}" name = "result" method="POST" onsubmit="return formCheck(this);">
+  {% csrf_token %}
+  <input type="hidden" name="decidedMatch_id" value="{{decidedMatch.id}}">
+  <input type="hidden" name="myTeamScore" value="{{myTeamScore}}">
+  <input type="hidden" name="vsTeamScore" value="{{vsTeamScore}}">
+  <input type="hidden" name="attendedPlayer[]" value="{{attendedPlayer}}">
+  {% for id in attendedPlayer_id %}
+  <input type="hidden" name="attendedPlayer_id[]" value="{{id}}">
+  {% endfor %}
+  <div>
+    {% for i in score %}
+    <div class="form-group row d-flex align-items-center" style="border-bottom: lightslategrey solid 1px; padding-bottom: 10px;">
+      <div class="col-2">
+        <label for="scorer{{i}}"><strong>{{i}}번째</strong> 득점선수</label>
+      </div>
+      <div class="col-10">
+        <select id="scorer{{i}}" class="form-control col-3" name = "scorer{{i}}" style="margin-bottom: 4px;">
+            <option selected disabled hidden value="득점선수">득점선수</option>
+            <option value="ownGoal">상대팀 자책골</option>
+            {% for member in attendedPlayer %}
+            <option value="{{member.id}}">{{member}}</option>
+            {% endfor %}
+        </select>
+      </div>
+      <hr color="lightslategrey">
+    </div>  
+    {% endfor %}
+
+    
+  </div>
+  <div class="row float-right">
+    <input class="btn btn-outline-success" type="submit" value="다음">
+  </div>
+</form>
+
+{% endblock %}

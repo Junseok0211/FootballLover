@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if message %}
+<script type="text/javascript">
+var message = "{{message}}"
+alert(message);
+</script>
+{% endif %}
+<a class="btn btn-primary" href="{% url 'recruiting_detail' recruiting.id %}" role="button">목록가기</a> <br> <br>
+<script>
+var i = 0;
+</script>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">이름</th>
+      <th scope="col">활동지역</th>
+      <th scope="col">학교</th>
+      <th scope="col">출전수</th>
+      <th scope="col">득점수</th>
+      <th scope="col">득점률</th>
+      <th scope="col">수락여부</th>
+    </tr>
+  </thead>
+    <tbody>
+      {% for player in applied_players %}
+      <tr>
+        <th scope="row"><strong>
+          <script>
+            i += 1;
+            document.write(i)
+          </script>
+          </strong></th>
+        <td> {{ player.name }} </td>
+        <td> {{ player.city }} </td>
+        <td> {{ player.school }} </td>
+        <td> {{ player.matchcount }} </td>
+        <td> {{ player.score }} </td>
+        <td> 
+        <script type="text/javascript">
+          var matchcount = "{{player.matchcount}}";
+          var score = "{{player.score}}";
+          var winningrate = score / matchcount;
+          if (isNaN(winningrate)){
+            winningrate = 0;
+          }
+          document.write(winningrate.toFixed(2));
+        </script>  
+        </td>
+        <td>
+            <a class="btn btn-dark float-right" href="{% url 'recruiting_accept' recruiting.id player.id %}" role="button">가입수락</a>            
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-warning" style="margin-bottom: 10px;">
+    <div class="col-md-6 px-0">
+        <h1 class="display-4 font-italic">같이 할 용병을 구합니다!!</h1>
+        <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+        <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+    </div>
+</div>
+
+<div style="margin-bottom: 10px;">
+    <a href="{% url 'recruiting_new' %}">
+        <button type="button" class="btn btn-secondary btn-lg btn-block">글쓰기</button>
+    </a>
+</div>
+
+
+<div class="row mb-1">
+    {% for recruit in recruitingList %}
+    <div class="col-md-6 col-12">
+        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-3 d-flex flex-column position-static mt-0">
+            <div style="border-bottom: rgb(240, 148, 10) 1px solid;" class="row mb-2">
+              <div class="col-4">
+                <strong class="d-inline-block mb-2 text-warning" style="font-size: 30px;">용병모집</strong>
+              </div>
+              <div class="col-8">
+              {% autoescape on %}
+              <span class="text-muted row" style="font-size: 14px;">
+                {{recruit.location}}
+              </span>
+              <span class="text-muted row" style="font-size: 14px;">
+                {{recruit.time_from|date:"m월d일 H:00"}} -
+                {{recruit.time_to|date:"H:00"}}
+              </span>
+            </div>
+        </div>
+            {% endautoescape %}
+            <h4 class="mb-2 font-weight-bold">
+              <span class="font-weight-bold">[{{recruit.myteam.name}}]</span>
+              {{recruit.title}}
+            </h4>
+            <p class="card-text mb-auto">{{recruit.summary}}
+            <a href="{% url 'recruiting_detail' recruit.id %}" class="stretched-link">...자세히 보기</a>
+          </p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+</div>
+<hr>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if teamList.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{recruitingList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{recruitingList.previous_page_number}}</a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item disabled"><a class="page-link" href="#">{{recruitingList.number}}</a></li>
+    {% if recruitingList.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{recruitingList.next_page_number}}">{{recruitingList.next_page_number}}</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{recruitingList.paginator.num_pages}}">마지막으로</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+    
+{% endblock %}

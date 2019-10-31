@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<div class="rankWrapper" id="test1">
+    <div class="btn-group">
+        <button id="rankType" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            개인순위
+        </button>
+        <div class="dropdown-menu">
+            <button class= "dropdown-item" id = "individualRank">개인순위</button>
+            <a href="{% url 'teamRank' %}" style="text-decoration: none;"><button class="dropdown-item" id = "teamRank">팀순위</button></a>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button id="rankParameter" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            득점순위
+        </button>
+        <div class="dropdown-menu">
+            <button class="dropdown-item" id = "score">득점순위</button>
+            <!-- <a href="{% url 'individualGa' %}"><button id = "goalAverage">득점률순위</button></a> -->
+            <button class="dropdown-item" type="button" id = "goalAverage">득점률순위</button>
+        </div>
+    </div>
+
+<div class = "scoreRank mt-2">
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+        <th scope="col">개인순위</th>
+        <th scope="col">이름</th>
+        <th scope="col">소속팀</th>
+        <th scope="col">경기수</th>
+        <th scope="col">득점수</th>
+        <th scope="col">득점률</th>
+        </tr>
+    </thead>
+    <tbody>
+    <script>
+        var i = 0;
+        var j = 1;
+        var score = -1;
+    </script>
+    {% for user in scoreFnsuser %}
+    <script>
+        i += 1;
+    </script>
+        <tr>
+        <th scope="row">
+            <script>
+                if(score != -1){
+                    if("{{user.score}}" == score){
+                    document.write(i-j);
+                    j +=1;
+                    }
+                    else{
+                    document.write(i);
+                    j = 1;
+                    }
+                }
+                else{
+                    document.write(i);
+                }
+                
+            </script>
+        </th>
+        <td>{{user.name}}</td>
+        <td>{{user.teamname.name}}</td>
+        <td>{{user.matchcount}}</td>
+        <td>{{user.score}}</td>
+        <td>{{user.goalAverage}}</td>
+        </tr>
+    <script>
+        score = "{{user.score}}";
+    </script>
+    {% endfor %}
+    
+    </tbody>
+</table>
+</div>
+
+<div class = "gaRank">
+<p>goalAverage입니다.</p>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+        <th scope="col">개인순위</th>
+        <th scope="col">이름</th>
+        <th scope="col">소속팀</th>
+        <th scope="col">경기수</th>
+        <th scope="col">득점수</th>
+        <th scope="col">득점률</th>
+        </tr>
+    </thead>
+    <tbody>
+    <script>
+        var i = 0;
+        var j = 1;
+    </script>
+    {% for user in gaFnsuser %}
+    <script>
+        i += 1;
+    </script>
+        <tr>
+        <th scope="row">
+        <script>
+            if("{{user.score}}" == score){
+                document.write(i-j)
+            }
+            else{
+            document.write(i);
+            }
+        </script>
+        </th>
+        <td>{{user.name}}</td>
+        <td>{{user.teamname.name}}</td>
+        <td>{{user.matchcount}}</td>
+        <td>{{user.score}}</td>
+        <td>{{user.goalAverage}}</td>
+        </tr>
+        <script>
+            score = "{{user.goalAverage}}";
+        </script>
+    {% endfor %}
+    
+    </tbody>
+</table>
+</div>
+</div>
+
+<script type="text/javascript">
+    // function click(){
+    // $("#score").click(function() {
+    //     document.getElementById('scoreRank').style.display = 'block';
+    //     document.getElementById('gaRank').style.display = 'none';
+    // });
+
+    // $("goalAverage").click(function(){
+    //     document.getElementById('scoreRank').style.display = 'none';
+    //     document.getElementById('gaRank').style.display = 'block';
+    // });
+    // }
+
+    // $("#goalAverage").click(function(){
+    //     alert(this);
+    //     alert('hello');
+    //     this.text("득점률");
+    //     this.parent().parent().parent().addClass('goalAverage');
+    //     var rankParameter = document.getElementById('rankParameter');
+    //     rankParameter.text("득점률");
+    //     $('#rankParameter').text("득점률").button("refresh");
+    //     $(this).html('득점률');
+    //     this.html('득점률');
+    // })
+    // };
+
+
+$('#goalAverage').click(function(){
+    $('#rankParameter').text('득점률순위');
+    $('#goalAverage').parent().parent().parent().addClass('goalAverage');
+    
+})
+
+$('#score').click(function(){
+    $('#rankParameter').text('득점순위');
+    $('#score').parent().parent().parent().removeClass('goalAverage');
+})
+</script>
+
+
+
+{% endblock %}

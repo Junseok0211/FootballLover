@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if error %}
+<script type="text/javascript">
+  var errormessage = "{{ error }}";
+  alert(errormessage);
+</script>
+{% endif %}
+{% if errormessage %}
+<script type="text/javascript">
+alert('로그인을 해주세요.');
+location.href = "{% url 'login' %}";
+</script>
+{% endif %}
+
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-primary" style="margin-bottom: 10px;">
+    <div class="col-md-6 px-0">
+      <h1 class="display-4 font-italic">운동하고 싶은 친구들을 구해서 같이 운동을 합니다.</h1>
+      <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+      <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+    </div>
+  </div>
+
+<div style="margin-bottom: 10px;">
+    <a href="{% url 'personal_new' %}">
+        <button type="button" class="btn btn-secondary btn-lg btn-block">글쓰기</button>
+    </a>
+</div>
+
+
+<div class="row mb-1">
+    {% for personalMatching in personalList %}
+    <div class="col-md-6 col-12">
+      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-3 d-flex flex-column position-static mt-0">
+          <div style="border-bottom: rgb(0, 140, 255) 1px solid;" class="row mb-2">
+            <div class="col-4">
+              <strong class="d-inline-block mb-2 text-primary" style="font-size: 30px;">개인매칭</strong>
+            </div>
+            <div class="col-8">
+            {% autoescape on %}
+            <span class="text-muted row" style="font-size: 14px;">
+              {{personalMatching.location}}
+            </span>
+            <span class="text-muted row" style="font-size: 14px;">
+              {{personalMatching.time_from|date:"m월d일 H:00"}} -
+              {{personalMatching.time_to|date:"H:00"}}
+            </span>
+          </div>
+      </div>
+          {% endautoescape %}
+          <h4 class="mb-2 font-weight-bold">
+            <span class="font-weight-bold">[{{personalMatching.user.name}}]</span>
+            {{personalMatching.title}}
+          </h4>
+          <p class="card-text mb-auto">{{personalMatching.summary}}
+          <a href="{% url 'personal_detail' personalMatching.id %}" class="stretched-link">...자세히 보기</a>
+        </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+<hr>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if personalList.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{personalList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{personalList.previous_page_number}}</a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item disabled"><a class="page-link" href="#">{{personalList.number}}</a></li>
+    {% if personalList.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{personalList.next_page_number}}">{{personalList.next_page_number}}</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{personalList.paginator.num_pages}}">마지막으로</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+<!-- <div class="container">
+  <div class="row justify-content-center">
+  First Previous 3 of 4 Next Last
+  {% if personalList.has_previous %}
+  <a class="mr-5" href="?page=1">First</a>
+  <a class="mr-5" href="?page={{personalList.previous_page_number}}">Previous</a>
+  {% endif %}
+  <span>{{personalList.number}}</span>
+  <span class="ml-5"> of </span>
+  <span class="ml-5">{{personalList.paginator.num_pages}}</span>
+
+  {% if personalList.has_next %}
+  <a class="ml-5" href="?page={{personalList.next_page_number}}">Next</a>
+  <a class="ml-5" href="?page={{personalList.paginator.num_pages}}">Last</a>
+  {% endif %}
+  </div>
+</div> -->
+    
+{% endblock %}

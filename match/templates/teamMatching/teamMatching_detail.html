@@ -1,0 +1,386 @@
+{% extends 'base.html' %}
+{% block contents %}
+<div class="container">
+{% if error %}
+<script type="text/javascript">
+alert('{{error}}');
+</script>
+{% endif %}
+{% if errormessage %}
+<script type="text/javascript">
+alert('{{errormessage}}');
+location.href = "{% url 'team' %}";
+</script>
+{% endif %}
+{% if message %}
+<script type="text/javascript">
+alert('{{message}}');
+</script>
+{% endif %}
+
+
+<div class="row no-gutters border rounded overflow-hidden flex-md-row-reverse mb-4 shadow-sm h-md-250 position-relative">
+        <table class="table table-bordered" style="margin:0px;">
+                <thead>
+                    <tr>
+                    <th  colspan="5">
+                        <strong class="d-inline-block mb-2 text-success">팀매칭</strong>
+                        <h3 class="mb-0" style="margin-top: 0.5rem">{{teamMatching.title}}</h3>
+                    </th>
+                    <th colspan="2">참여인원</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td colspan="5">
+                        <h2>모집정보</h2>
+                        <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">글쓴이</th>
+                                        <td style="text-align: left;">
+                                        {{teamMatching.user}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">주최팀</th>
+                                        <td style="text-align: left;">
+                                        {{teamMatching.myteam}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">팀대표번호</th>
+                                        <td style="text-align: left;">
+                                        {{teamMatching.myteam.teamleader.phone_number}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">시간</th>
+                                    <td style="text-align: left;">
+                                        {{teamMatching.time_from}}      ~
+                                    {{teamMatching.time_to}}</td>
+                                    </tr>
+                                    <tr style="text-align: left;">
+                                    <th scope="row">장소</th>
+                                    <td colspan="3" style="text-align: left;">
+                                        <span>{{teamMatching.location}}</span>
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">실력</th>
+                                    <td colspan="3" style="text-align: left;">
+                                        <span>{{teamMatching.rank}}</span>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                    </td>
+          <td colspan="2">
+              <div style="display: flex; flex-direction: column; justify-content:center;">
+                  {% if teamMatching.vs_team %}
+                  <button style="margin: 10px;" type="button" class="btn btn-outline-primary">매칭이 이미 마감되었습니다.</button>
+                  {% elif is_applied %}
+                  <a href="{% url 'teamCancel' teamMatching.id %}">
+                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">신청취소</button>
+                  </a>
+                  <a href = "{% url 'applied_team' teamMatching.id %}">
+                    <button style="margin: 10px;" type="button" class="btn btn-outline-primary">신청현황확인</button>
+                  </a> 
+                  {% else %}
+                  <a href="{% url 'teamApplication' teamMatching.id %}">
+                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">매치신청</button>
+                  </a> 
+                  <a href = "{% url 'applied_team' teamMatching.id %}">
+                    <button style="margin: 10px;" type="button" class="btn btn-outline-primary">신청현황확인</button>
+                  </a> 
+                  {% endif %}
+                  
+              
+              </div>
+                        
+                    
+                    </td>
+                    </tr>
+                    {% if teamMatching.vs_team %}
+                    <tr>
+                        <td colspan="7">
+                            <strong class="d-inline-block mb-2 text-success">매치결정</strong><br>
+                            <button style="margin-right: 5px;" class= "btn btn-dark">{{teamMatching.vs_team}}으로 결정되었습니다.</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7">
+                        <strong class="d-inline-block mb-2 text-success">매치신청팀</strong><br>
+                        {% for team in applied_teams %}
+                        <button style="margin-right: 5px;" class= "btn btn-dark">{{team.team}}</button>
+                        {% endfor %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                    <td colspan="7">
+                        <strong class="d-inline-block mb-2 text-success">내용</strong>
+                        <p>{{teamMatching.content}}</p>
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+                <div class="col-4 d-flex flex-row-reverse" style="margin:10px;">
+                <div class="p-2">
+                    <a href="{% url 'teamMatching' %}"><button type="button" class="btn btn-primary">목록으로</button></a>
+                    <a href="{% url 'teamMatching_editForm' teamMatching.id %}"><button type="button" class="btn btn-primary">수정하기</button></a>
+                    <a href="{% url 'teamMatching_delete' teamMatching.id %}"><button type="button" class="btn btn-primary">삭제하기</button></a>
+                </div>
+                </div>
+                
+            </div>
+         
+  <!-- 댓글 등록하기 -->
+  <hr>
+  <h4>댓글 {{teamMatching.total_comment}}개</h4>
+  <div class="container" style="margin:0;">
+    <div class="row">
+    {% if commenterror %}
+      <ul>
+      {% for error in commenterror %}
+        <li><div class="alert alert-primary">{{ error }}</div></li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+      <div class="col-1">
+        <img style="border-radius: 70px;" width="40px" height="40px" src="{{ fnsuser.userimg.url }}">
+      </div>
+      <div class="d-block d-lg-none d-md-none" style="margin-left: 30px; padding-top: 8px;">
+        <span><strong>{{fnsuser.name}}</strong></span>
+      </div>
+      <div class="col-lg-9 col-sm-12">
+      <form method="post" action="{% url 'tmcomment_write' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="teamMatching_id" value="{{ teamMatching.id }}">
+        <div class="form-group">
+          <textarea class="form-control" name="content" rows="1" placeholder="댓글을 입력하세요"></textarea>
+        </div>
+      </div>
+        <div class="col-lg-2 col-sm-12 col-md-12">
+          <div class="form-group float-right">
+            <button type="submit" class="btn btn-outline-primary">등록</button>
+            <button type="reset" style="margin-right: 5px;" class="btn btn-outline-primary">취소</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <hr style="margin-top:0;">
+
+  <!-- 댓글 목록 -->
+  <div class="container">
+    {% for comment in comments %}
+    <!-- 댓글 대댓글 전체 래핑 -->
+    <div class="commentWrapper">
+      <!-- 댓글 래퍼 -->
+      <div class="wrapper">
+        <!-- 상세 댓글 -->
+        <div class="row detail">
+          <div class="col-sm-1 col-2">
+            <a href="{% url 'myPage' comment.user.id %}">
+            <img class="float-right" style="margin-left:10px; border-radius: 70px;" width="35px" height="35px" src="{{ comment.user.userimg.url }}">
+            </a>
+          </div>
+          <div id = "{{comment.id}}" class="col-sm-10 col-9">
+            <h6 class="media-heading user_name">
+            <strong>{{ comment.user }}</strong> 
+            | {{comment.passedTime}}
+            </h6>
+            <h6>{{ comment.content }}</h6>
+          </div>
+          <div class="btn-group col-1">
+            <button type="button" class="btn btn-light dropdown-toggle" style="color:white !important; border:none !important; background-color: white !important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="far fa-caret-square-down" style="color: black !important;"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              {% if comment.user == fnsuser %}
+                <button class="dropdown-item edit" type="button">수정</button>
+                <a href ="{% url 'deleteTC' comment.id%}" onclick="return deletePC()"><button class="dropdown-item" type="button" id="deletePC">삭제</button></a>
+              {% endif %}
+              {% if comment.reply.all.count == 0 %}
+              <button class="dropdown-item reply" type="button">답글 달기</button>
+              {% else %}
+              <button class="dropdown-item reply" type="button">답글 {{comment.reply.all.count}}개</button>
+              {% endif %}
+              <button class="dropdown-item allReplyCancel" type="button">답글 닫기</button>
+            </div>
+          </div>
+        </div>
+        <!-- 상세 댓글 끝 -->
+
+        <!-- 댓글 수정 폼 -->
+        <div class="row editForm">
+          <div class="col-sm-1 col-2">
+            <img class="float-right" style="border-radius: 70px;" width="40px" height="40px" src="{{ comment.user.userimg.url }}">
+          </div>
+          <div id = "{{comment.id}}" class="col-sm-9 col-10">
+            <form method="post" action="{% url 'editTC' comment.id %}" enctype="multipart/form-data" class="col-lg-12 col-md-10">
+            {% csrf_token %}
+              <input type="hidden" name="teamMatching_id" value="{{ teamMatching.id }}">
+              <div class="form-group row">
+                <textarea class="form-control" name="content" rows="1" placeholder="댓글을 수정하세요"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-2 col-12">
+              <div class="form-group float-right">
+                <button type="submit" class="btn btn-outline-primary">수정</button>
+                <button type="button" style="margin-right: 5px;" class="btn btn-outline-primary cancel">취소</button>
+              </div>
+            </form>
+          </div> 
+        </div>
+        <!-- 댓글수정폼 끝 -->
+      <hr style="margin-top:0.5rem;">
+      </div>
+      <!-- 댓글래퍼 끝 -->
+
+    <!-- 답글 -->
+    <div class="replyAll" id="test1">
+      <!-- 답글쓰기 -->
+      <div class="row writeReply" id = write>
+        <div class="col-md-1 col-3">
+            <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
+        </div>
+        <div class="col-1">
+          <img class="float-right" style="border-radius: 70px;" width="30px" height="30px" src="{{ fnsuser.userimg.url }}">
+        </div>
+        <div class="col-8" style="margin-left:0; padding-left:0; margin-right: 0; padding-right: 0;">
+          <form method="post" action="{% url 'teamReply_write' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="teamMatching_id" value="{{ teamMatching.id }}">
+            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+            <div class="form-group col-12">
+              <textarea class="form-control" name="content" rows="1" placeholder="답글을 입력하세요"></textarea>
+            </div>
+        </div>
+          
+        <div class="form-group col-md-2 col-12">
+          <button type="reset" class="float-right btn btn-outline-primary">취소</button>    
+          <button type="submit" style="margin-right: 5px;" class="btn btn-outline-primary float-right">등록</button>
+        </div>
+          </form>
+      </div>
+      <hr style="margin-top: 0;">
+      <!-- 답글쓰기 끝 -->
+
+      <!-- 답글 목록 -->
+      {% for reply in comment.reply.all %}
+      
+      <div class="replyWrapper" id = replyWrapper>
+      <!-- replyDetail -->
+        <div class="row replyDetail">
+          <div class="col-md-1 col-3">
+              <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
+          </div>
+          <div class="col-1">
+              <a href="{% url 'myPage' reply.user.id %}">
+                <img class="float-right" style="border-radius: 70px;" width="40px" height="40px" src="{{ reply.user.userimg.url }}">
+              </a>
+          </div>
+          <div class="col-md-9 col-7">
+            <h6 class="media-heading user_name">
+            <strong>{{ reply.user }}</strong> 
+            | {{reply.passedTime}}
+            </h6>
+            <h6>: {{ reply.content }}</h6>
+          </div>
+          {% if reply.user == fnsuser %}
+          <div class="btn-group col-1">
+            <button type="button" class="btn btn-light dropdown-toggle" style="color:white !important; border:none !important; background-color: white !important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="far fa-caret-square-down" style="color: black !important;"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item replyEdit" type="button">수정</button>
+              <a href ="{% url 'deleteTeamReply' reply.id%}" onclick="return deletePC()"><button class="dropdown-item" type="button" id="deletePC">삭제</button></a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        
+        <!-- replyDetail 끝 -->
+
+        <!-- replyEditForm -->
+        <div class="row replyEditForm">
+          <div class="col-md-1 col-3">
+              <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
+          </div>
+          <div class="col-1">
+            <img class="float-right" style="border-radius: 70px;" width="30px" height="30px" src="{{ reply.user.userimg.url }}">
+          </div>
+          <div class="col-8" style="margin-left:0; padding-left:0; margin-right: 0; padding-right: 0;">
+            <form method="post" action="{% url 'editTeamReply' reply.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+              <input type="hidden" name="teamMatching_id" value="{{ teamMatching.id }}">
+                
+              <div class="form-group col-12">
+                <textarea class="form-control" name="content" rows="1" placeholder="답글을 수정하세요"></textarea>
+              </div>
+          </div>
+          <div class="col-md-2 col-12 ">
+            <div class="form-group float-right">
+              <button type="submit" class="btn btn-outline-primary">수정</button>
+              <button type="reset"class="btn btn-outline-primary">취소</button>
+            </div>
+            </form>
+          </div>  
+        </div>
+        <!-- replyEditForm 끝 -->
+       
+      </div>
+      <hr>
+      {% endfor %}
+      <!-- 답글 래퍼 끝 -->
+      <!-- 답글 목록 끝 -->
+    </div>
+    
+  </div>
+  <!-- commentWrapper 끝 -->
+
+      <!--답글 끝  -->
+    {% endfor %}
+  
+
+</div>
+
+  <script type="text/javascript">
+    function deletePC(){
+      var returnValue = confirm('삭제하시겠습니까?');
+      return returnValue;
+    }
+    
+    $('.edit').click(function(){
+      $(this).parent().parent().parent().parent().addClass("editToggle");
+    })
+    
+    $('.cancel').click(function(){
+      $(this).parent().parent().parent().parent().removeClass("editToggle");
+    })
+    
+    $('.replyEdit').click(function(){
+      $(this).parent().parent().parent().parent().addClass("replyEditToggle");
+    })
+    
+    $('.replyCancel').click(function(){
+      $(this).parent().parent().parent().parent().removeClass("replyEditToggle");
+    })
+    
+    $('.reply').click(function(){
+      $(this).parent().parent().parent().parent().parent().children('.replyAll').addClass("replyToggle");
+      $(this).parent().addClass("replyButton");
+      // var id = $(this).parent().parent().parent().parent().parent().children('.replyAll').children('.replyWrapper').attr('id');
+      // alert(id);
+    })
+    
+    $('.allReplyCancel').click(function(){
+      $(this).parent().parent().parent().parent().parent().children('.replyAll').removeClass("replyToggle");
+      $(this).parent().removeClass("replyButton");
+    })
+    </script>
+</div>
+{% endblock %}

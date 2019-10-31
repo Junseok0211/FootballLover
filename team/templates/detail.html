@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if message %}
+<script type="text/javascript">
+var message = "{{message}}"
+alert(message);
+</script>
+{% endif %}
+
+    
+
+
+
+<script>
+var i = 0;
+</script>
+
+<div class="card mb-3" style="max-width: 100%;">
+    <div class="row no-gutters">
+      <div class="col-md-4">
+        <img src="{{ team.teamimg.url }}" class="card-img" alt="teamimg">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h3 class="card-title">팀이름: {{team.name}}</h3>
+          <p class="card-text">{{team.introduction}}</p>
+          <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">이름</th>
+      <th scope="col">대표</th>
+      <th scope="col">활동지역</th>
+      <th scope="col">학교</th>
+      <th scope="col">출전수</th>
+      <th scope="col">득점수</th>
+      <th scope="col">득점률</th>
+    </tr>
+  </thead>
+    <tbody>
+      {% for player in members %}
+      <tr>
+        <th scope="row"><strong>
+          <script>
+            i += 1;
+            document.write(i)
+          </script>
+          </strong></th>
+        <td> {{ player.name }} </td>
+        <td> {{ player.city }} </td>
+        <td>
+        {% if player == team.teamleader %}
+          <p>팀대표</p>
+        {% else %}
+          <p>일반멤버</p>
+        {% endif %}
+        </td>
+        <td> {{ player.school }} </td>
+        <td> {{ player.matchcount }} </td>
+        <td> {{ player.score }} </td>
+        <td> 
+        <script type="text/javascript">
+          var matchcount = "{{player.matchcount}}";
+          var score = "{{player.score}}";
+          var winningrate = score / matchcount;
+          if (isNaN(winningrate)){
+            winningrate = 0;
+          }
+          document.write(winningrate.toFixed(2));
+        </script>  
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+<a class="btn btn-dark float-right" href="{% url 'team' %}" role="button">목록가기</a>
+{% if is_member %}
+<a class="btn btn-dark float-right" style="margin-right: 5px;" href="{% url 'dropout' team.id %}" role="button">팀탈퇴하기</a>
+{% endif %}
+<a class="btn btn-dark float-right" style="margin-right: 5px;" href="{% url 'application' team.id %}" role="button">팀가입신청</a>
+{% if fnsuser == team.teamleader %}
+<a class="btn btn-dark float-right" style="margin-right: 5px;" href="{% url 'applied_list' team.id %}" role="button">가입신청현황</a>
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,110 @@
+
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<head>
+{% if error %}
+
+
+<script language="javascript">
+alert("{{ error }}")
+</script>
+{% endif %}
+{% if message %}
+<script language="javascript">
+alert("{{ message }}")
+</script>
+{% endif %}
+
+<script language="javascript">
+ 
+  function formCheck(frm){
+    if(frm.myTeamScore.value == ""){
+        alert("{{decidedMatch.myTeam}} 스코어를 입력해주세요");
+        frm.myTeamScore.focus();
+        return false;
+    }
+    if(frm.vsTeamScore.value == ""){
+        alert("{{decidedMatch.vsTeam}} 스코어를 입력해주세요");
+        frm.vsTeamScore.focus();
+        return false;
+    }
+        var chkbox = document.getElementsByName("attendedPlayer_id[]");
+        var chkCnt = 0;
+        
+        
+        for(var i=0;i<chkbox.length; i++){
+            if(chkbox[i].checked){
+                chkCnt++;
+            }
+        }
+        if (chkCnt == 0){
+          alert("참가한 팀원을 선택해주세요");
+          document.getElementById("attendedPlayer").focus();
+          // frm.vsTeamScore.focus();
+
+          return false;
+        }
+  }
+ </script>
+
+</head>
+
+
+<table class="table">
+    <thead class="table-success">
+      <tr>
+        <th scope="col-2" style="text-align: center;">시간</th>
+        <th scope="col-2" style="text-align: center;">홈팀</th>
+        <th scope="col-2" style="text-align: center;">상대팀</th>
+        <th scope="col-2" style="text-align: center;">장소</th>
+  
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:lightslategrey 1px solid;">
+        {% autoescape on %}
+        <td style="text-align: center;"> {{ decidedMatch.timeFrom|date:"Y년 M d일 H:i" }} - {{decidedMatch.timeTo|date:"H:i"}} </td>
+        {% endautoescape %}
+        <td style="text-align: center;"> {{ decidedMatch.myTeam }} </td>
+        <td style="text-align: center;"> {{ decidedMatch.vsTeam }} </td>
+        <td style="text-align: center;"> {{ decidedMatch.location }} </td>
+      </tr>
+    </tbody>
+</table>
+
+
+<form action="{% url 'inputScorer' %}" name = "result" method="POST" onsubmit="return formCheck(this);">
+  {% csrf_token %}
+  <input type="hidden" name="decidedMatch_id" value="{{decidedMatch.id}}">
+  <div>
+    <div class="form-group">
+      <label for="myTeamScore"><strong>[{{decidedMatch.myTeam}}]</strong> 스코어를 입력해주세요.</label>
+      <input type="number" class="form-control" name = "myTeamScore" id="myTeamScore"><br>
+  
+      <label for="vsTeamScore"><strong>[{{decidedMatch.vsTeam}}]</strong> 스코어를 입력해주세요.</label>
+      <input type="number" class="form-control" name = "vsTeamScore" id="vsTeamScore"><br>
+      <h5 name="chkbox" class="mb-3" style="padding-bottom:10px; border-bottom:lightslategrey 1px solid;">참가한 인원을 선택해주세요.</h5>
+     
+      {% if fnsuser == decidedMatch.myTeam.teamleader %}
+      {% for member in myTeam %}
+      <input type="checkbox" id = "attendedPlayer" name="attendedPlayer_id[]" value={{member.id}}>
+      <label for="attendedPlayer"><span class="ml-3 mb-5">{{member.name}}</span></label>
+      <hr class="mt-1 mb-3">
+      {% endfor %}
+      {% elif fnsuser == decidedMatch.vsTeam.teamleader %}
+      {% for member in vsTeam %}
+      <input type="checkbox" name="attendedPlayer_id[]" value={{member.id}}>
+      <label for="attendedPlayer"><span class="ml-3 mb-5">{{member.name}}</span></label>
+      <hr class="mt-1 mb-3">
+      {% endfor %}
+      {% endif %}
+    </div>  
+    
+    <input class = "btn btn-dark col-12 ml-0 mr-0" type="submit" value="다음">
+  </div>
+  
+</form>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+<h2>Information</h2>
+<div class="row">
+    <div class="col-lg-3">
+
+        <p>프로필 사진</p>
+        <img src="{{ fnsuser.userimg.url }}" class="img-thumbnail" alt="userimg">
+        <hr>
+        <p><span><strong>이름 </strong>: {{fnsuser.name}}</span></p>
+        <p><span><strong>학교 </strong>: {{fnsuser.school}}</span></p>
+        <p><span><strong>활동지역 </strong>: {{fnsuser.city}}</span></p>
+        <p><span><strong>휴대폰 번호 </strong>: {{fnsuser.phone_number}}</span></p>
+    </div>
+    <div class="col-lg-9">
+        <div class="row card">
+            <p>개인정보 수정</p>
+        </div>
+        {% if fnsuser.teamname == '' %}
+        <div class="row card" style="margin-top: 1em;">
+            <div class="col-3">
+                <strong>팀 정보</strong>
+            </div>
+            <div class="col-3">
+                <a href="{% url 'detail' fnsuser.teamname.id %}">
+                    <button class="btn btn-primary">정보보기</button>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row card" style="margin-top: 1em;">
+            <div class="col-lg-12">
+            <h4>Analytics</h4>
+                <p><span>득점 : </span>{{fnsuser.score}}</p>
+                <p><span>득점률 : </span>{{fnsuser.goalAverage}}</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
