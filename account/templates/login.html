@@ -17,7 +17,8 @@
             <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
             <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
           
-    
+            <!-- Google Font -->
+            <link href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap" rel="stylesheet">
     <style>
             *{
                     margin:0;
@@ -25,6 +26,9 @@
                     text-decoration: none;
                     box-sizing:border-box;
             }  
+            p{
+                    font-family: 'Nanum Gothic';
+            }
             body{
                     min-height:100vh;
                     background-image: linear-gradient(120deg, #3498db, #8e44ad);
@@ -78,7 +82,6 @@
                     position:absolute;
                     width:100%;
                     height:2px;
-                    background: linear-gradient(120deg, #3498db, #8e44ad);
                     transition: .5s;
             }
 
@@ -120,24 +123,37 @@
                 alert("{{errormessage}}");
         </script>
         {% endif %}
-            <p>{{error}}</p>
+        {% if pwSuccess %}
+        <script type="text/javascript">
+                alert("{{pwSuccess}}");
+        </script>
+        {% endif %}
             <form action="{% url 'login' %}" method="POST" class="login-form">
                             {% csrf_token %}
-            <h1>Login</h1>
+            <h1 style="font-family: 'Do Hyeon';">FNS 로그인</h1>
 
             <div class = "txtb">
-                    <input type="text" name="username">
-                    <span data-placeholder = "Username"></span>
+                    <input type="text" name="username" placeholder="아이디">
+                    <span></span>
             </div>
 
             <div class = "txtb">
-                    <input type="password" name="password">
-                    <span data-placeholder = "Password"></span>
+                    <input type="password" name="password" placeholder="비밀번호">
+                    <span></span>
             </div>
-
+                {% if error %}
+                <p style="color: red; font-family: 'Do Hyeon'; text-align: center;">{{error}}</p>
+                {% endif %}     
             <input type="submit" class="logbtn" value="Login">
+            
             <div class="bottom-text">
-                    회원이 아니신가요? <a href="{% url 'register' %}">회원가입</a>
+                <p>
+                        <a href="{% url 'findId' %}">아이디 찾기</a>  |
+                        <a href="{% url 'findPw' %}">비밀번호 찾기</a>
+                </p>
+                   <p style="margin-top:10px; margin-bottom:10px;"> 회원이 아니신가요? <a href="{% url 'register' %}">회원가입</a></p>
+                   <p><a href="{% url 'home' %}">돌아가기</a></p>
+                   
             </div>
             </form>
     <script type="text/javascript">

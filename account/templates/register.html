@@ -22,8 +22,8 @@ alert("{{res_data.error}}");
 
 
     function formCheck(frm){
-        var idpwCheck = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; // 아이디 비밀번호 검사할 정규식
-        var idCheck = /^[a-zA-Z0-9]{8,15}$/; // 아이디와 패스워드가 적합한지 검사할 정규식
+        var pwCheck = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; // 비밀번호 검사할 정규식
+        var idCheck = /^[a-zA-Z0-9]{8,15}$/; // 아이디가 적합한지 검사할 정규식
         var nameCheck = /^[가-힣]{1,10}$/;
         var phoneCheck = /^[0-9]{11}$/;
         var authCheck = /^[0-9]{5}$/;
@@ -57,7 +57,7 @@ alert("{{res_data.error}}");
             frm.password.focus();
             return false;
         }
-        if(!(check(idpwCheck, password, "비밀번호는 영문, 숫자, 특수문자를 이용해 8~15자로 만들어주세요."))){
+        if(!(check(pwCheck, password, "비밀번호는 영문, 숫자, 특수문자를 이용해 8~15자로 만들어주세요."))){
             return false;
         }
         if(frm.re_password.value == ""){
@@ -179,10 +179,11 @@ alert("{{res_data.error}}");
         return true;
     }
 </script>
+<div class="register">
 <div class="container">
     <div class="row mt-5">
-        <div class="col-12 text-center">
-        <h1>회원가입</h1>
+        <div class="col-12 text-center bg-info" style="border-radius: 10px;">
+            <h1 style="font-family: 'Do Hyeon'; color:white; padding:10px;">회원가입</h1>
         </div>
     </div>
   <div class="row mt-3">
@@ -190,59 +191,64 @@ alert("{{res_data.error}}");
       {{ error }}
     </div>
   </div>
-  <div class="row mt-5">
+  <div class="row mt-3">
     <div class="col-12">
       <form name = "register" method="POST" action="{% url 'register' %}" enctype="multipart/form-data" 
       autocomplete="off" onsubmit="return formCheck(this);">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="userimg">프로필 사진</label>
-            <input type="file" accept="image/*" class="form-control" id="userimg" name="userimg" />
+        <div class="form-group row">
+            <label for="userimg" class="col-md-2 col-sm-12">프로필 사진</label>
+            <input type="file" accept="image/*"  class="col-lg-10 col-sm-12 form-control" id="userimg" name="userimg" />
         </div>
-        <div class="form-group">
-          <label for="username">아이디</label>
-            <div class="form-group d-flex">
-                <input type="text" class="form-control col-9" id="username" placeholder="사용자 이름" name="username" autocomplete="off"/>
-            
-            <button id="checkId" type="button" class="btn btn-outline-dark justify-content-end col-3">중복확인</button>
+        <div class="form-group row">
+          <label for="username" class="col-md-2 col-12">아이디</label>
+            <div class="col-md-10 col-12">
+                <div class="row">
+                    <input type="text" class="form-control col-8" id="username" placeholder="사용자 이름" name="username" autocomplete="off"/> 
+                    <button id="checkId" type="button" class="btn btn-outline-dark justify-content-end  col-4">중복확인</button>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-          <label for="password">비밀번호</label>
-          <input type="password" class="form-control" id="password" placeholder="비밀번호" name="password" autocomplete="off"/>
+        <div class="form-group row">
+          <label for="password" class="col-md-2 col-sm-12">비밀번호</label>
+          <input type="password" class="form-control col-md-10 col-12" id="password" placeholder="비밀번호" name="password" autocomplete="off"/>
         </div>
-        <div class="form-group">
-          <label for="re_password">비밀번호 확인</label>
-          <input type="password" class="form-control" id="re_password" placeholder="비밀번호 확인" name="re_password" autocomplete="off"/>
+        <div class="form-group row">
+          <label for="re_password" class="col-md-2 col-sm-12">비밀번호 확인</label>
+          <input type="password"  class="form-control col-md-10 col-12" id="re_password" placeholder="비밀번호 확인" name="re_password" autocomplete="off"/>
         </div>
-        <div class="form-group">
-            <label for="name">이름</label>
-            <input type="text" class="form-control" id="name" placeholder="사용자 이름" name="name" autocomplete="off"/>
+        <div class="form-group row">
+            <label for="name" class="col-md-2 col-12">이름</label>
+            <input type="text"  class="form-control col-md-10 col-12" id="name" placeholder="사용자 이름" name="name" autocomplete="off"/>
         </div>
-        <div class="form-group">
-            <label for="email">사용자 이메일</label>
-            <input type="email" class="form-control" id="email" placeholder="사용자 이메일" name="email" autocomplete="off"/>
+        <div class="form-group row">
+            <label for="email" class="col-md-2 col-12">사용자 이메일</label>
+            <input type="email"  class="form-control col-md-10 col-12" id="email" placeholder="사용자 이메일" name="email" autocomplete="off"/>
         </div>
-        <div class="form-group">
-            <label for="phone_number">휴대폰 번호</label>
-            <div class="form-group d-flex">
-            <input type="text" class="form-control" id="phone_number" placeholder="'-'를 빼고 입력해주세요." 
-            name="phone_number" maxlength="11" autocomplete="off"/>
-            <button id="sendSMS" type="button" class="btn btn-outline-dark justify-content-end col-3">인증번호 발송</button>
+        <div class="form-group row">
+            <label for="phone_number" class="col-md-2 col-12">휴대폰 번호</label>
+            <div class="col-md-10 col-12">
+                <div class="row">
+                    <input type="text" class="form-control col-8" id="phone_number" placeholder="'-'를 빼고 입력해주세요." 
+                    name="phone_number" maxlength="11" autocomplete="off"/>
+                    <button id="sendSMS" type="button" class="btn btn-outline-dark justify-content-end col-4">인증번호 발송</button>
+                </div>
             </div>  
         </div>
-        <div class="form-group">
-            <label for="auth_number">인증번호<span class="auth"></span></label>
-            <div class="form-group d-flex">
-                <input type="text" class="form-control" id="auth_number" placeholder="5자리 숫자를 입력해주세요" 
-                name="auth_number" maxlength="5" autocomplete="off"/>
-                <button id="checkSMS" type="button" class="btn btn-outline-dark justify-content-end col-3">인증</button>
+        <div class="form-group row">
+            <label for="auth_number" class="col-md-2 col-12">인증번호<span class="auth"></span></label>
+            <div class="col-md-10 col-12">
+                <div class="row">
+                    <input type="text" class="form-control col-8" id="auth_number" placeholder="5자리 숫자를 입력해주세요" 
+                    name="auth_number" maxlength="5" autocomplete="off"/>
+                    <button id="checkSMS" type="button" class="btn btn-outline-dark justify-content-end col-4">인증</button>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="region">활동지역</label>
-            <div class="d-flex">
-            <select id="region" class="form-control col-3" name = "region"
+        <div class="form-group row">
+            <label for="region" class="col-md-2 col-12">활동지역</label>
+            <div class="d-flex col-md-10 col-12 pl-0">
+            <select id="region" class="form-control col-md-3 col-6" name = "region"
             onChange="showSub(this.options[this.selectedIndex].value);">
                 <option selected disabled hidden value="시도">시도</option>
                 <option value="서울특별시">서울특별시</option>
@@ -255,16 +261,16 @@ alert("{{res_data.error}}");
                 <option value="경상남도">경상남도</option>
                 <option value="제주특별자치도">제주특별자치도</option>
             </select>
-            <select id="basic" class="form-control col-3" name = "basic" style="display: ;">
+            <select id="basic" class="form-control col-md-3 col-6" name = "basic" style="display: ;">
                 <option selected disabled hidden value="시군구">시군구</option>
             </select>
 
-            <select id="seoul" class="form-control col-3" name = "seoul" style="display: none;">
+            <select id="seoul" class="form-control col-md-3 col-6" name = "seoul" style="display: none;">
                 <option selected disabled hidden value="seoul">시군구</option>
                 <option value="서울강남">서울강남</option>
                 <option value="경기북부">서울강북</option>
             </select>
-            <select id="gyeonggi" class="form-control col-3" name = "gyeonggi"  style="display: none;">
+            <select id="gyeonggi" class="form-control col-md-3 col-6" name = "gyeonggi"  style="display: none;">
                 <option selected disabled hidden value="gyeonggi">시군구</option>
                 <option value="인천광역시">인천광역시</option>
                 <option value="수원시">수원시</option>
@@ -299,7 +305,7 @@ alert("{{res_data.error}}");
                 <option value="가평군">가평군</option>
                 <option value="양평군">양평군</option>
             </select>
-            <select id="north_chungcheong" class="form-control col-3" name = "north_chungcheong"  style="display: none;">
+            <select id="north_chungcheong" class="form-control col-md-3 col-6" name = "north_chungcheong"  style="display: none;">
                 <option selected disabled hidden value="north_chungcheong">시군구</label>
                 <option value="청주시">청주시</option>
                 <option value="충주시">충주시</option>
@@ -313,7 +319,7 @@ alert("{{res_data.error}}");
                 <option value="음성군">음성군</option>
                 <option value="단양군">단양군</option>
             </select>
-            <select id="south_chungcheong" class="form-control col-3" name = "south_chungcheong"  style="display: none;">
+            <select id="south_chungcheong" class="form-control col-md-3 col-6" name = "south_chungcheong"  style="display: none;">
                 <option selected disabled hidden value="south_chungcheong">시군구</label>
                 <option value="대전광역시">대전광역시</option>
                 <option value="세종특별자치시">세종특별자치시</option>
@@ -333,7 +339,7 @@ alert("{{res_data.error}}");
                 <option value="예산군">예산군</option>
                 <option value="태안군">태안군</option>
             </select>
-            <select id="north_jeolla" class="form-control col-3" name = "north_jeolla"  style="display: none;">
+            <select id="north_jeolla" class="form-control col-md-3 col-6" name = "north_jeolla"  style="display: none;">
                 <option selected disabled hidden value="north_jeolla">시군구</label>
                 <option value="전주시">전주시</option>
                 <option value="군산시">군산시</option>
@@ -350,7 +356,7 @@ alert("{{res_data.error}}");
                 <option value="고창군">고창군</option>
                 <option value="부안군">부안군</option>
             </select>
-            <select id="south_jeolla" class="form-control col-3" name = "south_jeolla"  style="display: none;">
+            <select id="south_jeolla" class="form-control col-md-3 col-6" name = "south_jeolla"  style="display: none;">
                 <option selected disabled hidden value="south_jeolla">시군구</label>
                 <option value="광주광역시">광주광역시</option>
                 <option value="목포시">목포시</option>
@@ -376,7 +382,7 @@ alert("{{res_data.error}}");
                 <option value="진도군">진도군</option>
                 <option value="신안군">신안군</option>
             </select>
-            <select id="north_gyeongsang" class="form-control col-3" name = "north_gyeongsang"  style="display: none;">
+            <select id="north_gyeongsang" class="form-control col-md-3 col-6" name = "north_gyeongsang"  style="display: none;">
                 <option selected disabled hidden value="north_gyeongsang">시군구</label>
                 <option value="울산광역시">울산광역시</option>
                 <option value="대구광역시">대구광역시</option>
@@ -404,7 +410,7 @@ alert("{{res_data.error}}");
                 <option value="울진군">울진군</option>
                 <option value="울릉군">울릉군</option>
             </select>
-            <select id="south_gyeongsang" class="form-control col-3" name = "south_gyeongsang"  style="display: none;">
+            <select id="south_gyeongsang" class="form-control col-md-3 col-6" name = "south_gyeongsang"  style="display: none;">
                 <option selected disabled hidden value="south_gyeongsang">시군구</label>
                     <option value="부산특별시">부산특별시</option>
                     <option value="창원시">창원시</option>
@@ -426,30 +432,33 @@ alert("{{res_data.error}}");
                     <option value="거창군">거창군</option>
                     <option value="합천군">합천군</option>
             </select>
-            <select id="jeju" class="form-control col-3" name = "jeju"  style="display: none;">
+            <select id="jeju" class="form-control col-md-3 col-6" name = "jeju"  style="display: none;">
                 <option selected disabled hidden value="jeju">시군구</label>
                 <option value="서귀포시">서귀포시</option>
                 <option value="제주시">제주시</option>
             </select>
             </div>  
         </div>
-        <div class="form-group">
-            <label for="school">학교</label>
-            <select id="school" class="form-control col-3" name = "school" >
+        <div class="form-group row">
+            <label for="school" class="col-md-2 col-12">학교</label>
+            <select id="school" class="form-control col-12 col-md-4" name = "school" >
                 <option selected disabled hidden value="school">학교</label>
                 <option value="남서울대 재학생">남서울대 재학생</option>
                 <option value="타 대학 재학생">타대학 재학생</option>
                 <option value="지역주민">지역주민</option>
             </select>
         </div> 
-        <button type="submit" class="btn btn-primary">등록</button>
+        <hr>
+        <div class="row justify-content-end mr-3 mb-3">
+            <button type="submit" class="btn btn-dark">등록</button>
+        </div>
+
       </form>
     </div>
     </div>
 </div>
-
+</div>
 <script>
-
     function sendSMS(){
         f = document.signup;
         phone_number = f.phone_number.value;
@@ -460,13 +469,22 @@ alert("{{res_data.error}}");
         })
     }
     $('#sendSMS').click( function() {
+        
+        var phone_number = document.getElementById('phone_number');
+        if(phone_number.value == ''){
+            alert("휴대폰 번호를 입력해주세요!");
+            phone_number.focus();
+            return false;
+        }
         url1 = "{% url 'verification' %}";
-        var csrf = $('input[name="csrfmiddlewaretoken"]').first().val();  
+        var csrf = $('input[name="csrfmiddlewaretoken"]').first().val(); 
+        var findPw = 'notFindPw'; 
         $.ajax({
             url: url1,
             dataType:'json',
+            async:false,
             type:'POST',
-            data:{'phone_number':$('#phone_number').val(), 'csrfmiddlewaretoken':csrf},
+            data:{'phone_number':$('#phone_number').val(), 'csrfmiddlewaretoken':csrf, 'findPw':findPw},
             success:function(data){
                 if(data.message == '이미 등록된 휴대폰입니다.'){
                     alert(data.message);
@@ -476,6 +494,9 @@ alert("{{res_data.error}}");
                     alert(data.message);
                 }  
             },
+            fail:function(data){
+                alert(data.message);
+            }
         });
     })
 

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+{% if errormessage %}
+<script language="javascript">
+alert("{{errormessage}}");
+</script>
+{% endif %}
+<script language="javascript">
+        function formCheck(frm){
+               if(frm.title.value == ""){
+                   alert("제목을 입력해주세요");
+                   frm.title.focus();
+                   return false;
+               }
+               if(frm.location.value == "장소를 선택하세요."){
+                   alert("장소를 선택해주세요");
+                   frm.location.focus();
+                   return false;
+               }
+               if(frm.time_from.value == ""){
+                   alert("시작시간을 입력해주세요");
+                   frm.time_from.focus();
+                   return false;
+               }
+               if (frm.time_to.value == ""){
+                   alert("종료시간을 입력해주세요");
+                   frm.time_to.focus();
+                   return false;
+               }
+               if(frm.content.value == ""){
+                   alert("내용을 입력해주세요.");
+                   frm.content.focus();
+                   return false;
+               }
+        }
+</script>
+{% load staticfiles %}
+<div class="league">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">남서울 풋살데이</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">매주 수요일 5시 남서울대 다목적구장에서 풋살 밀어내기가 진행됩니다.</p>  
+    </div>
+  </div>
+</div>
+
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 밀어내기 > 수정하기</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
+<div style="border:1px solid lightgray; border-radius: 10px; padding: 30px;">
+    <form action="{% url 'league_edit' league.id %}" method="POST" onsubmit="return formCheck(this);">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="title">제목</label>
+            <div class="col-lg-10 col-sm-12">
+            <input class="form-control" id="title" type="text" name = "title" placeholder="제목을 입력하세요" value="{{league.title}}" >
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="location">장소</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="form-control" id="location" name="location">
+                <option selected disabled hidden>장소를 선택하세요.</option>
+                <option value="남서울대 다목적구장">남서울대 다목적구장</option>
+                <option value="남서울대 축구장">남서울대 축구장</option>
+            </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_from">시작시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_from" name = "time_from" class="form-control" type="text">
+            </div>
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_to">종료시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_to" name = "time_to" type="text" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="content">내용</label>
+            <div class="col-lg-10 col-sm-12">
+            <textarea class="form-control" id="content" name="content" rows="5" placeholder="내용을 입력하세요">
+            {{league.content}}
+            </textarea>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row-reverse bd-highlight">
+            <div class="p-1 bd-highlight">
+                <button type="button" class="btn btn-secondary"><a class="text-decoration-none text-white" href="{% url 'league' %}">돌아가기</a></button>
+            </div>
+            <div class="p-1 bd-highlight">
+                    <button type="reset" class="btn btn-secondary">초기화</button>
+            </div>
+            <div class="p-1 bd-highlight">
+                    <button type="submit" class="btn btn-secondary">글쓰기</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+{% endblock %}

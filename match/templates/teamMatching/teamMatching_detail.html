@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block contents %}
-<div class="container">
+
 {% if error %}
 <script type="text/javascript">
 alert('{{error}}');
@@ -18,124 +18,157 @@ alert('{{message}}');
 </script>
 {% endif %}
 
+{% load staticfiles %}
+<div class="teamMatching">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀매칭</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살의 상대팀을 구합니다.</p>  
+    </div>
+  </div>
+</div>
 
-<div class="row no-gutters border rounded overflow-hidden flex-md-row-reverse mb-4 shadow-sm h-md-250 position-relative">
-        <table class="table table-bordered" style="margin:0px;">
-                <thead>
-                    <tr>
-                    <th  colspan="5">
-                        <strong class="d-inline-block mb-2 text-success">팀매칭</strong>
-                        <h3 class="mb-0" style="margin-top: 0.5rem">{{teamMatching.title}}</h3>
-                    </th>
-                    <th colspan="2">참여인원</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <td colspan="5">
-                        <h2>모집정보</h2>
-                        <table class="table table-borderless">
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">글쓴이</th>
-                                        <td style="text-align: left;">
-                                        {{teamMatching.user}}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">주최팀</th>
-                                        <td style="text-align: left;">
-                                        {{teamMatching.myteam}}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">팀대표번호</th>
-                                        <td style="text-align: left;">
-                                        {{teamMatching.myteam.teamleader.phone_number}}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">시간</th>
-                                    <td style="text-align: left;">
-                                        {{teamMatching.time_from}}      ~
-                                    {{teamMatching.time_to}}</td>
-                                    </tr>
-                                    <tr style="text-align: left;">
-                                    <th scope="row">장소</th>
-                                    <td colspan="3" style="text-align: left;">
-                                        <span>{{teamMatching.location}}</span>
-                                    </td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">실력</th>
-                                    <td colspan="3" style="text-align: left;">
-                                        <span>{{teamMatching.rank}}</span>
-                                    </td>
-                                    </tr>
-                                </tbody>
-                                </table>
-                    </td>
-          <td colspan="2">
-              <div style="display: flex; flex-direction: column; justify-content:center;">
-                  {% if teamMatching.vs_team %}
-                  <button style="margin: 10px;" type="button" class="btn btn-outline-primary">매칭이 이미 마감되었습니다.</button>
-                  {% elif is_applied %}
-                  <a href="{% url 'teamCancel' teamMatching.id %}">
-                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">신청취소</button>
-                  </a>
-                  <a href = "{% url 'applied_team' teamMatching.id %}">
-                    <button style="margin: 10px;" type="button" class="btn btn-outline-primary">신청현황확인</button>
-                  </a> 
-                  {% else %}
-                  <a href="{% url 'teamApplication' teamMatching.id %}">
-                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">매치신청</button>
-                  </a> 
-                  <a href = "{% url 'applied_team' teamMatching.id %}">
-                    <button style="margin: 10px;" type="button" class="btn btn-outline-primary">신청현황확인</button>
-                  </a> 
-                  {% endif %}
-                  
-              
-              </div>
-                        
-                    
-                    </td>
-                    </tr>
-                    {% if teamMatching.vs_team %}
-                    <tr>
-                        <td colspan="7">
-                            <strong class="d-inline-block mb-2 text-success">매치결정</strong><br>
-                            <button style="margin-right: 5px;" class= "btn btn-dark">{{teamMatching.vs_team}}으로 결정되었습니다.</button>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="7">
-                        <strong class="d-inline-block mb-2 text-success">매치신청팀</strong><br>
-                        {% for team in applied_teams %}
-                        <button style="margin-right: 5px;" class= "btn btn-dark">{{team.team}}</button>
-                        {% endfor %}
-                        </td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                    <td colspan="7">
-                        <strong class="d-inline-block mb-2 text-success">내용</strong>
-                        <p>{{teamMatching.content}}</p>
-                    </td>
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 팀매칭 > 자세히 보기</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4 pl-4 pr-4">
+  <div class="row border rounded overflow-hidden shadow-sm p-4">
+    <div class="col-md-7 col-12">
+      <table class="table">
+          <thead>
+            <tr class="row">
+              <th colspan="2" class="col-12">
+                  <strong class="d-inline-block mb-2 text-success">팀매칭</strong>
+                  <h1 style="margin-top: 0.5rem"><strong>{{teamMatching.title}}</strong></h1>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row">
+              <td colspan="2" class = "col-12">
+                <h2 class="bg-info" style="text-align:center; padding:10px; font-family: 'Nanum Gothic'; font-weight:bold;">모집정보</h2>
+              </td>
+            </tr>
+            <tr class="row">
+                <th scope="row" class="col-4">글쓴이</th>
+                <td style="text-align: left;" class="col-8">
+                {{teamMatching.user}}    
+                </td>
+            </tr>
+            <tr class="row">
+                <th scope="row" class="col-4">주최팀</th>
+                <td style="text-align: left;" class="col-8">
+                {{teamMatching.myteam}}    
+                </td>
+            </tr>
+            <tr class="row">
+                <th scope="row" class="col-4">팀대표번호</th>
+                <td style="text-align: left;" class="col-8">
+                {{teamMatching.myteam.teamleader.phone_number}}    
+                </td>
+            </tr>
+            <tr class="row">
+              <th scope="row" class="col-4">시간</th>
+              <td style="text-align: left;" class="col-8">
+                {% autoescape on %}
+                  {{teamMatching.time_from|date:"Y년 m월 d일 H:i"}}      -
+              {{teamMatching.time_to|date:"H:i"}}</td>
+              {% endautoescape %}
+            </tr>
+            <tr style="text-align: left;" class="row">
+              <th scope="row" class="col-4">장소</th>
+              <td colspan="3" class="col-8" style="text-align: left;">
+                  <span>{{teamMatching.location}}</span>
+              </td>
+            </tr>
+            <tr class="row">
+              <th scope="row" class="col-4">실력</th>
+              <td colspan="3" style="text-align: left;" class="col-8">
+                <span>{{teamMatching.rank}}</span>
+              </td>
+            </tr>
+          
+            
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-5 col-12 ml-0" style="border-left:silver 2px solid;">
+          <table class="table">
+            <thead>
+              <tr class="row">
+                  <td class="col-12">
+                      <div style="display: flex; flex-direction: column; justify-content:center;">
+                        <strong class="d-inline-block text-success">매치 신청하기</strong><br>
+                          {% if teamMatching.vs_team %}
+                          <button style="margin: 10px;" type="button" class="btn btn-outline-success">매칭이 이미 마감되었습니다.</button>
+                          {% elif is_applied %}
+                          <a href="{% url 'teamCancel' teamMatching.id %}">
+                            <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-success">신청취소</button>
+                          </a>
+                          <a href = "{% url 'applied_team' teamMatching.id %}">
+                            <button style="margin: 10px;" type="button" class="btn btn-outline-success">신청현황확인</button>
+                          </a> 
+                          <p style="color:red;">글 작성자만 매치신청 수락을 할 수 있습니다.</p>
+                          {% else %}
+                          <a href="{% url 'teamApplication' teamMatching.id %}">
+                            <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-success">매치신청</button>
+                          </a> 
+                          <a href = "{% url 'applied_team' teamMatching.id %}">
+                            <button style="margin: 10px;" type="button" class="btn btn-outline-success">신청현황확인</button>
+                          </a> 
+                          <p style="color:red;">글 작성자만 매치신청 수락을 할 수 있습니다.</p>
+                          {% endif %}
+                      </div>  
+                  </td>
+              </tr>
+            </thead>
+            <tbody>
+              {% if teamMatching.vs_team %}
+              <tr class="row">
+                <td class="col-12">
+                  <strong class="d-inline-block mb-2 text-success">매칭상대팀</strong><br>
+                  <button style="margin-right: 5px;" class= "btn btn-dark">{{teamMatching.vs_team}}으로 결정되었습니다.</button>
+                </td>
+              </tr>
+              {% else %}
+              <tr class="row">
+                <td class="col-12">
+                  <strong class="d-inline-block mb-2 text-success">매치신청팀</strong><br>
+                  {% for team in applied_teams %}
+                  <button style="margin-right: 5px;" class= "btn btn-dark">
+                    <a href="{% url 'detail' team.team.id %}" class="text-decoration-none text-white">{{team.team}}</a></button>
+                  {% endfor %}
+                </td>
+              </tr>
+              {% endif %}
+              <tr>
+                <td>
+                  <strong class="d-inline-block mb-2 text-success ml-0">내용</strong>
+                  <p>{{teamMatching.content}}</p>
+                </td>
                 </tr>
-                </tbody>
-                </table>
-                <div class="col-4 d-flex flex-row-reverse" style="margin:10px;">
-                <div class="p-2">
-                    <a href="{% url 'teamMatching' %}"><button type="button" class="btn btn-primary">목록으로</button></a>
-                    <a href="{% url 'teamMatching_editForm' teamMatching.id %}"><button type="button" class="btn btn-primary">수정하기</button></a>
-                    <a href="{% url 'teamMatching_delete' teamMatching.id %}"><button type="button" class="btn btn-primary">삭제하기</button></a>
-                </div>
-                </div>
-                
+              </tbody>
+            </table>
+            <hr>
+            <div class="align-items-end">
+              <a href="{% url 'teamMatching' %}"><button type="button" class="btn btn-success col-3">목록으로</button></a>
+              <a href="{% url 'teamMatching_editForm' teamMatching.id %}"><button onclick="check()" type="button" class="btn btn-success col-3">수정하기</button></a>
+              <a href="{% url 'teamMatching_delete' teamMatching.id %}"><button onclick="return deletePC()" type="button" class="btn btn-success col-3">삭제하기</button></a>
             </div>
-         
+      </div>
+        
+        
+      </div>
+
   <!-- 댓글 등록하기 -->
   <hr>
   <h4>댓글 {{teamMatching.total_comment}}개</h4>

@@ -1,42 +1,48 @@
 {% extends 'base.html' %}
 
 {% block contents %}
-<h2>Information</h2>
+<div class="myPage">
+<div class="container p-4">
 <div class="row">
-    <div class="col-lg-3">
-
-        <p>프로필 사진</p>
-        <img src="{{ fnsuser.userimg.url }}" class="img-thumbnail" alt="userimg">
-        <hr>
-        <p><span><strong>이름 </strong>: {{fnsuser.name}}</span></p>
-        <p><span><strong>학교 </strong>: {{fnsuser.school}}</span></p>
-        <p><span><strong>활동지역 </strong>: {{fnsuser.city}}</span></p>
-        <p><span><strong>휴대폰 번호 </strong>: {{fnsuser.phone_number}}</span></p>
-    </div>
-    <div class="col-lg-9">
-        <div class="row card">
-            <p>개인정보 수정</p>
-        </div>
-        {% if fnsuser.teamname == '' %}
-        <div class="row card" style="margin-top: 1em;">
-            <div class="col-3">
-                <strong>팀 정보</strong>
-            </div>
-            <div class="col-3">
-                <a href="{% url 'detail' fnsuser.teamname.id %}">
-                    <button class="btn btn-primary">정보보기</button>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-        <div class="row card" style="margin-top: 1em;">
-            <div class="col-lg-12">
-            <h4>Analytics</h4>
-                <p><span>득점 : </span>{{fnsuser.score}}</p>
-                <p><span>득점률 : </span>{{fnsuser.goalAverage}}</p>
-            </div>
+    <div class="card col-12 offset-md-1 col-md-3 p-3" style="width: 18rem;">
+        <h2 class="text-primary pl-2 pt-2" style="font-family: 'Jua';">회원 정보</h2>
+        <hr class="mt-2">
+        <!-- <img src="{{ fnsuser.userimg.url }}" class="card-img-top" alt="userimg" height="50px" style="border-radius: 30%;"> -->
+        <img class="mx-auto" style="border-radius: 70px;" width="100px" height="100px" src="{{ pageUser.userimg.url }}">
+        <h5 class="card-title text-info text-center font-weight-bold mt-2">프로필 사진</h5>
+        <div class="card-body" style="border-top: 1px solid silver;">
+        <h5 class="card-title font-weight-bold">개인정보</h5>
+        <p><span><strong>이름 </strong>: {{pageUser.name}}</span></p>
+            <p><span><strong>학교 </strong>: {{pageUser.school}}</span></p>
+            <p><span><strong>활동지역 </strong>: {{pageUser.city}}</span></p>
+            <p><span><strong>휴대폰 번호 </strong>: {{pageUser.phone_number}}</span></p>
         </div>
     </div>
 
+    <div class="ml-md-4 ml-0 mt-md-0 mt-3 col-md-7 col-12">
+        <div class="row card p-4">
+            <div class="col-12">
+                <h5 class="card-title font-weight-bold text-info">기본정보</h5>
+                <span class="mt-3">본인만 수정할 수 있습니다.</span>
+            </div>
+        </div>
+
+        <div class="row card p-4 mt-4">
+            <div class="col-12">
+                <h5 class="card-title font-weight-bold text-info">팀 정보</h5>
+                <span class="mt-3">본인만 볼 수 있습니다.</span>
+               </div>
+        </div>
+
+        <div class="row card p-4 mt-4">
+            <div class="col-12">
+                <h5 class="card-title font-weight-bold text-info">개인 기록</h5>
+                <span class="mt-3">본인만 볼 수 있습니다.</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
 </div>
 {% endblock %}

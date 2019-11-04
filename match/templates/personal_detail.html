@@ -45,99 +45,135 @@ $(document).ready(function(event) {
 </script>
 {% endif %}
 
-<div class="row no-gutters border rounded overflow-hidden flex-md-row-reverse mb-4 shadow-sm h-md-250 position-relative">
-<table class="table table-bordered" style="margin:0px;">
+{% load staticfiles %}
+<div class="personalMatching">
+        <div class="container">
+          <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+            <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+            <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">개인매칭</span>
+          </div>
+          <div class="row align-items-center">
+            <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">같이 축구하거나 풋살할 사람을 구합니다!</p>  
+          </div>
+        </div>
+      </div>
+      
+      <div class="between">
+        <div class="container">
+          <div class="row">
+            <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+            <span class="col-md-6 col-12 text-center">풋볼러버 > 개인매칭 > 자세히 보기</span>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+
+<div class="container mt-4 mb-4 pl-4 pr-4">
+<div class="row border rounded overflow-hidden shadow-sm p-4">
+  <div class="col-md-7 col-12">
+    <table class="table">
         <thead>
-          <tr>
-            <th  colspan="5">
+          <tr class="row">
+            <th colspan="2" class="col-12">
                 <strong class="d-inline-block mb-2 text-primary">개인매칭</strong>
-                <h3 class="mb-0" style="margin-top: 0.5rem">{{personalMatching.title}}</h3>
+                <h1 style="margin-top: 0.5rem"><strong>{{personalMatching.title}}</strong></h1>
             </th>
-            <th colspan="2">참여인원</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td colspan="5">
-                <h2>모집정보</h2>
-                <table class="table table-borderless">
-                        <tbody>
-                          <tr>
-                              <th scope="row">주최자</th>
-                              <td style="text-align: left;">
-                              {{personalMatching.user}}    
-                              </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">시간</th>
-                            <td style="text-align: left;">
-                                {{personalMatching.time_from}}      ~
-                            {{personalMatching.time_to}}</td>
-                          </tr>
-                          <tr style="text-align: left;">
-                            <th scope="row">장소</th>
-                            <td colspan="3" style="text-align: left;">
-                                <span>{{personalMatching.location}}</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">모집인원</th>
-                            <td colspan="3" style="text-align: left;">
-                                <span>{{personalMatching.number}}명</span>
-                            </td>
-                          </tr>
-                          <tr>
-                                <th scope="row">실력</th>
-                                <td colspan="3" style="text-align: left;">
-                                    <span>{{personalMatching.rank}}</span>
-                                </td>
-                              </tr>
-                        </tbody>
-                      </table>
-            </td>
-            <td colspan="2">
-                <div id="#attendance_section" style="display: flex; flex-direction: column; justify-content:center;">
-                    <!-- <form action="{% url 'personal_attendance' %}" method="POST">
-                      {% csrf_token %}
-                      <button style="margin: 10px;" type="button" class="btn btn-outline-primary">참여인원: {{ total_attendance }}</button>
-                      {% if is_liked %}
-                      <button type = "submit" style="margin: 10px; margin-top: 20%;" class ="btn btn-primary" id = "attendance" 
-                      name="personal_id" value="{{personalMathcing.id}}">참가 취소</button>
-                      {% else %}
-                      <button type = "submit" style="margin: 10px; margin-top: 20%;" class ="btn btn-primary" id = "attendance" 
-                      name="personal_id" value="{{personalMathcing.id}}">참가하기</button>
-                      {% endif %}
-                      
-                    </form> -->
-                  {% include 'personal_attendance.html' %}
-                </div>
-                
-           
+          <tr class="row">
+            <td colspan="2" class = "col-12">
+              <h2 class="bg-info" style="text-align:center; padding:10px; font-family: 'Nanum Gothic'; font-weight:bold;">모집정보</h2>
             </td>
           </tr>
-         <tr>
-             <td colspan="7">
-                <strong class="d-inline-block mb-2 text-primary">참여인원</strong><br>
-                {% for person in attendance %}
-                <button class="btn btn-primary">{{ person }}</button>
-                {% endfor %}
-             </td>
-         </tr>
-         <tr>
-            <td colspan="7">
-                <strong class="d-inline-block mb-2 text-primary">내용</strong>
-                <p>{{personalMatching.content}}</p>
+          <tr class="row">
+              <th scope="row" class="col-4">주최자</th>
+              <td style="text-align: left;" class="col-8">
+              {{personalMatching.user}}    
+              </td>
+          </tr>
+          <tr class="row">
+            <th scope="row" class="col-4">시간</th>
+            <td style="text-align: left;" class="col-8">
+              {% autoescape on %}
+                {{personalMatching.time_from|date:"Y년 m월 d일 H:i"}}      -
+            {{personalMatching.time_to|date:"H:i"}}</td>
+            {% endautoescape %}
+          </tr>
+          <tr style="text-align: left;" class="row">
+            <th scope="row" class="col-4">장소</th>
+            <td colspan="3" class="col-8" style="text-align: left;">
+                <span>{{personalMatching.location}}</span>
             </td>
-        </tr>
+          </tr>
+          <tr class="row">
+            <th scope="row" class="col-4">모집인원</th>
+            <td colspan="3" style="text-align: left;" class="col-8">
+                <span>{{personalMatching.number}}명</span>
+            </td>
+          </tr>
+          <tr class="row">
+            <th scope="row" class="col-4">실력</th>
+            <td colspan="3" style="text-align: left;" class="col-8">
+              <span>{{personalMatching.rank}}</span>
+            </td>
+          </tr>
+        
+         
         </tbody>
       </table>
-      <div class="col-4 d-flex flex-row-reverse" style="margin:10px;">
-        <div class="p-2">
-            <a href="{% url 'personal' %}"><button type="button" class="btn btn-primary">목록으로</button></a>
-            <a href="{% url 'personal_editForm' personalMatching.id %}"><button onclick="check()" type="button" class="btn btn-primary">수정하기</button></a>
-            <a href="{% url 'personal_delete' personalMatching.id %}"><button type="button" class="btn btn-primary">삭제하기</button></a>
-        </div>
-      </div>
+    </div>
+    <div class="col-md-5 col-12 ml-0" style="border-left:silver 2px solid;">
+        <table class="table">
+          <thead>
+            <tr class="row">
+              <th class="col-12">
+                  <strong class="d-inline-block mb-2 text-primary ml-3">참여인원</strong>
+                  <div id="#attendance_section" style="display: flex; flex-direction: column; justify-content:center;">
+                      <!-- <form action="{% url 'personal_attendance' %}" method="POST">
+                        {% csrf_token %}
+                        <button style="margin: 10px;" type="button" class="btn btn-outline-primary">참여인원: {{ total_attendance }}</button>
+                        {% if is_liked %}
+                        <button type = "submit" style="margin: 10px; margin-top: 20%;" class ="btn btn-primary" id = "attendance" 
+                        name="personal_id" value="{{personalMathcing.id}}">참가 취소</button>
+                        {% else %}
+                        <button type = "submit" style="margin: 10px; margin-top: 20%;" class ="btn btn-primary" id = "attendance" 
+                        name="personal_id" value="{{personalMathcing.id}}">참가하기</button>
+                        {% endif %}
+                        
+                      </form> -->
+                    {% include 'personal_attendance.html' %}
+                  </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                   <strong class="d-inline-block mb-2 text-primary">참여인원</strong><br>
+                   {% for person in attendance %}
+                   <button class="btn btn-primary">
+                     <a class="text-white text-decoration-none" href="{% url 'myPage' person.id %}">{{ person }}</a></button>
+                   {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <strong class="d-inline-block mb-2 text-primary">내용</strong>
+                    <p>{{personalMatching.content}}</p>
+                </td>
+            </tr>
+          </tbody>
+          </table>
+          <hr>
+          <div class="align-items-end">
+            <a href="{% url 'personal' %}"><button type="button" class="btn btn-primary col-3">목록으로</button></a>
+            <a href="{% url 'personal_editForm' personalMatching.id %}"><button onclick="check()" type="button" class="btn btn-primary col-3">수정하기</button></a>
+            <a href="{% url 'personal_delete' personalMatching.id %}"><button onclick="return deletePC()" type="button" class="btn btn-primary col-3">삭제하기</button></a>
+          </div>
+    </div>
+      
       
     </div>
 
@@ -352,7 +388,7 @@ $(document).ready(function(event) {
     {% endfor %}
   </div>
     
-
+</div>
 <script type="text/javascript">
 function deletePC(){
   var returnValue = confirm('삭제하시겠습니까?');

@@ -1,25 +1,47 @@
 {% extends 'base.html' %}
 
 {% block contents %}
+{% load staticfiles %}
+<div class="rank">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">순위</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">학교 혹은 지역 내 순위를 확인할 수 있습니다.</p>  
+    </div>
+  </div>
+</div>
 
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 순위 > 팀순위</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
 <div>
     <a href="{% url 'individualRank' %}"><button  class="btn btn-secondary" id = "individualRank">개인순위</button></a>
 </div>
 
 <div id = "scoreRank" class="mt-2">
 <table class="table">
-    <thead class="thead-dark">
+    <thead class="thead-dark m-0 p-0">
         <tr>
-        <th scope="col">순위</th>
-        <th scope="col">팀명</th>
-        <th scope="col">경기</th>
-        <th scope="col">승점</th>
-        <th scope="col">승</th>
-        <th scope="col">무</th>
-        <th scope="col">패</th>
-        <th scope="col">득점</th>
-        <th scope="col">실점</th>
-        <th scope="col">득실차</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">순위</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">팀명</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">경기</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">승점</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">승</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">무</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">패</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">득점</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">실점</th>
+        <th scope="col" class = "text-center m-0 p-md-2 p-0">득실차</th>
         </tr>
     </thead>
     <tbody>
@@ -30,27 +52,27 @@
     <script>
         i += 1;
     </script>
-        <tr>
-        <th scope="row">
+        <tr class="m-0 p-0">
+        <th scope="row" class="text-center">
         <script>
             document.write(i);
         </script>
         </th>
-        <td>{{team.name}}</td>
-        <td>{{team.matchcount}}</td>
-        <td>{{team.point}}</td>
-        <td>{{team.win}}</td>
-        <td>{{team.draw}}</td>
-        <td>{{team.lose}}</td>
-        <td>{{team.gf}}</td>
-        <td>{{team.ga}}</td>
-        <td>{{team.gd}}</td>
+        <td class="text-center">{{team.name}}</td>
+        <td class="text-center">{{team.matchcount}}</td>
+        <td class="text-center">{{team.point}}</td>
+        <td class="text-center">{{team.win}}</td>
+        <td class="text-center">{{team.draw}}</td>
+        <td class="text-center">{{team.lose}}</td>
+        <td class="text-center">{{team.gf}}</td>
+        <td class="text-center">{{team.ga}}</td>
+        <td class="text-center">{{team.gd}}</td>
         </tr>
     {% endfor %}
     
     </tbody>
 </table>
 </div>
-
+</div>
 
 {% endblock %}

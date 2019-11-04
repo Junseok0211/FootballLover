@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
-    <title>Football Network System</title>
+    <title>Football Lover</title>
     
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/blog/">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -308,6 +308,62 @@ if(obj == "서울특별시") {
 }
 </script>
 
+<script language="javascript" type="text/javascript">
+  var today = new Date(); // 오늘 날짜//지신의 컴퓨터를 기준으로
+  //today 에 Date객체를 넣어줌 //ex)5일  
+  function prevCalendar() {
+   
+   
+   today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+   buildCalendar(); // 현재 달 
+  }
+   
+  function nextCalendar() {
+   
+   
+   today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+   buildCalendar();
+  }
+   
+  function buildCalendar() {// 현재 달력
+   var nMonth = new Date(today.getFullYear(), today.getMonth(), 1);  // 이번 달의 첫째 날
+   var lastDate = new Date(today.getFullYear(), today.getMonth()+1, 0); // 이번 달의 마지막 날
+   var tblCalendar = document.getElementById("calendar");     // 테이블 달력을 만들 테이블
+   var tblCalendarYM = document.getElementById("calendarYM");    // yyyy년 m월 출력할 곳
+   var now = today.getDate();
+   tblCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";  // yyyy년 m월 출력
+  // 기존 테이블에 뿌려진 줄, 칸 삭제
+   
+   
+   while (tblCalendar.rows.length > 2) {
+    tblCalendar.deleteRow(tblCalendar.rows.length - 1);
+   }
+   var row = null;
+   row = tblCalendar.insertRow();
+   var cnt = 0;
+  // 1일이 시작되는 칸을 맞추어 줌
+   for (i=0; i<nMonth.getDay(); i++) {
+    cell = row.insertCell();
+    cnt = cnt + 1;
+   }
+   
+   for (i=1; i<=lastDate.getDate(); i++) { 
+    cell = row.insertCell();
+    cell.innerHTML = i;
+    if(i == now){
+      cell.bgColor = "Yellow";
+    }
+    cnt = cnt + 1;
+    if (cnt%7 == 0)// 1주일이 7일 이므로
+     row = calendar.insertRow();// 줄 추가
+   }
+   
+  }
+   
+  </script>
+
+
+
 
 
     <style>
@@ -417,250 +473,560 @@ if(obj == "서울특별시") {
         margin-left:5px;
       }
       }
-    </style>
-    <!-- Custom styles for this template -->
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
-    <!-- Custom styles for this template -->
-    <link href="blog.css" rel="stylesheet">
-  </head>
+
+.nav-link:hover{
+  border-bottom: brown solid 2px;
+}
+.nav-link{
+  font-size:25px;
+  font-family: 'Nanum Pen Script';
+  margin-right: 2em;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.a{
+  text-decoration: none;
+  font-family: 'Nanum Gothic';
+}
+.information{
+  padding:4em;
+  padding-bottom: 5%;
+  background-image: linear-gradient(72deg, #1e3c72, #2a5298);
+  /* background-image: linear-gradient(72deg, #457fca, #5691c8); */
+}
+.footer{
+  background-color: #23262E;
+  margin:0;
+  padding: 3%;
+  color: #f9f9f9;
+  font-family: 'Noto Sans KR';
+}
+.schedule{
+  border-top:3%;
+  background-image: linear-gradient(72deg, #ED213A, #93291E);
+  padding:40px;
+
+}
+footer{
+  margin:0;
+}
+#calendar td {
+ width: 60px;
+ height: 60px;
+ text-align: center;
+ font-size: 20px;
+ font-family: 'Noto Sans KR';
+ border-radius:8px;
+}
+#calendar{
+  background-color:white;
+  border-radius:8px;
+}
+.aboveFooter{
+  background-image:url("{% static 'aboveFooter.png' %}");
+  background-size: 100% 100%;
+  height: 300px;
+  color:white;
+  
+}
+.futsalDay{
+  background-color:#EAECF0; 
+  padding: 5%; 
+  height: 100%; 
+  width:100%;
+  border-radius: 8px;
+}
+.personalMatch td{
+  text-align: left;
+}
+.personalMatching{
+  background-image: url("{% static 'personalMatching.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.between{
+  /* background-image: linear-gradient(72deg, #ED213A, #93291E); */
+  background-color: #CD1F33;
+  margin-bottom:20px;
+}
+.between span{
+  height:50px;
+  font-family: 'Nanum Gothic';
+  vertical-align: middle;
+  font-size: 20px;
+  color:white;
+  font-weight: bold;
+  border-right:darkgray 2px solid;
+  border-left:darkgray 2px solid;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.new:hover{
+  border-bottom: 2px solid blue;
+  background-color: brown;
+}
+label{
+  font-family: 'Jua';
+  text-align: center;
+  font-size:20px;
+}
+.teamMatching{
+  background-image: url("{% static 'teamMatching.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.recruiting{
+  background-image: url("{% static 'recruiting.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.league{
+  background-image: url("{% static 'league.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.team{
+  background-image: url("{% static 'team.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+#changeCaptain{
+  display:none;
+}
+.captain > #changeCaptain{
+  display:block;
+}
+.rank{
+  background-image: url("{% static 'rank.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.decidedMatch{
+  background-image: url("{% static 'decidedMatch.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.result{
+  background-image: url("{% static 'result.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.myPage{
+  background-image: linear-gradient(72deg, #ADA996, #F2F2F2, #DBDBDB, #EAEAEA);
+  margin-top:0px;
+}
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="blog.css" rel="stylesheet">
+</head>
 
   <body>
-  <div class="container">
-  <header class="blog-header py-3">
-    <div class="row flex-nowrap justify-content-between align-items-center">
-      <div class="col-4 pt-1">
-        <a class="text-muted" href="{% url 'register' %}">회원가입</a>
-      </div>
-      <div class="col-4 text-center">
-        <a class="blog-header-logo text-dark" href="{% url 'home' %}}">Football Network Service</a>
-      </div>
-      <div class="col-4 d-flex justify-content-end align-items-center">
-        <a class="text-muted" href="#">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
-        </a>
+<!-- nav 바 시작 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <a href="{% url 'home' %}"><img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-5" width="170px" class="mr-4"></a>
+    <div class="text-muted mr-md-5 d-block d-md-none">
+      {% if request.session.name %}
+      <div class="dropdown">
+          <i width="30px" height = "30px"
+          class="btn dropdown-toggle far fa-bell" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i> 
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div class = "dropdown-item">
+            알림
+            <button><a href="#" class="alarm" onclick="return checkAllNotification()">모두 읽은 상태로 표시</a></button>
+            <hr>
+          </div>
+          {% if not notification.exists  %}
+          <p class = "dropdown-item">알람이 없습니다.</p>
+          {% else %}
+          {% for alarm in notification.all %}
+          {% if alarm.creator != fnsuser %}
+            {% if alarm.userCheck %}
+              {% if alarm.notification_type == "prComment" %}
+              <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "teamComment" %}
+              <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "recruitingComment" %}
+              <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "leagueComment" %}
+              <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalApply" %}
+              <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamMatchingApply" %}
+              <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingApply" %}
+              <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "recruitingAccepted" %}
+              <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leaguePersonalApply" %}
+              <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leagueTeamApply" %}
+              <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "joinTeam" %}
+              <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamAccepted" %}
+              <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalReply" %}
+              <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamReply" %}
+              <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingReply" %}
+              <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "leagueReply" %}
+              <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingDenied" %}
+              <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamApplicationDenied" %}
+              <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "	suggestTeamMatching" %}
+              <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% endif %}
+            {% else %}
+              {% if alarm.notification_type == "prComment" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "teamComment" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "recruitingComment" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "leagueComment" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalApply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamMatchingApply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingApply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "recruitingAccepted" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leaguePersonalApply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leagueTeamApply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "joinTeam" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamAccepted" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalReply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamReply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingReply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "leagueReply" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingDenied" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamApplicationDenied" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "suggestTeamMatching" %}
+              <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% endif %}
+            {% endif %}
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+    {% if countNotification != 0 %}
+    <h>{{countNotification}}</h>
+    {% endif %}
+    <a href="{% url 'logout' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그아웃</a> |
+    <a href="{% url 'myPage' fnsuser.id %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">마이페이지</a>
+  {% else %}
+    <a href="{% url 'login' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그인</a> |
+    <a href="{% url 'register' %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">회원가입</a>
+    {% endif %}
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">FNS 소개<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'personal' %}">개인매칭</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'teamMatching' %}" tabindex="-1" aria-disabled="true">팀매칭</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'recruiting' %}" tabindex="-1" aria-disabled="true">용병모집</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'league' %}" tabindex="-1" aria-disabled="true">밀어내기</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'team' %}" tabindex="-1" aria-disabled="true">팀 목록</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'individualRank' %}" tabindex="-1" aria-disabled="true">순위</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">기타</a>
+          <div class="dropdown-content">
+            <a class="nav-link" href="{% url 'decidedMatch' %}" tabindex="-1" aria-disabled="true">일정보기</a>
+            <a class="nav-link" href="{% url 'result' %}" tabindex="-1" aria-disabled="true">결과보기</a>
+            <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">문의하기</a>
+          </div>
+        </li>
+        
+      </ul>
+      <div class="text-muted mr-md-5 d-none d-md-block">
         {% if request.session.name %}
-        
-        
-        <div class="dropdown">
-            <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown button
-            </button> -->
-            {% load static %}
-            <!-- <img src = "{% static 'checkedAlarm.png' %}" width="30px" height = "30px"
-            class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
-              <i width="30px" height = "30px"
-              class="btn dropdown-toggle far fa-bell" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i> 
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div class = "dropdown-item">
-                알림
-                <button><a href="#" class="alarm" onclick="return checkAllNotification()">모두 읽은 상태로 표시</a></button>
-                <hr>
-              </div>
-              {% if not notification.exists  %}
-              <p class = "dropdown-item">알람이 없습니다.</p>
-              {% else %}
-              {% for alarm in notification.all %}
-              {% if alarm.creator != fnsuser %}
-                {% if alarm.userCheck %}
-                  {% if alarm.notification_type == "prComment" %}
-                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "teamComment" %}
-                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "recruitingComment" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "leagueComment" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalApply" %}
-                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamMatchingApply" %}
-                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingApply" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "recruitingAccepted" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "leaguePersonalApply" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "leagueTeamApply" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "joinTeam" %}
-                  <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamAccepted" %}
-                  <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalReply" %}
-                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamReply" %}
-                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingReply" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "leagueReply" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% endif %}
+            <div class="dropdown">
+              <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown button
+              </button> -->
+              <!-- <img src = "{% static 'checkedAlarm.png' %}" width="30px" height = "30px"
+              class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
+                <i width="30px" height = "30px"
+                class="btn dropdown-toggle far fa-bell" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i> 
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class = "dropdown-item">
+                  알림
+                  <button><a href="#" class="alarm" onclick="return checkAllNotification()">모두 읽은 상태로 표시</a></button>
+                  <hr>
+                </div>
+                {% if not notification.exists  %}
+                <p class = "dropdown-item">알람이 없습니다.</p>
                 {% else %}
-                  {% if alarm.notification_type == "prComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+                {% for alarm in notification.all %}
+                {% if alarm.creator != fnsuser %}
+                  {% if alarm.userCheck %}
+                    {% if alarm.notification_type == "prComment" %}
+                    <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "teamComment" %}
+                    <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
                   
-                  {% elif alarm.notification_type == "teamComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "recruitingComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "leagueComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamMatchingApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                    {% elif alarm.notification_type == "recruitingComment" %}
+                    <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
                   
-                  {% elif alarm.notification_type == "recruitingAccepted" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                    {% elif alarm.notification_type == "leagueComment" %}
+                    <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "personalApply" %}
+                    <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "teamMatchingApply" %}
+                    <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "recruitingApply" %}
+                    <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "recruitingAccepted" %}
+                    <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "leaguePersonalApply" %}
+                    <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "leagueTeamApply" %}
+                    <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "joinTeam" %}
+                    <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "teamAccepted" %}
+                    <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "personalReply" %}
+                    <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "teamReply" %}
+                    <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "recruitingReply" %}
+                    <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "leagueReply" %}
+                    <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+  
+                    {% endif %}
+                  {% else %}
+                    {% if alarm.notification_type == "prComment" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "teamComment" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
                   
-                  {% elif alarm.notification_type == "leaguePersonalApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                    {% elif alarm.notification_type == "recruitingComment" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
                   
-                  {% elif alarm.notification_type == "leagueTeamApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "joinTeam" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamAccepted" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "leagueReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
+                    {% elif alarm.notification_type == "leagueComment" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "personalApply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "teamMatchingApply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "recruitingApply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "recruitingAccepted" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "leaguePersonalApply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "leagueTeamApply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                    
+                    {% elif alarm.notification_type == "joinTeam" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "teamAccepted" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "personalReply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "teamReply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "recruitingReply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+  
+                    {% elif alarm.notification_type == "leagueReply" %}
+                    <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+  
+                    {% endif %}
                   {% endif %}
                 {% endif %}
-              {% endif %}
-              {% endfor %}
-              {% endif %}
-            </div>
-        </div>
-        {% if countNotification != 0 %}
-        <h>{{countNotification}}</h>
-        {% endif %}
-        <a href="{% url 'myPage' fnsuser.id %}">
-        <button class="btn btn-sm btn-outline-secondary" name = "name"><strong>{{request.session.name}}</strong>님 환영합니다.</button>
-        </a>
-        <a class="btn btn-sm btn-outline-secondary" name = "logout" href="{% url 'logout' %}">로그아웃</a>
+                {% endfor %}
+                {% endif %}
+              </div>
+          </div>
+          {% if countNotification != 0 %}
+          <h>{{countNotification}}</h>
+          {% endif %}
+          <a href="{% url 'logout' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그아웃</a> |
+          <a href="{% url 'myPage' fnsuser.id %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">마이페이지</a>
         {% else %}
-        <a class="btn btn-sm btn-outline-secondary" name = "login" href="{% url 'login' %}">로그인</a>
-        {% endif %}
+          <a href="{% url 'login' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그인</a> |
+          <a href="{% url 'register' %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">회원가입</a>
+          {% endif %}
+      </div>  
+    <div id="ex1">
+        <i class="fa fa-envelope fa-5x fa-border icon-grey badge"></i>
+    </div>
+
+  </div>
+  
+</nav>
+<!-- nav 바 끝 -->
+
+{% block contents %}
+{% endblock %}
+<!-- aboveFooter -->
+<div class="aboveFooter pt-md-5">
+    <!-- <img src="{% static 'aboveFooter.png' %}" class="img-fluid" style="display:fixed;"> -->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-12">
+          <a href="{% url 'home' %}"><img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4 float-center float-md-right" width="170px"></a>
+        </div>
+    
+        <div class="col-md-9 col-12">
+          <h3 class=" mt-3" style="font-family: 'Do Hyeon';">원하는 시간에 원하는 장소에서 축구할 수 있도록 도와주는 '풋볼러버'</h3>
+          <p class="align-middle" style="font-family: 'Noto Sans KR';">풋볼러버는 'Play Football Make Peace'라는 비전으로<br>
+            천안시 '하비 프로젝트'의 일환으로 2019년 11월에 출시되었습니다. </p>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- aboveFooter 끝 -->
+<!-- 풋터 -->
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-12">
+          <a href="{% url 'home' %}"><img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px"></a>
+      </div>
+      <div class="col-md-9 col-12">
+          <p>문의 | didwnstjr213@naver.com</p>
+          <p>[우:55029] 전주시 덕진구 아중로 180 | Tel 010-5050-9042</p>
       </div>
     </div>
   </div>
-  </header>
-
-  <hr>
-  <div class="nav-scroller py-1 mb-2">
-    <nav class="nav d-flex justify-content-between">
-      
-      <div class="container">
-        <a class="p-2 text-muted" href="{% url 'home' %}">Home</a>
-        <a class="p-2 text-muted" href="{% url 'about' %}">About</a>
-        <a class="p-2 text-muted" href="{% url 'personal' %}">개인매칭</a>
-        <a class="p-2 text-muted" href="{% url 'teamMatching' %}">팀매칭</a>
-        <a class="p-2 text-muted" href="{% url 'recruiting' %}">용병모집</a>
-        <a class="p-2 text-muted" href="{% url 'league' %}">밀어내기</a>
-        <a class="p-2 text-muted" href="{% url 'team' %}">팀 목록</a>
-        <a class="p-2 text-muted" href="{% url 'individualRank' %}">순위</a>
-        <a class="p-2 text-muted" href="{% url 'decidedMatch' %}">일정</a>
-        <a class="p-2 text-muted" href="{% url 'result' %}">결과보기</a>
-        <a class="p-2 text-muted" href="{% url 'test2' %}">결과입력</a>
-        <a class="p-2 text-muted" href="#">문의하기</a>
-      </div>
-    </nav>
-  </div>
-  <hr>
+    
   
-
-  <div class="container">
-{% block contents %}
-{% endblock %}
-</div>
-
-
-
-<main role="main" class="container">
-  <div class="row">
-    <div class="col-md-8 blog-main">
-      <h3 class="pb-4 mb-4 font-italic border-bottom">
-        From the Firehose
-      </h3>
-
-      <div class="blog-post">
-        <h2 class="blog-post-title">Sample blog post</h2>
-        <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
-
-        <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
-        <hr>
-        
-      </div><!-- /.blog-post -->
-
-     
-     
-
-      <nav class="blog-pagination">
-        <a class="btn btn-outline-primary" href="#">Older</a>
-        <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-      </nav>
-
-    </div><!-- /.blog-main -->
-
-    <aside class="col-md-4 blog-sidebar">
-      <div class="p-4 mb-3 bg-light rounded">
-        <h4 class="font-italic">About</h4>
-        <p class="mb-0">Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-      </div>
-
-      <div class="p-4">
-        <h4 class="font-italic">Archives</h4>
-      
-      </div>
-
-    </aside><!-- /.blog-sidebar -->
-
-  </div><!-- /.row -->
-
-</main><!-- /.container -->
-
-<footer class="blog-footer d-flex justify-content-center">
-  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
-  <p>
-    <a href="#">Back to top</a>
-  </p>
 </footer>
 
 <script>
@@ -739,8 +1105,18 @@ function checkNotification(notification_id){
     success:function(data){
     }
   });
+  
   return true;
 }
 </script>
+
+<script language=javascript>
+    $('.carousel').carousel({
+      interval:20
+    })
+    </script>
+    <script language="javascript" type="text/javascript">
+      buildCalendar();
+    </script> 
 </body>
 </html>

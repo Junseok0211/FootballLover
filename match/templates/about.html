@@ -1,34 +1,44 @@
 {% extends 'base.html' %}
 {% block contents %}
-<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
-    <div class="col-md-6 px-0">
-        <h1 class="display-4 font-italic">남서울대 학우분들의 즐거운 풋살문화를 지원하겠습니다.</h1>
-        <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
-        <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+
+{% load staticfiles %}
+<div class="container">
+<img src="{% static 'introduction1.png' %}" class="img-fluid" alt="introduction1">
+<img src="{% static 'introduction2.png' %}" class="img-fluid" alt="introduction2">
+<img src="{% static 'introduction3.png' %}" class="img-fluid" alt="introduction3">
+<img src="{% static 'introduction4.png' %}" class="img-fluid" alt="introduction4">
+<img src="{% static 'introduction5.png' %}" class="img-fluid" alt="introduction5">
+
+<div class="jumbotron p-4 p-md-5 text-white rounded bg-dark" style="margin-bottom: 10px;">
+    <div class="col-md-12 col-12 px-0">
+        <h1 class="display-4 font-italic">개인매칭 시스템</h1>
+        <p class="lead my-3">축구는 하고 싶어도 같이 할 사람이 없을 때 인원을 모집할 수 있습니다.</p>
+        <p class="lead mb-0"><a href="{% url 'personal' %}" class="text-white font-weight-bold">개인매칭 바로가기...</a></p>
     </div>
 </div>
 
 <div class="jumbotron p-4 p-md-5 text-white rounded bg-primary" style="margin-bottom: 10px;">
-        <div class="col-md-6 px-0">
-          <h1 class="display-4 font-italic">운동하고 싶은 친구들을 구해서 같이 운동을 합니다.</h1>
-          <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
-          <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+        <div class="col-12 px-0">
+          <h1 class="display-4 font-italic">팀매칭</h1>
+          <p class="lead my-3">경기를 하고 싶은데 상대팀이 없을 때 상대팀을 구할 수 있습니다.</p>
+          <p class="lead mb-0"><a href="{% url 'teamMatching' %}" class="text-white font-weight-bold">팀매칭 바로가기</a></p>
         </div>
       </div>
 
 <div class="jumbotron p-4 p-md-5 text-white rounded bg-success" style="margin-bottom: 10px;">
-        <div class="col-md-6 px-0">
-          <h1 class="display-4 font-italic">시합하고 싶은 팀을 구합니다.</h1>
-          <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
-          <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+        <div class="col-12 px-0">
+          <h1 class="display-4 font-italic">용병모집</h1>
+          <p class="lead my-3">축구나 풋살을 하고 싶은데 용병이 필요할 때 용병을 모집할 수 있습니다.</p>
+          <p class="lead mb-0"><a href="{% url 'recruiting' %}" class="text-white font-weight-bold">용병모집 바로가기...</a></p>
         </div>
     </div>
     
     <div class="jumbotron p-4 p-md-5 text-white rounded bg-warning" style="margin-bottom: 10px;">
-            <div class="col-md-6 px-0">
-                <h1 class="display-4 font-italic">같이 할 용병을 구합니다!!</h1>
-                <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
-                <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">Continue reading...</a></p>
+            <div class="col-12 px-0">
+                <h1 class="display-4 font-italic">밀어내기</h1>
+                <p class="lead my-3">매주 수요일 5시부터 '남서울 풋살데이'라는 이름으로 밀어내기가 진행이 됩니다.</p>
+                <p class="lead mb-0"><a href="{% url 'league' %}" class="text-white font-weight-bold">남서울 풋살데이 바로가기...</a></p>
             </div>
         </div>
+      </div>
 {% endblock %}

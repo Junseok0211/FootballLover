@@ -128,6 +128,8 @@ class PersonalReply(models.Model):
         
 
 class TeamMatching(models.Model):
+    # false 팀에서 매칭신청을 한 것 true 팀매칭 창에서 한 것.
+    is_applied = models.BooleanField(default=False)
     user = models.ForeignKey(FNSUser, on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=80, null=False)
     content = models.TextField(null = False)
@@ -136,7 +138,7 @@ class TeamMatching(models.Model):
     time_to = models.DateTimeField()
 
     location = models.CharField(max_length=50, null=False)
-    rank = models.CharField(max_length = 20)
+    rank = models.CharField(max_length = 20, null = True)
 
     myteam = models.ForeignKey(Team, related_name="myteam", on_delete=models.SET_NULL, null=True)
     vs_team = models.ForeignKey(Team, related_name = "vs_team", on_delete=models.SET_NULL, null=True)
@@ -162,7 +164,7 @@ class TmAppliedTeam(models.Model):
     match = models.ForeignKey(TeamMatching, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.team
+        return self.team.name
 
 class TMComment(models.Model):
     user = models.ForeignKey(FNSUser, on_delete=models.CASCADE)

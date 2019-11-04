@@ -12,7 +12,31 @@ alert("{{ error }}")
 alert("{{ message }}")
 </script>
 {% endif %}
+{% load staticfiles %}
+<div class="result">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">경기결과</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">
+        진행된 경기결과를 볼 수 있습니다. <br>결과를 입력해주세요!
+      </p>  
+    </div>
+  </div>
+</div>
 
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 경기결과</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
 <table class="table">
   <script type="text/javascript">
     var pryear = null;
@@ -20,6 +44,7 @@ alert("{{ message }}")
     var prdate = null;
     var year, month, date;
   </script>
+  {% if result %}
   {% for match in result %}
   <thead>
     <tr class="row">
@@ -85,6 +110,25 @@ alert("{{ message }}")
       </script>
       {% endautoescape %}
     {% endfor %}
+    {% else %}
+    <tr class="row">
+      <th scope="col" class="bg-info col-12 text-white" colspan="7">
+        <script language="javascript" type="text/javascript">
+          var today = new Date(); 
+            var year = today.getFullYear();
+            var month = today.getMonth() +1;
+            var date = today.getDate();
+            var day = String(year) +'년 ' + String(month) + '월 ' + String(date) + '일';
+            document.write(day);
+          </script>
+      </th>
+    </tr>
+    <tr class="bg-light row">
+      <th class="col-12 pl-3" colspan="7" style="text-align: left; vertical-align: middle;">
+      입력된 결과가 없습니다.
+      </th>
+    </tr>
+    {% endif %}
 </table>
-
+</div>
 {% endblock %}

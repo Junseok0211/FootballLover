@@ -14,101 +14,135 @@ alert("{{ message }}");
 alert("{{ error }}");
 </script>
 {% endif %}
-
-<div class="row no-gutters border rounded overflow-hidden flex-md-row-reverse mb-4 shadow-sm h-md-250 position-relative">
-<table class="table table-bordered" style="margin:0px;">
-        <thead>
-          <tr>
-            <th  colspan="5">
-                <strong class="d-inline-block mb-2 text-info">남서울대 밀어내기</strong>
-                <h3 class="mb-0" style="margin-top: 0.5rem">[남대 풋살데이]{{league.title}}</h3>
-            </th>
-            <th colspan="2">참여인원</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="5">
-                <h2>모집정보</h2>
-                <table class="table table-borderless">
-                        <tbody>
-                          <tr>
-                            <th scope="row">시간</th>
-                            <td style="text-align: left;">
-                                {{league.time_from}}      ~
-                            {{league.time_to}}</td>
-                          </tr>
-                          <tr style="text-align: left;">
-                            <th scope="row">장소</th>
-                            <td colspan="3" style="text-align: left;">
-                                <span>{{league.location}}</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-            </td>
-            <td colspan="2">
-                <div style="display: flex; flex-direction: column; justify-content:center;">
-                    {% if is_personal %}
-                    <a href="{% url 'personal_cancel' league.id %}">
-                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">개인참가취소</button>
-                    </a>
-                    {% else %}
-                    <a href="{% url 'personal_apply' league.id %}">
-                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">개인참가신청</button>
-                    </a>
-                    {% endif %}
-                    {% if is_team %}
-                    <a href="{% url 'team_cancel' league.id %}">
-                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">팀참가취소</button>
-                    </a>
-                    {% else %}
-                    <a href="{% url 'team_apply' league.id %}">
-                    <button style="margin: 10px; margin-top: 20%;" type="button" class="btn btn-primary">팀참가신청</button>
-                    </a>
-                    {% endif %}
-                </div>
-                
-           
-            </td>
-          </tr>
-         <tr>
-             <td colspan="7">
-                <strong class="d-inline-block mb-2 text-info">참가팀</strong><br>
-                {% for team in attended_teams %}
-                <button class="btn btn-dark">{{team.team}}</button>
-                {% endfor %}
-             </td>
-         </tr>
-         <tr>
-            <td colspan="7">
-               <strong class="d-inline-block mb-2 text-info">참가인원({{ attended_players.count }}명)</strong><br>
-               {% for player in attended_players %}
-               <button class="btn btn-dark">{{player.player}}</button>
-               {% endfor %}
-            </td>
-        </tr>
-         <tr>
-            <td colspan="7">
-                <strong class="d-inline-block mb-2 text-info">내용</strong>
-                <p>{{recruiting.content}}</p>
-            </td>
-        </tr>
-        </tbody>
-      </table>
-      <div class="col-4 d-flex flex-row-reverse" style="margin:10px;">
-        <div class="p-2">
-            <a href="{% url 'league' %}"><button type="button" class="btn btn-primary">목록으로</button></a>
-            {% if is_writer %}
-            <a href=""><button type="button" class="btn btn-primary">수정하기</button></a>
-            <a href=""><button type="button" class="btn btn-primary">삭제하기</button></a>
-            {% endif %}
-        </div>
-      </div>
-      
+{% load staticfiles %}
+<div class="league">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">남서울 풋살데이</span>
     </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">매주 수요일 5시 남서울대 다목적구장에서 풋살 밀어내기가 진행됩니다.</p>  
+    </div>
+  </div>
+</div>
 
-
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 밀어내기</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
+    <div class="row border rounded overflow-hidden shadow-sm p-4">
+        <div class="col-md-7 col-12">
+          <table class="table">
+              <thead>
+                <tr class="row">
+                  <th colspan="2" class="col-12">
+                      <strong class="d-inline-block mb-2 text-info">남서울 풋살데이</strong>
+                      <h1 style="margin-top: 0.5rem"><strong>{{league.title}}</strong></h1>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row">
+                  <td colspan="2" class = "col-12">
+                    <h2 class="bg-info" style="text-align:center; padding:10px; font-family: 'Nanum Gothic'; font-weight:bold;">모집정보</h2>
+                  </td>
+                </tr>
+                <tr class="row">
+                  <th scope="row" class="col-4">시간</th>
+                  <td style="text-align: left;" class="col-8">
+                    {% autoescape on %}
+                      {{league.time_from|date:"Y년 m월 d일 H:i"}}      -
+                  {{league.time_to|date:"H:i"}}</td>
+                  {% endautoescape %}
+                </tr>
+                <tr style="text-align: left;" class="row">
+                  <th scope="row" class="col-4">장소</th>
+                  <td colspan="3" class="col-8" style="text-align: left;">
+                      <span>{{league.location}}</span>
+                  </td>
+                </tr>
+                <tr class="row">
+                    <td class="col-12">
+                        <strong class="d-inline-block mb-2">내용</strong>
+                        <p class="ml-0 pl-0 pt-2" style="border-top: 1px solid rgb(214, 214, 214);">{{league.content}}</p>
+                    </td>
+                </tr>
+               
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-5 col-12 ml-0" style="border-left:silver 2px solid;">
+              <table class="table">
+                <thead>
+                  <tr class="row">
+                    <th class="col-12">
+                        <strong class="d-inline-block mb-2 text-info">참가 신청하기</strong>
+                        <div>
+                            {% if is_personal %}
+                            <a href="{% url 'personal_cancel' league.id %}">
+                            <button type="button" class="btn btn-info">개인참가취소</button>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'personal_apply' league.id %}">
+                            <button type="button" class="btn btn-info">개인참가신청</button>
+                            </a>
+                            {% endif %}
+                            {% if is_team %}
+                            <a href="{% url 'team_cancel' league.id %}">
+                            <button type="button" class="btn btn-info">팀참가취소</button>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'team_apply' league.id %}">
+                            <button type="button" class="btn btn-info">팀참가신청</button>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr class="row">
+                        <td class="col-12">
+                            <strong class="d-inline-block mb-2 text-info">참가팀</strong><br>
+                            {% if attended_teams %}
+                            {% for team in attended_teams %}
+                            <button class="btn btn-dark">{{team.team}}</button>
+                            {% endfor %}
+                           {% else %}
+                           아직 참가신청한 팀이 없습니다.
+                           {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="row">
+                       <td class="col-12">
+                          <strong class="d-inline-block mb-2 text-info">참가인원({{ attended_players.count }}명)</strong><br>
+                            {% if attended_players %}
+                            {% for player in attended_players %}
+                            <button class="btn btn-dark">{{player.player}}</button>
+                            {% endfor %}
+                          {% else %}
+                           아직 참가신청한 인원이 없습니다.
+                          {% endif %}
+                       </td>
+                   </tr>
+                    
+                </tbody>
+                </table>
+                <hr>
+                <div class="align-items-end">
+                  <a href="{% url 'league' %}"><button type="button" class="btn btn-info col-3">목록으로</button></a>
+                  <a href="{% url 'league_editForm' league.id %}"><button onclick="check()" type="button" class="btn btn-info col-3">수정하기</button></a>
+                  <a href="{% url 'league_delete' league.id %}"><button onclick="return deletePC()" type="button" class="btn btn-info col-3">삭제하기</button></a>
+                </div>
+          </div>
+        </div> 
 <!-- 댓글 등록하기 -->
 <hr>
 <h4>댓글 {{league.total_comment}}개</h4>
@@ -319,7 +353,7 @@ alert("{{ error }}");
   {% endfor %}
 </div>
 
-
+</div>
 <script type="text/javascript">
   function deletePC(){
     var returnValue = confirm('삭제하시겠습니까?');

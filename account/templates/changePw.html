@@ -1,0 +1,210 @@
+  
+<html>
+        <head>
+                <meta charset="utf-8">
+                <title>FNS Login</title>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="utf-8"></script>
+                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+                <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                <!-- Bootstrap core CSS -->
+                <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            
+                <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+                <link rel="stylesheet" href="/css/jquery-ui.min.css">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+                <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+                <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+              
+                <!-- Google Font -->
+                <link href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap" rel="stylesheet">
+        <style>
+                *{
+                        margin:0;
+                        padding:0;
+                        text-decoration: none;
+                        box-sizing:border-box;
+                }  
+                p{
+                    font-family: 'Nanum Gothic';
+                }
+                body{
+                        min-height:100vh;
+                        background-image: linear-gradient(120deg, #3498db, #8e44ad);
+                }
+                .login-form{
+                        width:360px;
+                        background: #f1f1f1;
+                        height: 580px;
+                        padding: 80px 40px;
+                        border-radius: 10px;
+                        position:absolute;
+                        left:50%;
+                        top: 50%;
+                        transform:translate(-50%,-50%);
+                }
+                .login-form h1{
+                        text-align: center;
+                        margin-bottom: 60px;
+                }
+    
+                .txtb{
+                        border-bottom: 2px solid #adadad; 
+                        position: relative;
+                        margin: 30px 0;
+                }
+    
+                .txtb input{
+                        font-size:15px;
+                        color:#333;
+                        border:none;
+                        width: 100%;
+                        outline:none;
+                        background:none;
+                        padding:0 5px;
+                        height:40px;
+                }
+    
+                .txtb span::before{
+                        content:attr(data-placeholder);
+                        position:absolute;
+                        top:50%;
+                        left: 5px;
+                        color: #adadad;
+                        transform:translateY(-50%);
+                        z-index:-1;
+                        transition:.5s;
+                }
+    
+                .txtb span::after{
+                        content: '';
+                        position:absolute;
+                        width:100%;
+                        height:2px;
+                        transition: .5s;
+                }
+    
+                .focus + span::after{
+                        top:-5px;
+    
+                }
+                .focus + span::after{
+                        width:100%;
+                }
+    
+                .logbtn{
+                        display:block;
+                        width:100%;
+                        height:50px;
+                        border:none; 
+                        background: linear-gradient(120deg, #3498db, #8e44ad, #3498db);
+                        background-size:200%;
+                        color:#fff;
+                        outline:none;
+                        cursor: pointer;
+                        transition: .5s;
+                }
+    
+                .logbtn:hover{
+                        background-position:right;
+                }
+    
+                .bottom-text{
+                        margin-top:60px;
+                        text-align: center;
+                        font-size:13px;
+                }
+        </style>
+        </head>
+        <body>
+            {% if errormessage %}
+            <script type="text/javascript">
+                    alert("{{errormessage}}");
+            </script>
+            {% endif %}
+
+<script language="javascript">
+
+function check(re, what, message) {
+       if(re.test(what.value)) {
+           return true;
+       }
+       alert(message);
+       what.value = "";
+       what.focus();
+       return false;
+   }
+function formCheck(frm){
+    var password = document.getElementById('password');
+    var re_password = document.getElementById('re_password');
+    var pwCheck = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; // 비밀번호 검사할 정규식
+
+    if(frm.password.value == ""){
+            alert("비밀번호를 입력해주세요");
+            frm.password.focus();
+            return false;
+    }
+    if(!(check(pwCheck, password, "비밀번호는 영문, 숫자, 특수문자를 이용해 8~15자로 만들어주세요."))){
+        return false;
+    }
+    if(frm.re_password.value == ""){
+        alert("비밀번호 확인을 입력해주세요");
+        frm.re_password.focus();
+        return false;
+    }
+    if (frm.re_password.value != frm.password.value){
+        alert("비밀번호와 비밀번호 확인이 다릅니다.");
+        frm.re_password.focus();
+        return false;
+    }
+}
+</script>
+                <form action="{% url 'finalPw' %}" method="POST" class="login-form" onsubmit="return formCheck(this)">
+                                {% csrf_token %}
+                <h1 style="font-family: 'Do Hyeon';">비밀번호 변경</h1>
+                <input type="hidden" name = "username" value="{{username}}">
+                <input type="hidden" name = "phone_number" value="{{phone_number}}">
+                <input type="hidden" name = "auth_number" value="{{auth_number}}">
+    
+                <div class = "txtb">
+                        <input type="password" id="password" name="password" placeholder="변경할 비밀번호를 입력해주세요.">
+                        <span></span>
+                </div>
+    
+                <div class = "txtb">
+                        <input type="password" id="re_password" name="re_password" placeholder="비밀번호를 한 번 더 입력해주세요.">
+                        <span></span>
+                </div>
+                    {% if error %}
+                    <p style="color: red; font-family: 'Do Hyeon'; text-align: center;">{{error}}</p>
+                    {% endif %}     
+                <input type="submit" class="logbtn" value="비밀번호 변경">
+                
+                <div class="bottom-text">
+                    <p>
+                            <a href="{% url 'findId' %}">아이디 찾기</a>  |
+                            <a href="{% url 'findPw' %}">비밀번호 찾기</a>
+                    </p>
+                    <p style="margin-top:10px; margin-bottom:10px;"> 회원이 아니신가요? <a href="{% url 'register' %}">회원가입</a></p>
+                    <p><a href="{% url 'home' %}">돌아가기</a></p>
+                       
+                </div>
+                </form>
+<script type="text/javascript">
+$(".txtb input").on("focus", function(){
+        $(this).addClass("focus"); 
+});
+
+$(".txtb input").on("blur", function(){
+        if($(this).val()=="")
+        $(this).removeClass("focus"); 
+});
+
+
+</script>
+        </body>
+    </html>
+    
+    
+    

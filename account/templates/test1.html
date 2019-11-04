@@ -14,3 +14,160 @@
     
 </body>
 </html>
+
+<!-- <header class="blog-header py-3">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+      <div class="col-4 pt-1">
+        <a class="text-muted" href="{% url 'register' %}">회원가입</a>
+      </div>
+      <div class="col-4 text-center">
+        <a class="blog-header-logo text-dark" href="{% url 'home' %}}">Football Network Service</a>
+      </div>
+      <div class="col-4 d-flex justify-content-end align-items-center">
+        <a class="text-muted" href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+        </a>
+        {% if request.session.name %}
+        
+        
+        <div class="dropdown">
+            <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown button
+            </button> -->
+            {% load static %}
+            <!-- <img src = "{% static 'checkedAlarm.png' %}" width="30px" height = "30px"
+            class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
+              <i width="30px" height = "30px"
+              class="btn dropdown-toggle far fa-bell" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i> 
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <div class = "dropdown-item">
+                알림
+                <button><a href="#" class="alarm" onclick="return checkAllNotification()">모두 읽은 상태로 표시</a></button>
+                <hr>
+              </div>
+              {% if not notification.exists  %}
+              <p class = "dropdown-item">알람이 없습니다.</p>
+              {% else %}
+              {% for alarm in notification.all %}
+              {% if alarm.creator != fnsuser %}
+                {% if alarm.userCheck %}
+                  {% if alarm.notification_type == "prComment" %}
+                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "teamComment" %}
+                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+                
+                  {% elif alarm.notification_type == "recruitingComment" %}
+                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                
+                  {% elif alarm.notification_type == "leagueComment" %}
+                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "personalApply" %}
+                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "teamMatchingApply" %}
+                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "recruitingApply" %}
+                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "recruitingAccepted" %}
+                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "leaguePersonalApply" %}
+                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "leagueTeamApply" %}
+                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "joinTeam" %}
+                  <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "teamAccepted" %}
+                  <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "personalReply" %}
+                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "teamReply" %}
+                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "recruitingReply" %}
+                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "leagueReply" %}
+                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+                  {% endif %}
+                {% else %}
+                  {% if alarm.notification_type == "prComment" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "teamComment" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+                
+                  {% elif alarm.notification_type == "recruitingComment" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                
+                  {% elif alarm.notification_type == "leagueComment" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "personalApply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "teamMatchingApply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "recruitingApply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "recruitingAccepted" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "leaguePersonalApply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "leagueTeamApply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+                  
+                  {% elif alarm.notification_type == "joinTeam" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "teamAccepted" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "personalReply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "teamReply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "recruitingReply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+                  {% elif alarm.notification_type == "leagueReply" %}
+                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+            </div>
+        </div>
+        {% if countNotification != 0 %}
+        <h>{{countNotification}}</h>
+        {% endif %}
+        <a href="{% url 'myPage' fnsuser.id %}">
+        <button class="btn btn-sm btn-outline-secondary" name = "name"><strong>{{request.session.name}}</strong>님 환영합니다.</button>
+        </a>
+        <a class="btn btn-sm btn-outline-secondary" name = "logout" href="{% url 'logout' %}">로그아웃</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-secondary" name = "login" href="{% url 'login' %}">로그인</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  </header> -->

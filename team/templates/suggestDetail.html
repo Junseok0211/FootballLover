@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+{% if error %}
+<script type="text/javascript">
+alert('{{error}}');
+</script>
+{% endif %}
+{% if errormessage %}
+<script type="text/javascript">
+alert('{{errormessage}}');
+location.href = "{% url 'team' %}";
+</script>
+{% endif %}
+{% if message %}
+<script type="text/javascript">
+alert('{{message}}');
+</script>
+{% endif %}
+
+{% load staticfiles %}
+<div class="team">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀 검색</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-size: 20px;">등록되어 있는 팀을 확인하고 가입신청 혹은 매치신청을 할 수 있습니다.</p>  
+    </div>
+  </div>
+</div>
+
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > Team > 신청상세정보</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
+  <div class="row border rounded overflow-hidden shadow-sm p-4">
+    <div class="col-12">
+      <table class="table">
+          <thead>
+            <tr class="row">
+              <th colspan="2" class="col-12">
+                  <strong class="d-inline-block mb-2 text-success">팀매칭</strong>
+                  <h1 style="margin-top: 0.5rem"><strong>{{teamMatching.title}}</strong></h1>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row">
+              <td colspan="2" class = "col-12">
+                <h2 class="bg-info" style="text-align:center; padding:10px; font-family: 'Nanum Gothic'; font-weight:bold;">모집정보</h2>
+              </td>
+            </tr>
+            <tr class="row">
+                <th scope="row" class="col-4">글쓴이</th>
+                <td style="text-align: left;" class="col-8">
+                {{teamMatching.user}}    
+                </td>
+            </tr>
+            <tr class="row">
+                <th scope="row" class="col-4">매치신청팀</th>
+                <td style="text-align: left;" class="col-8">
+                {{teamMatching.myteam}}    
+                </td>
+            </tr>
+            <tr class="row">
+                <th scope="row" class="col-4">팀대표번호</th>
+                <td style="text-align: left;" class="col-8">
+                {{teamMatching.myteam.teamleader.phone_number}}    
+                </td>
+            </tr>
+            <tr class="row">
+              <th scope="row" class="col-4">시간</th>
+              <td style="text-align: left;" class="col-8">
+                {% autoescape on %}
+                  {{teamMatching.time_from|date:"Y년 m월 d일 H:i"}}      -
+              {{teamMatching.time_to|date:"H:i"}}</td>
+              {% endautoescape %}
+            </tr>
+            <tr style="text-align: left;" class="row">
+              <th scope="row" class="col-4">장소</th>
+              <td colspan="3" class="col-8" style="text-align: left;">
+                  <span>{{teamMatching.location}}</span>
+              </td>
+            </tr>
+            <tr style="text-align: left;" class="row">
+                <th scope="row" class="col-4">내용</th>
+                <td colspan="3" class="col-8" style="text-align: left;">
+                    <span>{{teamMatching.content}}</span>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+            <div class="row">
+                <div class="col-12">
+                    <a href="{% url 'detail' teamMatching.vs_team.id %}"><button type="button" class="btn btn-info float-right mr-2">목록으로</button></a>
+                    <a href="{% url 'denySuggest' teamMatching.id %}"><button type="button" class="btn btn-info float-right mr-2">매치거절</button></a>
+                    <a href="{% url 'acceptSuggest' teamMatching.id %}"><button type="button" class="btn btn-info float-right mr-2">매치수락</button></a>
+                </div>
+            </div>
+      </div>
+    </div>
+
+
+</div>
+{% endblock %}

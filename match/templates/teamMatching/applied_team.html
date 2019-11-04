@@ -12,43 +12,66 @@ alert(message);
 var i = 0;
 </script>
 
+{% load staticfiles %}
+<div class="teamMatching">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀매칭</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살의 상대팀을 구합니다.</p>  
+    </div>
+  </div>
+</div>
 
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 팀매칭 > 매치 수락하기</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
 <table class="table">
   <thead class="thead-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">팀이름</th>
-      <th scope="col">활동지역</th>
-      <th scope="col">학교</th>
-      <th scope="col">경기수</th>
-      <th scope="col">승</th>
-      <th scope="col">무</th>
-      <th scope="col">패</th>
-      <th scope="col">승점</th>
-      <th scope="col">수락여부</th>
+    <tr class="row">
+      <th class="col-1">#</th>
+      <th class="text-center col-md-2 col-4">팀이름</th>
+      <th class="text-center col-md-1 col-3">활동지역</th>
+      <th class="text-center col-md-2 col-4">학교</th>
+      <th class="text-center col-md-1 col-3">경기수</th>
+      <th class="text-center col-1">승</th>
+      <th class="text-center col-1">무</th>
+      <th class="text-center col-1">패</th>
+      <th class="text-center col-md-1 col-3">승점</th>
+      <th class="text-center col-md-1 col-3">수락여부</th>
     </tr>
   </thead>
     <tbody>
+      {% if applied_teams %}
       {% for team in applied_teams %}
-      <tr>
-        <th scope="row"><strong>
+      <tr class="row">
+        <th scope="row" class="col-1"><strong>
           <script>
             i += 1;
             document.write(i)
           </script>
           </strong></th>
-        <td> 
+        <td class="text-center col-md-2 col-4">
           <a href="{% url 'detail' team.team.id %}" style="text-decoration: none;">
           {{ team.team.name }} 
           </a>
         </td>
-        <td> {{ team.team.city }} </td>
-        <td> {{ team.team.school }} </td>
-        <td> {{ team.team.matchcount }} </td>
-        <td> {{ team.team.win }} </td>
-        <td> {{ team.team.draw }} </td>
-        <td> {{ team.team.lose }} </td>
-        <td> 
+        <td class="text-center col-md-1 col-3"> {{ team.team.city }} </td>
+        <td class="text-center col-md-2 col-4"> {{ team.team.school }} </td>
+        <td class="text-center col-md-1 col-3"> {{ team.team.matchcount }} </td>
+        <td class="text-center col-1"> {{ team.team.win }} </td>
+        <td class="text-center col-1"> {{ team.team.draw }} </td>
+        <td class="text-center col-1"> {{ team.team.lose }} </td>
+        <td class="text-center col-md-1 col-3"> 
         <script type="text/javascript">
           var win = "{{team.win}}";
           var draw = "{{player.draw}}";
@@ -59,11 +82,18 @@ var i = 0;
           document.write(point);
         </script>  
         </td>
-        <td style="padding-right: 0; margin-right: 0;">
+        <td style="padding-right: 0; margin-right: 0;" class="float-right col-md-1 col-3 pl-0 ml-0">
             <a style="margin-right: 0;" class="btn btn-dark float-right" href="{% url 'match_approve' teamMatching.id team.team.id %}" role="button">매치수락</a>            
         </td>
       </tr>
       {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="10">
+          매치신청을 한 팀이 없습니다.
+        </td>
+        {% endif %}
+      </tr>
     </tbody>
 </table>
 
@@ -73,5 +103,5 @@ var i = 0;
     <a class="btn btn-outline-dark float-right" href="{% url 'teamMatching_detail' teamMatching.id %}" role="button">돌아가기</a>
   </div>
 </div>
-
+</div>
 {% endblock %}

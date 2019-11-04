@@ -138,6 +138,7 @@ def register(request):
             fnsuser.region = region
             fnsuser.city = city
             fnsuser.school = school
+            fnsuser.sms = True
             fnsuser.save()
             return render(request, 'login.html')
             # m.FNSUser.objects.update_or_create(
@@ -157,16 +158,120 @@ def register(request):
         return render(request, 'register.html', {'res_data':res_data})
 
 def myPage(request, fnsuser_id):
-    fnsuser = get_object_or_404(FNSUser, pk=fnsuser_id)
+    fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
+    pageUser = get_object_or_404(FNSUser, pk = fnsuser_id)
     notification = fnsuser.to.all().order_by('-created')
     countNotification = notification.filter(userCheck = False).count() 
-    return render(request, 'myPage.html', {'countNotification':countNotification,
-    'notification':notification, 'fnsuser':fnsuser})
+    if fnsuser != pageUser:
+        return render(request, 'myPage.html', {'countNotification':countNotification,
+        'notification':notification, 'fnsuser':fnsuser, 'pageUser':pageUser})    
+    else:
+        return render(request, 'personalMyPage.html', {'countNotification':countNotification,
+        'notification':notification, 'fnsuser':fnsuser, 'pageUser':pageUser})
 
 def checkId(request):
     id = request.POST.get('username')
     checkId = FNSUser.objects.all().filter(username=id).exists()
     return JsonResponse({'checkId':checkId})
+
+def findId(request):
+    if request.method == 'GET':
+        return render(request, 'findId.html')
+    else:
+        name = request.POST.get('name').strip()
+        email = request.POST.get('email').strip()
+
+        if not name:
+            error = '이름을 입력해주세요.'
+            return render(request, 'findId.html', {'error':error})
+        elif not email:
+            error = '이메일을 입력해주세요.'
+            return render(request, 'findId.html', {'error':error})
+        findUser = FNSUser.objects.filter(name=name, email=email)
+        return render(request, 'findResult.html', {'findUser':findUser})
+
+def findPw(request):
+    if request.method == 'GET':
+        return render(request, 'findPw.html')
+
+    else:
+        username = request.POST.get('username')
+        phone_number = request.POST.get('email')
+        
+
+        if not username:
+            error = '아이디를 입력해주세요.'
+            return render(request, 'findPw.html', {'error':error})
+        elif not phone_number:
+            error = '휴대폰 번호를 입력해주세요.'
+            return render(request, 'findPw.html', {'error':error})
+        
+        return render(request, 'login.html')
+
+def sendSMS(request):
+    username = request.POST.get('username')
+    p_num = request.POST.get('phone_number')
+    if FNSUser.objects.filter(phone_number = p_num, username=username).count() == 0:
+        message = "입력하신 정보에 맞는 회원이 없습니다."
+        return JsonResponse({'message':message})    
+    else:
+        fnsuser = FNSUser.objects.get(phone_number = p_num, username=username)
+        fnsuser.save()
+        message='성공적으로 메시지를 보냈습니다.'
+        return JsonResponse({'message':message})
+    
+def changePw(request):
+    username = request.POST.get('username')
+    phone_number = request.POST.get('phone_number')
+    auth_number = request.POST.get('auth_number')
+
+    if not username:
+        error = '아이디를 입력해주세요.'
+        return render(request, 'findPw.html', {'error':error})
+
+    elif not phone_number:
+        error = '휴대폰 번호를 입력해주세요.'
+        return render(request, 'findPw.html', {'error':error})
+
+    elif not auth_number:
+        error = '인증번호를 입력해주세요.'
+        return render(request, 'findPw.html', {'error':error})
+
+    return render(request, 'changePw.html', {'username':username, 'phone_number':phone_number, 'auth_number':auth_number})
+
+def finalPw(request):
+    username = request.POST.get('username')
+    phone_number = request.POST.get('phone_number')
+    auth_number = request.POST.get('auth_number')
+    password = request.POST.get('password')
+    re_password = request.POST.get('re_password')
+
+    if not username:
+        errormessage = '중간에 오류가 생겨 처음부터 다시 해주세요.'
+        return render(request, 'findPw.html', {'errormessage':errormessage})
+
+    if not phone_number:
+        errormessage = '중간에 오류가 생겨 처음부터 다시 해주세요.'
+        return render(request, 'findPw.html', {'errormessage':errormessage})
+
+    if not auth_number:
+        errormessage = '중간에 오류가 생겨 처음부터 다시 해주세요.'
+        return render(request, 'findPw.html', {'errormessage':errormessage})
+        
+    if not password:
+        error = '비밀번호를 입력해주세요.'
+        return render(request, 'changePw.html', {'error':error})
+
+    elif not re_password:
+        error = '비밀번호 확인을 입력해주세요.'
+        return render(request, 'changePw.html', {'error':error})
+
+    fnsuser = FNSUser.objects.get(phone_number = phone_number, username=username, auth_number=auth_number)
+    fnsuser.password = make_password(password)
+    fnsuser.sms = True
+    fnsuser.save()
+    pwSuccess = '비밀번호 변경에 성공했습니다.'
+    return render(request, 'login.html', {'pwSuccess':pwSuccess})
 
 class FNSAuth(APIView):
     # post는 sendSMS
@@ -174,8 +279,9 @@ class FNSAuth(APIView):
     def post(self, request):
         try:
             p_num = request.data['phone_number']
+            findPw = request.data['findPw']
         except KeyError:
-            return Response({'message': 'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'message': 'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             fnsuser = FNSUser.objects.filter(phone_number = p_num).first()
                     
@@ -186,7 +292,12 @@ class FNSAuth(APIView):
                     m.FNSUser.objects.update_or_create(phone_number=p_num)
                     return JsonResponse({'message':message})
                 else:
-                    message = "이미 등록된 휴대폰입니다."
+                    if findPw == 'findPw':
+                        message = "문자 메시지를 보냈습니다."
+                        fnsuser.sms = False
+                        fnsuser.save()
+                    else:
+                        message = "이미 등록된 휴대폰입니다."
                     return JsonResponse({'message':message})
             else:
                 message = "문자 메시지를 보냈습니다."

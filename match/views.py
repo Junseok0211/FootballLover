@@ -8,21 +8,25 @@ from decidedMatch.models import DecidedMatch
 from team.models import Team
 from notification.models import Notification
 from django.core.paginator import Paginator
+from datetime import datetime, date
+from django.utils.dateformat import DateFormat
 
 # Create your views here.
 def home(request):
-    personalMatching = PersonalMatching()
-    teamMatching = TeamMatching()
-    recruiting = Recruiting()
+    today = date.today()
+    personalMatching = PersonalMatching.objects.filter(time_from__gt = today).order_by('-time_from')
+    teamMatching = TeamMatching.objects.filter(time_from__gt = today, is_applied=False).order_by('-time_from')
+    recruiting = Recruiting.objects.filter(time_from__gt = today).order_by('-time_from')
+    league = League.objects.order_by('-created').first()
     
     user_id = request.session.get('userId')
     if user_id:
         fnsuser = FNSUser.objects.get(pk=user_id)
         notification = fnsuser.to.all().order_by('-created')
         countNotification = notification.filter(userCheck = False).count()
-        return render(request, 'home.html', {'countNotification':countNotification, 
+        return render(request, 'home.html', {'countNotification':countNotification, 'league':league, 
         'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting, 'name':fnsuser.name, 'fnsuser':fnsuser, 'notification':notification, 'countNotification':countNotification})
-    return render(request, 'home.html', {'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting})
+    return render(request, 'home.html', {'league':league, 'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting})
 
 def about(request):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
@@ -323,7 +327,7 @@ def personal_attendance(request):
 
 
 def teamMatching(request):
-    teamMatching = TeamMatching.objects.all().order_by('-created')
+    teamMatching = TeamMatching.objects.all().filter(is_applied=False).order_by('-created')
 
     # 객체를 한 페이지로 자르기
     paginator = Paginator(teamMatching, 8)
@@ -900,6 +904,40 @@ def recruiting_accept(request, recruiting_id, player_id):
     'countNotification':countNotification, 'message':message, 'applied_players':applied_players, 
     'recruiting':recruiting, 'accepted_players':accepted_players, 'is_writer':is_writer, 'comments':comments})
 
+def recruiting_deny(request, recruiting_id, player_id):
+    recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
+    fnsuser1 = get_object_or_404(FNSUser, pk=player_id)
+    fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
+    notification = fnsuser.to.all().order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    
+    recruiting.applied_player.remove(fnsuser1)
+    recruiting.save()
+    
+    applied_players = recruiting.applied_player.all()
+    accepted_players = recruiting.accepted_player.all()
+
+    newNotification = Notification.objects.create(
+        creator = get_object_or_404(FNSUser, pk=request.session.get('userId')),
+        to = fnsuser1,
+        notification_type = Notification.recruitingDenied,
+        recruiting = recruiting
+        )
+           
+    newNotification.recruitingDeniedText()
+    newNotification.save()
+
+    message = '성공적으로 용병신청을 거절하였습니다.'
+    is_writer = False
+    user = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    if recruiting.user == user:
+        is_writer = True
+    return render(request, 'recruiting/recruiting_detail.html', {'notification':notification, 'fnsuser':fnsuser,
+    'countNotification':countNotification, 'message':message, 'applied_players':applied_players, 
+    'recruiting':recruiting, 'accepted_players':accepted_players, 'is_writer':is_writer, 'comments':comments})
+
+
 def recruiting_cancel(request, recruiting_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     notification = fnsuser.to.all().order_by('-created')
@@ -1209,18 +1247,56 @@ def league_detail(request, league_id):
     return render(request, 'league/league_detail.html', {'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_players':attended_players, 'league':league,
     'countNotification':countNotification, 'attended_teams':attended_teams, 'is_team':is_team, 'is_personal':is_personal})
 
-def personal_apply(request, league_id):
-    league = get_object_or_404(League, pk=league_id)
-    comments = LGComment.objects.filter(post = league).order_by('-created')
+def league_editForm(request, league_id):
+    league = get_object_or_404(League, pk = league_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     notification = fnsuser.to.all().order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    attended_players = LgPlayerAttendance.objects.all()
-    attended_teams = LgTeamAttendance.objects.all()
-    is_personal = attended_players.filter(player=fnsuser).exists()
+    return render(request, 'league/league_editForm.html', {'notification':notification, 'fnsuser':fnsuser,
+    'countNotification':countNotification, 'league':league})
+
+def league_edit(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
+    notification = fnsuser.to.all().order_by('-created')
+    league.title = request.POST.get('title')
+    league.location = request.POST.get('location')
+    time_from = request.POST.get('time_from')
+    year = time_from[:4]
+    month = time_from[5:7]
+    date = time_from[8:10]
+    hour = time_from[11:13]
+    minute = time_from[14:16]
+    startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + minute
+    league.time_from = startTime
+    time_to = request.POST.get('time_to')
+    endHour = time_to[:2]
+    endMin = time_to[3:5]
+    endTime = year + '-' + month + '-' + date + ' ' + endHour + ':' + endMin
+    league.time_to = endTime
+    league.content = request.POST.get('content')
+    league.save()
+    return redirect('/league')
+
+def league_delete(request, league_id):
+    league = get_object_or_404(League, pk = league_id)
+    league.delete()
+
+    return redirect('/league')
+
+def personal_apply(request, league_id):
+    league = get_object_or_404(League, pk=league_id)
+    comments = LGComment.objects.all().filter(post = league).order_by('-created')
+    fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
+    notification = fnsuser.to.all().order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    attended_players = LgPlayerAttendance.objects.all().filter(match=league)
+    attended_teams = LgTeamAttendance.objects.all().filter(match=league)
+    is_personal = attended_players.filter(match=league, player=fnsuser).exists()
     is_team = False
     if fnsuser.teamname:
-        is_team = attended_teams.filter(team=fnsuser.teamname).exists()
+        # is_team = attended_teams.filter(match=league, team=fnsuser.teamname).exists()
+        is_team = LgTeamAttendance.objects.filter(match=league, team = fnsuser.teamname).exists()
 
     if is_personal:
         message = '이미 참가신청을 했습니다.'

@@ -50,8 +50,30 @@ alert("{{errormessage}}");
                }
         }
 </script>
+{% load staticfiles %}
+<div class="recruiting">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">용병모집</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살 용병을 구합니다.</p>  
+    </div>
+  </div>
+</div>
 
-<div style="border:1px solid lightgray; border-radius: 10px; padding: 10px;">
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 용병모집 > 글쓰기</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
+<div style="border:1px solid lightgray; border-radius: 10px; padding: 30px;">
     <form action="{% url 'recruiting_create' %}" method="POST" onsubmit="return formCheck(this);">
         {% csrf_token %}
         <div class="form-group row">
@@ -125,14 +147,17 @@ alert("{{errormessage}}");
         </div>
 
         <div class="d-flex flex-row-reverse bd-highlight">
-            <div class="p-2 bd-highlight">
-                    <button type="reset" class="btn btn-secondary">초기화</button>
+            <div class="p-1 bd-highlight">
+                <button type="button" class="btn btn-secondary"><a class="text-decoration-none text-white" href="{% url 'recruiting' %}">돌아가기</a></button>
             </div>
-            <div class="p-2 bd-highlight">
+            <div class="p-1 bd-highlight">
+                <button type="reset" class="btn btn-secondary">초기화</button>
+            </div>
+            <div class="p-1 bd-highlight">
                     <button type="submit" class="btn btn-secondary">글쓰기</button>
             </div>
         </div>
     </form>
 </div>
-
+</div>
 {% endblock %}

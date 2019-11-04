@@ -10,6 +10,7 @@ import datetime
 # Create your models here.
 
 class FNSUser(TimeStampedModel):
+    sms = models.BooleanField(default=False)
     isStaff = models.BooleanField(default=False)
     userimg = models.ImageField(upload_to = "userimg")
     username = models.CharField(max_length=15, validators=[MinLengthValidator(8)],
@@ -49,7 +50,8 @@ class FNSUser(TimeStampedModel):
     def save(self, *args, **kwargs):
         self.auth_number = randint(10000,100000)
         super().save(*args, **kwargs)
-        self.send_sms() #인증번호가 담긴 SMS를 전송
+        if not self.sms:
+            self.send_sms() #인증번호가 담긴 SMS를 전송
 
     def send_sms(self):
         url = 'https://api-sens.ncloud.com/v1/sms/services/ncp:sms:kr:256774183707:fns/messages/'

@@ -41,8 +41,8 @@ alert("{{ message }}")
         }
         if (chkCnt == 0){
           alert("참가한 팀원을 선택해주세요");
-          document.getElementById("attendedPlayer").focus();
-          // frm.vsTeamScore.focus();
+          // document.getElementById("attendedPlayer").focus();
+          frm.vsTeamScore.focus();
 
           return false;
         }
@@ -51,7 +51,7 @@ alert("{{ message }}")
 
 </head>
 
-
+<div class="container mt-4 mb-4">
 <table class="table">
     <thead class="table-success">
       <tr>
@@ -106,5 +106,5 @@ alert("{{ message }}")
   </div>
   
 </form>
-
+</div>
 {% endblock %}

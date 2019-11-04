@@ -1,0 +1,117 @@
+
+{% extends 'base.html' %}
+
+{% block contents %}
+
+
+{% if error %}
+<script language="javascript">
+alert("{{ error }}")
+</script>
+{% endif %}
+{% if message %}
+<script language="javascript">
+alert("{{ message }}")
+</script>
+{% endif %}
+<script language = "javascript">
+function checkForm(frm){
+  var condition = document.getElementById("condition");
+  var content = document.getElementById("content");
+  if (condition.value == "nonSelected"){
+    alert("조건을 선택해주세요!");
+    frm.condition.focus();
+    return false;
+  }
+  if (content.value == ""){
+    alert("내용을 입력해주세요.");
+    frm.content.focus();
+    return false;
+  }
+  return true;
+}
+</script>
+
+{% load staticfiles %}
+<div class="team">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀 검색</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-size: 20px;">등록되어 있는 팀을 확인하고 가입신청 혹은 매치신청을 할 수 있습니다.</p>  
+    </div>
+  </div>
+</div>
+
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > Team > 매치신청현황</span>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container mt-4 mb-4">
+
+<table class="table mt-3">
+  <thead class="thead-dark">
+    <tr class="row">
+        <th class="text-center col-1">#</th>
+        <th class="text-center col-md-2 col-3">매치신청자</th>
+        <th class="text-center col-md-2 col-3">팀이름</th>
+        <th class="text-center col-md-2 col-5">장소</th>
+        <th class="text-center col-8 col-md-3">시간</th>
+        <th class="text-center col-md-2 col-4 ml-0 mr-0"></th>
+    </tr>
+  </thead>
+      <script>
+        var i = 0; 
+      </script>
+      {% if teamMatching %}
+      {% for match in teamMatching %}
+      <script>
+        i += 1;
+      </script>
+    <tbody>
+      <tr class="row">
+        <th class="text-center col-1">
+            <script>
+                document.write(i)
+            </script>
+        </th>
+        <td class="text-center col-md-2 col-3">{{match.user.name}}</td>
+        <td class="text-center col-md-2 col-3">{{match.user.teamname.name}}</td>
+        <td class="text-center col-md-2 col-5">{{match.location}}</td>
+        {% autoescape on %}
+        <td class="text-center col-8 col-md-3">
+            {{ match.time_from|date:"Y년 m월 d일 H:i"}} - {{ match.time_to|date:"H:i"}}
+        </td>
+        {% endautoescape %}
+        <td class="text-center col-md-2 col-4 ml-0 mr-0">
+            <a href="{% url 'suggestDetail' match.id %}" style="margin:0; padding-top:0;">
+                <button class="btn btn-outline-secondary" style="margin:0;">자세히 보기</button>
+            </a> 
+        </td>
+      </tr>
+    </tbody>
+    {% endfor %}
+    {% else %}
+    <tr>
+        <td colspan="6">
+            매치신청한 팀이 없습니다.
+        </td>
+    </tr>
+    {% endif %}
+</table>
+
+  <hr>
+  <div class="d-flex justify-content-end">
+    <a href="{% url 'detail' fnsuser.teamname.id %}"><button class="btn btn-dark justify-content-end">돌아가기</button></a> <br> <br>
+  </div>
+
+</div>
+
+{% endblock %}

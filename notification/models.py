@@ -7,7 +7,9 @@ from team.models import Team
 class Notification(models.Model):
     joinTeam = 'joinTeam'
     teamAccepted = 'teamAccepted'
+    teamApplicationDenied = 'teamApplicationDenied'
     suggestTeamMatching = 'suggestTeamMatching' 
+    acceptSuggestion = 'acceptSuggestion'
 
     prComment = 'prComment'
     teamComment = 'teamComment'
@@ -24,6 +26,7 @@ class Notification(models.Model):
     teamMatchingApply = 'teamMatchingApply'
     recruitingApply = 'recruitingApply'
     recruitingAccepted = 'recruitingAccepted'
+    recruitingDenied = 'recruitingDenied'
     leaguePersonalApply = 'leaguePersonalApply'
     leagueTeamApply = 'leagueTeamApply'
     
@@ -31,6 +34,7 @@ class Notification(models.Model):
     TYPE_CHOICES = {
         (joinTeam, 'joinTeam'),
         (teamAccepted, 'teamAccepted'),
+        (teamApplicationDenied, 'teamApplicationDenied'),
         (suggestTeamMatching, 'suggestTeamMatching') ,
         (prComment, 'prComment'),
         (teamComment, 'teamComment'),
@@ -40,17 +44,20 @@ class Notification(models.Model):
         (teamMatchingApply, 'teamMatchingApply'),
         (recruitingApply, 'recruitingApply'),
         (recruitingAccepted, 'recruitingAccepted'),
+        (recruitingDenied, 'recruitingDenied'),
         (leaguePersonalApply, 'leaguePersonalApply'),
         (leagueTeamApply, 'leagueTeamApply'),
         (personalReply, 'personalReply'),
         (teamReply, 'teamReply'),
         (recruitingReply, 'recruitingReply'),
         (leagueReply, 'leagueReply'),
+        (acceptSuggestion, 'acceptSuggestion')
+        
     }
 
     creator = models.ForeignKey(FNSUser, on_delete= models.CASCADE, null=True, related_name='creator')
     to = models.ForeignKey(FNSUser, on_delete= models.CASCADE, null=True, related_name='to')
-    notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    notification_type = models.CharField(max_length=30, choices=TYPE_CHOICES)
     personalMatching = models.ForeignKey(PersonalMatching, on_delete=models.CASCADE, null=True, blank=True)
     teamMatching = models.ForeignKey(TeamMatching, on_delete=models.CASCADE, null=True, blank=True)
     recruiting = models.ForeignKey(Recruiting, on_delete=models.CASCADE, null=True, blank=True)
@@ -73,6 +80,10 @@ class Notification(models.Model):
 
     def teamAcceptedText(self):
         self.text = '[' + self.team.name + ']팀에 가입되었습니다.'
+        self.save()
+
+    def teamApplicationDeniedText(self):
+        self.text = '[' + self.team.name + ']팀에서 가입신청을 거절했습니다.'
         self.save()
 
     def personalCommentText(self):
@@ -99,6 +110,10 @@ class Notification(models.Model):
         self.text = self.creator.name + '님이 [' + self.team.name + ']에 매칭신청을 했습니다.'
         self.save()
 
+    def acceptSuggestionText(self):
+        self.text = '[' + self.team.name + ']팀이 매칭신청을 수락했습니다.'
+        self.save()
+
     def personalApplyText(self):
         self.text = self.creator.name + '님이 [' + self.personalMatching.title + ']에 참가신청을 했습니다.'
         self.save()
@@ -113,6 +128,10 @@ class Notification(models.Model):
 
     def recruitingAcceptedText(self):
         self.text = ' [' + self.recruiting.title + '] 용병신청이 수락되었습니다.'
+        self.save()
+
+    def recruitingDeniedText(self):
+        self.text = self.creator.name + '님이 회원님의 [' + self.recruiting.title + '] 용병신청을 거절하였습니다.'
         self.save()
 
     def leaguePersonalApplyText(self):
@@ -139,3 +158,4 @@ class Notification(models.Model):
         self.text = self.creator.name + '님이 회원님의 댓글에 답글을 작성했습니다.' + self.lgComment.summary() +'...'
         self.save()
 
+   
