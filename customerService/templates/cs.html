@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block contents %}
+{% if message %}
+<script>
+    alert("{{message}}");
+</script>
+{% endif %}
+{% load staticfiles %}
+<div class="customerService">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">고객센터</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">서비스 문의사항이나 불편한 사항이 있으면 <br>글을 남겨주시면 빠른 시간 내에 답변드리겠습니다.</p>  
+    </div>
+  </div>
+</div>
+
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 문의하기</span>
+    </div>
+  </div>
+</div>
+<hr>
+
+<div class="container">
+    <div class = "mt-2">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr class="row">
+                        <th scope="col" class="text-center col-md-1 col-2">번호</th>
+                        <th scope="col" class="text-center col-md-7 col-10">제목</th>
+                        <th scope="col" class="text-center col-md-2 col-7">작성자</th>
+                        <th scope="col" class="text-center col-md-2 col-5"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <script>
+                    var i = 0;
+                </script>
+                {% if cs %}
+                {% for post in cs %}
+                <script>
+                    i += 1;
+                </script>
+                    <tr class="row">
+                    <th scope="row" class="text-center col-md-1 col-2">
+                        <script>
+                            document.write(i);
+                        </script>
+                    </th>
+                    
+                    <td class="text-center col-md-7 col-10">{{post.title}}</td>
+                    <td class="text-center col-md-2 col-7">{{post.user.name}}</td>
+                    <td class="text-center col-md-2 col-5">
+                        <a href="{% url 'csDetail' post.id %}" style="margin:0; padding-top:0;">
+                            <button class="btn btn-outline-secondary" style="margin:0;">자세히 보기</button>
+                        </a> 
+                    </td>
+                    </tr>
+                <script>
+                    score = "{{user.score}}";
+                </script>
+                {% endfor %}
+                {% else %}
+                <tr class="row" style="border-bottom: silver 1px solid;">
+                    <th colspan="4">문의글이 없습니다.</th>
+                </tr>
+                {% endif %}
+                
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if csList.has_previous %}
+                    <li class="page-item">
+                    <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{csList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{csList.previous_page_number}}</a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="page-item disabled"><a class="page-link" href="#">{{csList.number}}</a></li>
+                    {% if scoreList.has_next %}
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{csList.next_page_number}}">{{csList.next_page_number}}</a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{csList.paginator.num_pages}}">마지막으로</a>
+                    </li>
+                    {% endif %}
+                </ul>
+        </nav>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-end">
+      <a href="{% url 'csNew' %}"><button class="btn btn-dark justify-content-end">문의하기</button></a> <br> <br>
+    </div>
+</div>
+
+
+{% endblock %}

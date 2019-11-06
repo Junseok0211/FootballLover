@@ -73,7 +73,11 @@
               </b></span>
             </h4>
             <p class="card-text pt-3" style="border-top:black 1px solid;">{{league.summary}}
+              {% if league %}
               <a href="{% url 'league_detail' league.id %}" class="text-decoration-none stretched-link">...자세히 보기</a>
+              {% else %}
+              <a href="#" class="text-decoration-none stretched-link">...자세히 보기</a>
+              {% endif %}
             </p>
           </div>
         </div>
@@ -111,7 +115,11 @@
                 </b></span>
               </h4>
               <p class="card-text pt-3" style="border-top:black 1px solid;">{{league.summary}}
+                {% if league %}
                 <a href="{% url 'league_detail' league.id %}" class="text-decoration-none stretched-link">...자세히 보기</a>
+                {% else %}
+                <a href="#" class="text-decoration-none stretched-link">...자세히 보기</a>
+                {% endif %}
               </p>
             </div>
           </div>

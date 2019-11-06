@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'decidedMatch.apps.DecidedmatchConfig',
     'rank.apps.RankConfig',
     'notification.apps.NotificationConfig',
+    'customerService.apps.CustomerserviceConfig',
     
 
     'rest_framework',
