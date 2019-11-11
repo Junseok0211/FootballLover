@@ -204,14 +204,15 @@ alert("{{res_data.error}}");
           <label for="username" class="col-md-2 col-12">아이디</label>
             <div class="col-md-10 col-12">
                 <div class="row">
-                    <input type="text" class="form-control col-8" id="username" placeholder="사용자 이름" name="username" autocomplete="off"/> 
+                    <input type="text" class="form-control col-8" id="username" placeholder="아이디는 영문, 숫자를 이용해 8~15자로 만들어주세요." name="username" autocomplete="off"/> 
                     <button id="checkId" type="button" class="btn btn-outline-dark justify-content-end  col-4">중복확인</button>
                 </div>
             </div>
         </div>
         <div class="form-group row">
           <label for="password" class="col-md-2 col-sm-12">비밀번호</label>
-          <input type="password" class="form-control col-md-10 col-12" id="password" placeholder="비밀번호" name="password" autocomplete="off"/>
+          <input type="password" class="form-control col-md-10 col-12" id="password" 
+          placeholder="비밀번호는 영문, 숫자, 특수문자를 이용해 8~15자로 만들어주세요." name="password" autocomplete="off"/>
         </div>
         <div class="form-group row">
           <label for="re_password" class="col-md-2 col-sm-12">비밀번호 확인</label>
@@ -219,7 +220,7 @@ alert("{{res_data.error}}");
         </div>
         <div class="form-group row">
             <label for="name" class="col-md-2 col-12">이름</label>
-            <input type="text"  class="form-control col-md-10 col-12" id="name" placeholder="사용자 이름" name="name" autocomplete="off"/>
+            <input type="text"  class="form-control col-md-10 col-12" id="name" placeholder="이름은 한글로 작성해주세요.(10자이내)" name="name" autocomplete="off"/>
         </div>
         <div class="form-group row">
             <label for="email" class="col-md-2 col-12">사용자 이메일</label>
@@ -236,7 +237,7 @@ alert("{{res_data.error}}");
             </div>  
         </div>
         <div class="form-group row">
-            <label for="auth_number" class="col-md-2 col-12">인증번호<span class="auth"></span></label>
+            <label for="auth_number" class="col-md-2 col-12">인증번호<span style="font-family: 'Jua'; font-size:20px;" class="auth"></span></label>
             <div class="col-md-10 col-12">
                 <div class="row">
                     <input type="text" class="form-control col-8" id="auth_number" placeholder="5자리 숫자를 입력해주세요" 
@@ -443,9 +444,17 @@ alert("{{res_data.error}}");
             <label for="school" class="col-md-2 col-12">학교</label>
             <select id="school" class="form-control col-12 col-md-4" name = "school" >
                 <option selected disabled hidden value="school">학교</label>
-                <option value="남서울대 재학생">남서울대 재학생</option>
+                <option value="남서울대학교">남서울대학교</option>
+                <option value="백석대학교">백석대학교</option>
+                <option value="나사렛대학교">나사렛대학교</option>
+                <option value="상명대학교">상명대학교</option>
+                <option value="한국기술교육대학교">한국기술교육대학교</option>
+                <option value="단국대학교">단국대학교</option>
+                <option value="호서대학교">호서대학교</option>
+                <option value="공주대학교">공주대학교</option>
+                <option value="선문대학교">선문대학교</option>
                 <option value="타 대학 재학생">타대학 재학생</option>
-                <option value="지역주민">지역주민</option>
+                <option value="지역주민">기타</option>
             </select>
         </div> 
         <hr>
@@ -477,14 +486,14 @@ alert("{{res_data.error}}");
             return false;
         }
         url1 = "{% url 'verification' %}";
-        var csrf = $('input[name="csrfmiddlewaretoken"]').first().val(); 
+        // var csrf = $('input[name="csrfmiddlewaretoken"]').first().val(); 
         var findPw = 'notFindPw'; 
         $.ajax({
             url: url1,
             dataType:'json',
             async:false,
             type:'POST',
-            data:{'phone_number':$('#phone_number').val(), 'csrfmiddlewaretoken':csrf, 'findPw':findPw},
+            data:{'phone_number':$('#phone_number').val(), 'csrfmiddlewaretoken':'{{ csrf_token }}', 'findPw':findPw},
             success:function(data){
                 if(data.message == '이미 등록된 휴대폰입니다.'){
                     alert(data.message);

@@ -1,0 +1,176 @@
+<div class="dropdown" style="display: inline-block;">
+        <button onclick="myFunction()" class="dropbtn bg-light badge1 dropdown-toggle mr-md-4 mr-0 pt-0" data-badge="{{countNotification}}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+        <div id="myDropdown" class="alarmDropdown-content dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+          <div class="pl-3" style="border-bottom: black 1px solid;">
+            <span style="font-size: 15px; font-weight: bold; color: cornflowerblue;" class="mr-3">알림</span>
+            <button class="p-2 m-1 btn" onclick="return checkAllNotification()" style="background-color:lightgrey; font-size: 12px; font-weight: bold; color: black;">모두 읽은 상태로 표시</button>
+          </div>
+          {% if not notificationList  %}
+            <p class = "dropdown-item">알람이 없습니다.</p>
+          {% else %}
+          {% for alarm in notificationList %}
+          <!-- 알람creator가 자신이면 안보이게. -->
+          {% if alarm.creator != fnsuser %}
+            <!-- 확인을 했다면. -->
+            {% if alarm.userCheck %}
+              <!-- 알람 종류 -->
+              {% if alarm.notification_type == "prComment" %}
+              <a href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "teamComment" %}
+              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "recruitingComment" %}
+              <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "leagueComment" %}
+              <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalApply" %}
+              <a href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamMatchingApply" %}
+              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingApply" %}
+              <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "recruitingAccepted" %}
+              <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leaguePersonalApply" %}
+              <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leagueTeamApply" %}
+              <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "joinTeam" %}
+              <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamAccepted" %}
+              <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalReply" %}
+              <a href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamReply" %}
+              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingReply" %}
+              <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "leagueReply" %}
+              <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingDenied" %}
+              <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamApplicationDenied" %}
+              <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "suggestTeamMatching" %}
+              <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "acceptSuggestion" %}
+              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              {% endif %}
+
+            <!-- 확인을 안했다면 -->
+            {% else %}
+              <!-- 알람종류 -->
+              {% if alarm.notification_type == "prComment" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "teamComment" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "recruitingComment" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+            
+              {% elif alarm.notification_type == "leagueComment" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalApply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamMatchingApply" %}
+              <div class="alarm" style="width:200px; text-overflow: ellipsis; max-width: 300px;">
+              <a class="alarm" style="text-overflow: ellipsis;" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}"><span style="width:200px; text-overflow: ellipsis; max-width: 200px;">{{alarm.text}}</span></a>
+              </div>
+              {% elif alarm.notification_type == "recruitingApply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "recruitingAccepted" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leaguePersonalApply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "leagueTeamApply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+              
+              {% elif alarm.notification_type == "joinTeam" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamAccepted" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "personalReply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamReply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingReply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "leagueReply" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "recruitingDenied" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "teamApplicationDenied" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "suggestTeamMatching" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "acceptSuggestion" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              
+              {% endif %}
+              <!-- 알람종류 끝 -->
+            {% endif %}
+            <!-- 확인 여부 끝 -->
+          {% endif %}
+          <!-- creator 자기인지 여부 끝 -->
+        {% endfor %}
+        <!-- for문 끝 -->
+      {% endif %}
+      <!-- notification 있는지 여부 끝 -->
+      <!-- 페이지네이션 시작 -->
+      <div style="border-top:black 1px solid;" class="pt-2">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center d-flex" style="display:inline-block;">
+            {% if notificationList.has_previous %}
+            <li class="page-item" style="display:inline;">
+              <a class="page-link" style ="display:inline-block;" href="?page=1" style ="display:inline-block;" tabindex="-1" aria-disabled="true">처음으로</a>
+            </li>
+            <li class="page-item" style ="display:inline-block;">
+              <a class="page-link" style ="display:inline-block;" href="?page={{notificationList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{notificationList.previous_page_number}}</a>
+            </li>
+            {% endif %}
+            <li class="page-item disabled" style ="display:inline-block;"><a class="page-link" style ="display:inline-block;" href="#">{{notificationList.number}}</a></li>
+            {% if notificationList.has_next %}
+            <a class="page-link" style ="display:inline-block;" href="?page={{notificationList.next_page_number}}">{{notificationList.next_page_number}}</a>
+            <a class="page-link" style ="display:inline-block;" style="display:inline;" href="?page={{notificationList.paginator.num_pages}}">마지막으로</a>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+      <!-- 페이지네이션 끝 -->
+    </div>
+    <!-- dropdown content 끝 -->
+  </div>
+  <!-- alarm dropdown 끝 -->

@@ -22,4 +22,6 @@ urlpatterns = [
     path('sendSMS', views.sendSMS, name="sendSMS"),
     path('changePw', views.changePw, name = "changePw"),
     path('finalPw', views.finalPw, name = "finalPw"),
+    path('editAccount', views.editAccount, name = "editAccount"),
+    path('checkPhone_number', views.checkPhone_number, name = "checkPhone_number"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

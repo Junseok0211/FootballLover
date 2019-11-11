@@ -5,11 +5,13 @@ from rest_framework import status
 from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
 from .forms import RegisterForm
 from django.contrib.auth.hashers import make_password, check_password
 from . import models as m
+from django.core.paginator import Paginator
 from .models import FNSUser
 import requests
 # Create your views here.
@@ -48,9 +50,17 @@ def logout(request):
     return redirect('/')
 
 def test(request):
-    datetimepicker = request.GET.get('datetimepicker')
-    timepicker = request.GET.get('timepicker')
-    return render(request, 'test1.html', {'datetimepicker':datetimepicker,'timepicker':timepicker})
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck=False).count()
+     # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'test1.html', {'notification':notification,
+    'fnsuser':fnsuser, 'countNotification':countNotification, 'notificationList':notificationList})
 
 def test2(request):
     return render(request, 'test2.html')
@@ -160,14 +170,21 @@ def register(request):
 def myPage(request, fnsuser_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     pageUser = get_object_or_404(FNSUser, pk = fnsuser_id)
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count() 
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if fnsuser != pageUser:
         return render(request, 'myPage.html', {'countNotification':countNotification,
-        'notification':notification, 'fnsuser':fnsuser, 'pageUser':pageUser})    
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'pageUser':pageUser})    
     else:
         return render(request, 'personalMyPage.html', {'countNotification':countNotification,
-        'notification':notification, 'fnsuser':fnsuser, 'pageUser':pageUser})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'pageUser':pageUser})
 
 def checkId(request):
     id = request.POST.get('username')
@@ -272,6 +289,112 @@ def finalPw(request):
     fnsuser.save()
     pwSuccess = '비밀번호 변경에 성공했습니다.'
     return render(request, 'login.html', {'pwSuccess':pwSuccess})
+
+def editAccount(request):
+    
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    if request.method == 'GET':
+        return render(request, 'editAccount.html', {'fnsuser':fnsuser, 'notificationList':notificationList,
+        'countNotification':countNotification})
+    else:
+        if(request.FILES['userimg'] is not None):
+            userimg = request.FILES['userimg']
+        username = request.POST.get('username', None)
+        email = request.POST.get('email', None)
+        name = request.POST.get('name', None)
+        region = request.POST.get('region', None)
+        city = "error"
+
+        if request.POST.get('seoul') is not None:
+            city = request.POST.get('seoul')
+        
+        elif request.POST.get('gyeonggi') is not None:
+            city = request.POST.get('gyeonggi')
+
+        elif request.POST.get('north_chungcheong') is not None:
+            city = request.POST.get('north_chungcheong')
+        
+        elif request.POST.get('south_chungcheong') is not None:
+            city = request.POST.get('south_chungcheong')
+        
+        elif request.POST.get('north_jeolla') is not None:
+            city = request.POST.get('north_jeolla')
+
+        elif request.POST.get('south_jeolla') is not None:
+            city = request.POST.get('south_jeolla')
+
+        elif request.POST.get('north_gyeongsang') is not None:
+            city = request.POST.get('north_gyeongsang')
+
+        elif request.POST.get('south_gyeongsang') is not 'south_gyeongsang':
+            city = request.POST.get('south_gyeongsang')
+
+        elif request.POST.get('jeju') is not 'jeju':
+            city = request.POST.get('jeju')
+        
+        school = request.POST.get('school', None)
+        # 키값이 없으면 none을 지정하라는 뜻
+
+        res_data = {}
+
+        if (username is None or userimg is None or 
+        name is None or email is None or region is None or school is None):
+            res_data['error'] = "모든 값을 입력해야 합니다."
+            res_data['userimg'] = userimg
+            res_data['username'] = username
+            res_data['email'] = email
+            res_data['name'] = name
+            res_data['region'] = region
+            res_data['city'] = city
+            res_data['school'] = school
+
+        else:
+            if FNSUser.objects.filter(username = username):
+                res_data['error'] = '중복된 아이디가 있습니다.'    
+                return render(request, 'myPage.html', {'res_data':res_data, 'fnsuser':fnsuser, 
+                'notificationList':notificationList, 'countNotification':countNotification})
+
+            res_data['error'] = '성공'
+            fnsuser.userimg = userimg
+            fnsuser.username = username
+            fnsuser.email = email
+            fnsuser.name = name
+            fnsuser.region = region
+            fnsuser.city = city
+            fnsuser.school = school
+            fnsuser.sms = True
+            fnsuser.save()
+            return render(request, 'login.html', {'res_data':res_data, 'fnsuser':fnsuser, 
+            'notificationList':notificationList, 'countNotification':countNotification})
+
+        return render(request, 'login.html', {'res_data':res_data, 'fnsuser':fnsuser, 
+        'notificationList':notificationList, 'countNotification':countNotification})
+
+def checkPhone_number(request):
+    phone_number = request.POST['phone_number']
+    username = request.POST['username']
+    isUsername = FNSUser.objects.filter(username = username).exists()
+    fnsuser = FNSUser.objects.get(username = username)
+    if isUsername:
+        # 휴대폰 번호가 등록되어 있는 번호와 다를 때
+        if str(fnsuser.phone_number) != str(phone_number):
+            message = '아이디에 등록되어 있는 휴대폰 번호가 틀립니다.'
+            return JsonResponse({'message':message})
+        else:
+            message = 'True'
+            return JsonResponse({'message':message})
+    else:
+        message = '아이디가 등록되어 있지 않습니다.'
+        return JsonResponse({'message':message})
 
 class FNSAuth(APIView):
     # post는 sendSMS

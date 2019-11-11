@@ -115,9 +115,23 @@
                     text-align: center;
                     font-size:13px;
             }
-    </style>
-    </head>
-    <body>
+
+        @media all and (max-width: 600px){
+                body{
+                }
+                .login-form{
+                    width:800px;
+                    background: #f1f1f1;
+                    height: 1000px;
+                    padding: 80px 40px;
+                    border-radius: 10px;
+                    position:absolute;
+                    transform:translate(-50%,-50%);
+                }
+        }
+</style>
+</head>
+<body>
         {% if errormessage %}
         <script type="text/javascript">
                 alert("{{errormessage}}");
@@ -130,7 +144,7 @@
         {% endif %}
             <form action="{% url 'login' %}" method="POST" class="login-form">
                             {% csrf_token %}
-            <h1 style="font-family: 'Do Hyeon';">FNS 로그인</h1>
+            <h1 style="font-family: 'Do Hyeon';">풋볼러버 로그인</h1>
 
             <div class = "txtb">
                     <input type="text" name="username" placeholder="아이디">

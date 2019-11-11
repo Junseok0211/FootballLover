@@ -1,173 +1,971 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Football Lover</title>
+    
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/blog/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <!-- Jquery CDN -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <!-- Bootstrap core CSS -->
+    <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+  
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+  
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/8b80c27e4f.js" crossorigin="anonymous"></script>
+  
+    <!-- google font Do Hyeon Nanum Gothic Black Han Sans -->
+    <!-- font-family: 'Black Han Sans', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
+    font-family: 'Do Hyeon', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Gothic A1', sans-serif;
+    font-family: 'Sunflower', sans-serif;
+    font-family: 'Nanum Gothic Coding', monospace;
+    font-family: 'Nanum Pen Script', cursive;
+    font-family: 'Nanum Brush Script', cursive;
+    font-family: 'Song Myung', serif;
+    font-family: 'Noto Serif KR', serif;
+    font-family: 'Jua', sans-serif;
+    font-family: 'Dokdo', cursive;
+    font-family: 'Cute Font', cursive;
+    font-family: 'Stylish', sans-serif;
+    font-family: 'Poor Story', cursive;
+    font-family: 'Hi Melody', cursive;
+    font-family: 'Gaegu', cursive;
+    font-family: 'Gamja Flower', cursive;
+    font-family: 'Kirang Haerang', cursive;
+    font-family: 'East Sea Dokdo', cursive;
+    font-family: 'Black And White Picture', sans-serif;
+    font-family: 'Single Day', cursive;
+    font-family: 'Yeon Sung', cursive; -->
+    <link href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap" rel="stylesheet">
+
+  
+{% load staticfiles %}
+<style>
+      *{
+       font-family: 'Nanum Gothic', sans-serif;
+      }
+
+      .doHyeon{
+        font-family:'Do Hyeon', sans-serif;
+      }
+
+      .blackHanSans{
+        font-family: 'Black Han Sans', sans-serif;
+      }
+
+      /* 득점순위 눌렀을 때 */
+      .goalAverage > .scoreRank{
+        display:none;
+      }
+
+      .goalAverage > .gaRank{
+        display: block;
+      }
+
+      .gaRank{
+        display:none;
+      }
+
+      .editForm{
+        display: none;
+      }
+
+      .editToggle > .detail{
+        display:none;
+      }
+
+      .editToggle > .editForm{
+        display:flex;
+      }
+
+      /* 대댓글 창 먼저 안나오게 하기! */
+      .replyAll{
+        display:none;
+      }
+      .replyEditForm{
+        display: none;
+      }
+
+
+
+      /* 대댓글수정 */
+      .replyEditToggle > .replyDetail{
+        display:none;
+      }
+
+      .replyEditToggle > .replyEditForm{
+        display:flex;
+      }      
+
+      /* 답글 눌렀을 때 */
+      .replyToggle{
+        display:block;
+      }
+
+
+      .allReplyCancel{
+        display:none;
+      }
+
+      .replyButton > .reply{
+        display:none;
+      }
+
+      .replyButton > .allReplyCancel{
+        display:block;
+      }
+
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      a.alram:hover{
+        background-color:peru !important;
+        text-decoration: none;
+      }
+      .alarm{
+        background-color: #EDF2F9;
+        
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+
+      table, td, th{
+          text-align: left;
+      }
+    
+      .label{
+        margin-top: 8px;
+        margin-left:5px;
+      }
+      }
+
+.nav-link:hover{
+  border-bottom: brown solid 2px;
+}
+.nav-link{
+  font-size:25px;
+  font-family: 'Nanum Pen Script';
+  margin-right: 2em;
+}
+.down {
+  position: relative;
+  display: inline-block;
+}
+
+.down-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  text-align: center;
+  max-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.down:hover .down-content {
+  display: block;
+}
+.dropup {
+  position: relative;
+  display: inline-block;
+}
+
+.dropup-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  bottom: 50px;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+.dropup:hover .dropup-content {
+  display: block;
+}
+.a{
+  text-decoration: none;
+  font-family: 'Nanum Gothic';
+}
+.information{
+  padding:4em;
+  padding-bottom: 5%;
+  background-image: linear-gradient(72deg, #1e3c72, #2a5298);
+  /* background-image: linear-gradient(72deg, #457fca, #5691c8); */
+}
+.footer{
+  background-color: #23262E;
+  margin:0;
+  padding: 3%;
+  color: #f9f9f9;
+  font-family: 'Noto Sans KR';
+}
+.schedule{
+  border-top:3%;
+  background-image: linear-gradient(72deg, #ED213A, #93291E);
+  padding:40px;
+
+}
+footer{
+  margin:0;
+}
+#calendar td {
+ width: 60px;
+ height: 60px;
+ text-align: center;
+ font-size: 20px;
+ font-family: 'Noto Sans KR';
+ border-radius:8px;
+}
+
+#calendar{
+  background-color:white;
+  border-radius:8px;
+}
+
+.aboveFooter{
+  background-image:url("{% static 'aboveFooter.png' %}");
+  background-size: 100% 100%;
+  height: 300px;
+  color:white;  
+}
+
+.futsalDay{
+  background-color:#EAECF0; 
+  padding: 5%; 
+  height: 100%; 
+  width:100%;
+  border-radius: 8px;
+}
+.personalMatch td{
+  text-align: left;
+}
+.personalMatching{
+  background-image: url("{% static 'personalMatching.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.between{
+  /* background-image: linear-gradient(72deg, #ED213A, #93291E); */
+  background-color: #CD1F33;
+  margin-bottom:20px;
+}
+.between span{
+  height:50px;
+  font-family: 'Nanum Gothic';
+  vertical-align: middle;
+  font-size: 20px;
+  color:white;
+  font-weight: bold;
+  border-right:darkgray 2px solid;
+  border-left:darkgray 2px solid;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.new:hover{
+  border-bottom: 2px solid blue;
+  background-color: brown;
+}
+label{
+  font-family: 'Jua';
+  text-align: center;
+  font-size:20px;
+}
+.teamMatching{
+  background-image: url("{% static 'teamMatching.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.recruiting{
+  background-image: url("{% static 'recruiting.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.league{
+  background-image: url("{% static 'league.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.team{
+  background-image: url("{% static 'team.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+#changeCaptain{
+  display:none;
+}
+.captain > #changeCaptain{
+  display:block;
+}
+.rank{
+  background-image: url("{% static 'rank.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.decidedMatch{
+  background-image: url("{% static 'decidedMatch.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.result{
+  background-image: url("{% static 'result.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.myPage{
+  background-image: linear-gradient(72deg, #ADA996, #F2F2F2, #DBDBDB, #EAEAEA);
+  margin-top:0px;
+}
+.customerService{
+  background-image: url("{% static 'customerService.png' %}");
+  padding-top:20px;
+  background-size: 100% 100%;
+  height: 300px;
+  vertical-align: middle;
+}
+.csButton {
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  background-color:#4272B4;
+  color: white;
+}
+
+.csButton:hover {
+  background-color: white;
+  border:2px solid #4272B4;
+  color: black;
+}
+
+    .badge1 {
+       position:relative;
+    }
+    .badge1[data-badge]:after {
+       content:attr(data-badge);
+       position:absolute;
+       top:-10px;
+       right:-10px;
+       font-size:.7em;
+       background:red;
+       color:white;
+       width:18px;height:18px;
+       text-align:center;
+       line-height:18px;
+       border-radius:50%;
+       box-shadow:0 0 1px #333;
+    }
+    
+    /* Dropdown Button */
+    .dropbtn {
+      /* background-color: #3498DB; */
+      background-image:url("{% static 'checkedAlarm.png' %}");
+      background-size:100% 100%;
+      height: 25px;
+      width:25px;
+      color: black;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      background-color: white;
+    }
+    
+    /* Dropdown button on hover & focus */
+    .dropbtn:hover, .dropbtn:focus {
+      /* background-color: #2980B9; */
+      background-color: white;
+    }
+    
+    /* The container <div> - needed to position the dropdown content */
+    .alarmDropdown {
+      position: relative;
+      display: inline-block;
+      float:right;
+      z-index: 5;
+      
+    }
+    
+    /* Dropdown Content (Hidden by Default) */
+    .alarmDropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 350px;
+      max-width: 350px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 5;
+      right:0;
+    }
+    
+    /* Links inside the dropdown */
+    .alarmDropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 12px;
+    }
+    
+    /* Change color of dropdown links on hover */
+    .alarmDropdown-content a:hover {background-color: #ddd}
+    
+    /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+    .show {display:block;}
+    
+    a.alram:hover{
+            background-color:peru !important;
+            text-decoration: none;
+          }
+    .alarm{
+      background-color: #EDF2F9;
+      text-overflow: ellipsis;
+    }
+    
+/* nav style */
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: white;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  display: block;
+  color: rgb(141, 138, 138);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add an active class to highlight the current page */
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* Hide the link that should open and close the topnav on small screens */
+.topnav .icon {
+  display: none;
+}
+
+
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+@media screen and (max-width: 600px) {
+  .topnav a:not(:first-child) {display: none;}
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+@media screen and (max-width: 600px) {
+  .topnav.responsive {position: relative;}
+  .topnav.responsive a.icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+/* nav style end */
+
+</style>
+    
+<script type="text/javascript">
+function count_ck(obj){
+  var chkbox = document.getElementsByName("scoredPlayer");
+  var chkCnt = 0;
+  var max_count = document.getElementById("myTeamScore").value;
+  if (max_count == null){
+    max_count = 0 ;
+  }
+
+  for(var i=0;i<chkbox.length; i++){
+      if(chkbox[i].checked){
+          chkCnt++;
+      }
+  }
+
+  if(chkCnt>max_count){
+      alert("득점 스코어 이상으로 선택할 수 없습니다.");
+      obj.checked = false;
+      return false;
+  }
+}
+</script>
+
+<script language = "javascript">
+var username = name
+if (username != null) {
+  document.login.style.display == "none";
+}
+else {
+  document.name.style.display == "none;"
+}
+
+function showSub(obj) {
+f = document.forms.register;
+
+if(obj == "서울특별시") {
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "gyeonggi";
+    f.south_chungcheong.value = "gyeonggi";
+    f.north_jeolla.value = "gyeonggi";
+    f.south_jeolla.value = "gyeonggi";
+    f.north_gyeongsang.value = "gyeonggi";
+    f.south_gyeongsang.value = "gyeonggi";
+    f.jeju.value = "gyeonggi";
+
+
+} else if(obj == "경기도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "north_jeolla";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+ } else if(obj == "충청북도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "nonnorth_jeollae";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+} else if(obj == "충청남도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "north_jeolla";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+} else if(obj == "전라북도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "north_jeolla";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+} else if(obj == "전라남도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "north_jeolla";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+} else if(obj == "경상북도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "";
+    f.south_gyeongsang.style.display = "none";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "north_jeolla";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+} else if(obj == "경상남도"){
+
+    f.basic.style.display = "none";
+    f.seoul.style.display = "none";
+    f.gyeonggi.style.display = "none";
+    f.north_chungcheong.style.display = "none";
+    f.south_chungcheong.style.display = "none";
+    f.north_jeolla.style.display = "none";
+    f.south_jeolla.style.display = "none";
+    f.north_gyeongsang.style.display = "none";
+    f.south_gyeongsang.style.display = "";
+    f.jeju.style.display = "none";
+
+    f.seoul.value = "seoul";
+    f.gyeonggi.value = "gyeonggi";
+    f.north_chungcheong.value = "north_chungcheong";
+    f.south_chungcheong.value = "south_chungcheong";
+    f.north_jeolla.value = "north_jeolla";
+    f.south_jeolla.value = "south_jeolla";
+    f.north_gyeongsang.value = "north_gyeongsang";
+    f.south_gyeongsang.value = "south_gyeongsang";
+    f.jeju.value = "jeju";
+
+} else if(obj == "제주특별자치도"){
+
+  f.basic.style.display = "none";
+  f.seoul.style.display = "none";
+  f.gyeonggi.style.display = "none";
+  f.north_chungcheong.style.display = "none";
+  f.south_chungcheong.style.display = "none";
+  f.north_jeolla.style.display = "none";
+  f.south_jeolla.style.display = "none";
+  f.north_gyeongsang.style.display = "none";
+  f.south_gyeongsang.style.display = "none";
+  f.jeju.style.display = "";
+
+  f.seoul.value = "seoul";
+  f.gyeonggi.value = "gyeonggi";
+  f.north_chungcheong.value = "north_chungcheong";
+  f.south_chungcheong.value = "south_chungcheong";
+  f.north_jeolla.value = "north_jeolla";
+  f.south_jeolla.value = "south_jeolla";
+  f.north_gyeongsang.value = "north_gyeongsang";
+  f.south_gyeongsang.value = "south_gyeongsang";
+  f.jeju.value = "jeju";
+} 
+}
+
+  var today = new Date(); // 오늘 날짜//지신의 컴퓨터를 기준으로
+  //today 에 Date객체를 넣어줌 //ex)5일  
+  function prevCalendar() {
+   
+   
+   today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+   buildCalendar(); // 현재 달 
+  }
+   
+  function nextCalendar() {
+   today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+   buildCalendar();
+  }
+   
+  function buildCalendar() {// 현재 달력
+   var nMonth = new Date(today.getFullYear(), today.getMonth(), 1);  // 이번 달의 첫째 날
+   var lastDate = new Date(today.getFullYear(), today.getMonth()+1, 0); // 이번 달의 마지막 날
+   var tblCalendar = document.getElementById("calendar");     // 테이블 달력을 만들 테이블
+   var tblCalendarYM = document.getElementById("calendarYM");    // yyyy년 m월 출력할 곳
+   var now = today.getDate();
+   tblCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";  // yyyy년 m월 출력
+  // 기존 테이블에 뿌려진 줄, 칸 삭제
+   
+   
+   while (tblCalendar.rows.length > 2) {
+    tblCalendar.deleteRow(tblCalendar.rows.length - 1);
+   }
+   var row = null;
+   row = tblCalendar.insertRow();
+   var cnt = 0;
+  // 1일이 시작되는 칸을 맞추어 줌
+   for (i=0; i<nMonth.getDay(); i++) {
+    cell = row.insertCell();
+    cnt = cnt + 1;
+   }
+   
+   for (i=1; i<=lastDate.getDate(); i++) { 
+    cell = row.insertCell();
+    cell.innerHTML = i;
+    if(i == now){
+      cell.bgColor = "Yellow";
+    }
+    cnt = cnt + 1;
+    if (cnt%7 == 0)// 1주일이 7일 이므로
+     row = calendar.insertRow();// 줄 추가
+   }
+   
+  }
+
+/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+function myNavFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+
+
+</script>
 </head>
 <body>
-    {% load staticfiles %}
-    <nav class="sticky-top" style="background-color: #778899;">안녕
-        <img src="{% static 'logo_korean.png' %}" alt="" class="src">
-    </nav>
+  {% include 'alarm.html' %}
+
     
-</body>
-</html>
-
-<!-- <header class="blog-header py-3">
-    <div class="row flex-nowrap justify-content-between align-items-center">
-      <div class="col-4 pt-1">
-        <a class="text-muted" href="{% url 'register' %}">회원가입</a>
-      </div>
-      <div class="col-4 text-center">
-        <a class="blog-header-logo text-dark" href="{% url 'home' %}}">Football Network Service</a>
-      </div>
-      <div class="col-4 d-flex justify-content-end align-items-center">
-        <a class="text-muted" href="#">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
-        </a>
-        {% if request.session.name %}
-        
-        
-        <div class="dropdown">
-            <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown button
-            </button> -->
-            {% load static %}
-            <!-- <img src = "{% static 'checkedAlarm.png' %}" width="30px" height = "30px"
-            class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> -->
-              <i width="30px" height = "30px"
-              class="btn dropdown-toggle far fa-bell" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i> 
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div class = "dropdown-item">
-                알림
-                <button><a href="#" class="alarm" onclick="return checkAllNotification()">모두 읽은 상태로 표시</a></button>
-                <hr>
-              </div>
-              {% if not notification.exists  %}
-              <p class = "dropdown-item">알람이 없습니다.</p>
-              {% else %}
-              {% for alarm in notification.all %}
-              {% if alarm.creator != fnsuser %}
-                {% if alarm.userCheck %}
-                  {% if alarm.notification_type == "prComment" %}
-                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "teamComment" %}
-                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "recruitingComment" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "leagueComment" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalApply" %}
-                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamMatchingApply" %}
-                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingApply" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "recruitingAccepted" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "leaguePersonalApply" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "leagueTeamApply" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "joinTeam" %}
-                  <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamAccepted" %}
-                  <a class="dropdown-item" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalReply" %}
-                  <a class="dropdown-item" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamReply" %}
-                  <a class="dropdown-item" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingReply" %}
-                  <a class="dropdown-item" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "leagueReply" %}
-                  <a class="dropdown-item" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% endif %}
-                {% else %}
-                  {% if alarm.notification_type == "prComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "teamComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "recruitingComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                
-                  {% elif alarm.notification_type == "leagueComment" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamMatchingApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "recruitingAccepted" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "leaguePersonalApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "leagueTeamApply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-                  
-                  {% elif alarm.notification_type == "joinTeam" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamAccepted" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "personalReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "teamReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "recruitingReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
-
-                  {% elif alarm.notification_type == "leagueReply" %}
-                  <a class="dropdown-item alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
-
-                  {% endif %}
-                {% endif %}
-              {% endif %}
-              {% endfor %}
-              {% endif %}
-            </div>
-        </div>
-        {% if countNotification != 0 %}
-        <h>{{countNotification}}</h>
-        {% endif %}
-        <a href="{% url 'myPage' fnsuser.id %}">
-        <button class="btn btn-sm btn-outline-secondary" name = "name"><strong>{{request.session.name}}</strong>님 환영합니다.</button>
-        </a>
-        <a class="btn btn-sm btn-outline-secondary" name = "logout" href="{% url 'logout' %}">로그아웃</a>
-        {% else %}
-        <a class="btn btn-sm btn-outline-secondary" name = "login" href="{% url 'login' %}">로그인</a>
-        {% endif %}
+  {% block contents %}
+  {% endblock %}
+  <!-- aboveFooter -->
+  <div class="aboveFooter pt-md-5">
+      <!-- <img src="{% static 'aboveFooter.png' %}" class="img-fluid" style="display:fixed;"> -->
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 col-12">
+            <a href="{% url 'home' %}"><img src="{% static 'KoreanLogo.png' %}" alt="logo" class="src mr-4 float-center float-md-right" width="170px"></a>
+          </div>
+      
+          <div class="col-md-9 col-12">
+            <h3 class=" mt-3" style="font-family: 'Do Hyeon'; color:blanchedalmond;">원하는 시간과 원하는 장소에서 축구할 수 있도록 도와주는 '풋볼러버'</h3>
+            <p class="align-middle" style="font-family: 'Noto Sans KR';">풋볼러버는 'Play Football Make Peace'라는 비전으로<br>
+              천안시 '하비 프로젝트'의 일환으로 2019년 11월에 출시되었습니다. </p>
+          </div>
       </div>
     </div>
   </div>
-  </header> -->
+  <!-- aboveFooter 끝 -->
+  <!-- 풋터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-12">
+            <a href="{% url 'test' %}"><img src="{% static 'KoreanLogo.png' %}" alt="logo" class="src mr-4" width="170px"></a>
+        </div>
+        <div class="col-md-9 col-12">
+            <p>문의 | didwnstjr213@naver.com</p>
+            <p>[우:55029] 전주시 덕진구 아중로 180 | Tel 010-5050-9042</p>
+        </div>
+      </div>
+    </div>
+      
+    
+  </footer>
+
+
+<script>             
+  $.datetimepicker.setLocale('ko');
+  $('#time_from').datetimepicker({
+      allowTimes:[
+              '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'
+              , '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+      ],
+      i18n:{
+      ko:{
+      months:[
+          '1월','2월','3월','4월',
+          '5월','6월','7월','8월',
+          '9월','10월','11월','12월',
+      ],
+      dayOfWeek:[
+          "일", "월", "화", "수", 
+          "목", "금", "토",
+      ]
+      }
+      },
+      timepicker:true,
+      
+      format:'Y/m/d H:i'
+  });
+  
+  var setMin = function( currentDateTime){
+      var date = String($("#time_from").val());
+      var hour = date.substring(11,13);
+      var realhour = parseInt(hour) + 1;
+      var min = date.substring(14,16);
+      var time = String(realhour) +':'+ min;
+          this.setOptions({
+              minTime:time
+          });
+  };
+
+  $("#time_to").datetimepicker({
+      onShow:setMin,
+      datepicker:false,
+      allowTimes:[
+          '10:00', '11:00', '12:00', '13:00', '14:00'
+          , '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
+      ],
+      format: 'H:i'
+  
+      });
+
+function checkAllNotification(){
+  var url = "{% url 'checkAllNotification' %}"
+  $.ajax({
+    url: url,
+    dataType:'json',
+    type:'GET',
+    async:false,
+    success:function(data){
+    }
+  });
+  location.reload();
+  return true;
+}
+    
+    
+    
+    function checkNotification(notification_id){
+      var id = notification_id;
+      var url = "{% url 'checkNotification' 0 %}";
+      $.ajax({
+        url: url.replace('0', id),
+        dataType:'json',
+        type:'GET',
+        async:false,
+        success:function(data){
+        }
+      });
+      
+      return true;
+    }
+    </script>
+    
+    <script language=javascript>
+        $('.carousel').carousel({
+          interval:20
+        })
+        </script>
+        <script language="javascript" type="text/javascript">
+          buildCalendar();
+      </script> 
+</body>
+</html>
+

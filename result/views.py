@@ -4,43 +4,66 @@ from django import template
 from team.models import Team
 from result.models import Result, AttendedPlayer, ScoredPlayer
 from account.models import FNSUser
+from django.core.paginator import Paginator
 import datetime
 # Create your views here.
 register = template.Library()
 
 def result(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
     result = Result.objects.filter(confirm = True).order_by('-timeFrom')
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()    
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     return render(request, 'result.html', {'result':result, 'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser})
+    'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def input(request, decidedMatch_id):
     decidedMatch = get_object_or_404(DecidedMatch, pk = decidedMatch_id)
     myTeam = decidedMatch.myTeam.member.all()
     vsTeam = decidedMatch.vsTeam.member.all()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
- 
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     if fnsuser != decidedMatch.myTeam.teamleader and fnsuser != decidedMatch.vsTeam.teamleader:
         message = '팀주장만 결과를 입력할 수 있습니다.'
         return render(request, 'decidedDetail.html', {'message':message, 'fnsuser':fnsuser, 
-        'countNotification':countNotification, 'notification':notification, 'decidedMatch': decidedMatch})
+        'countNotification':countNotification, 'notificationList':notificationList, 'decidedMatch': decidedMatch})
 
     return render(request, 'input.html', {'fnsuser':fnsuser, 'decidedMatch': decidedMatch, 'myTeam':myTeam, 
-    'countNotification':countNotification, 'notification':notification, 'vsTeam':vsTeam})
+    'countNotification':countNotification, 'notificationList':notificationList, 'vsTeam':vsTeam})
 
 
 def inputScorer(request):
     attendedPlayer_id = request.POST.getlist('attendedPlayer_id[]')
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     decidedMatch_id = request.POST.get('decidedMatch_id')
     decidedMatch = get_object_or_404(DecidedMatch, pk = decidedMatch_id)
     myTeamScore = request.POST.get('myTeamScore')
@@ -49,7 +72,7 @@ def inputScorer(request):
     if fnsuser != decidedMatch.myTeam.teamleader and fnsuser != decidedMatch.vsTeam.teamleader:
         message = '팀주장만 결과를 입력할 수 있습니다.'
         return render(request, 'decidedDetail.html', {'message':message, 'fnsuser':fnsuser, 
-        'countNotification':countNotification, 'notification':notification, 'decidedMatch': decidedMatch})
+        'countNotification':countNotification, 'notificationList':notificationList, 'decidedMatch': decidedMatch})
 
 
     attendedPlayer = []
@@ -77,15 +100,22 @@ def inputScorer(request):
     test = request.POST.get('test')
     return render(request, 'inputScorer.html', 
     {'attendedPlayer_id':attendedPlayer_id, 'number':number, 'attendedPlayer': attendedPlayer , 'score': score, 
-    'countNotification':countNotification, 'notification':notification, 'myTeamScore': myTeamScore, 
+    'countNotification':countNotification, 'notificationList':notificationList, 'myTeamScore': myTeamScore, 
     'fnsuser':fnsuser, 'vsTeamScore': vsTeamScore , 'decidedMatch': decidedMatch})
 
 def myTeamResult(request):
     decidedMatch_id = request.POST.get('decidedMatch_id')
     decidedMatch = get_object_or_404(DecidedMatch, pk = decidedMatch_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if decidedMatch.my_suggest == False and decidedMatch.vs_suggest == False:
         result = Result.objects.create()
     else: 
@@ -151,7 +181,7 @@ def myTeamResult(request):
     result.save()
     matches = DecidedMatch.objects.all().order_by('-created')
     return render(request, 'decidedMatch.html', {'matches':matches ,'result':result, 'fnsuser':fnsuser,
-    'countNotification':countNotification, 'notification':notification, 'decidedMatch':decidedMatch})
+    'countNotification':countNotification, 'notificationList':notificationList, 'decidedMatch':decidedMatch})
    
         
 def edit(request, decidedMatch_id):
@@ -159,24 +189,40 @@ def edit(request, decidedMatch_id):
     myTeam = decidedMatch.myTeam.member.all()
     vsTeam = decidedMatch.vsTeam.member.all()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     attendedPlayer = AttendedPlayer.objects.filter(match = decidedMatch.match, team = fnsuser.teamname).all()
     return render(request, 'edit.html', {'myTeam':myTeam,'vsTeam':vsTeam,'fnsuser':fnsuser,
-    'countNotification':countNotification, 'notification':notification, 'decidedMatch':decidedMatch, 'attendedPlayer':attendedPlayer})
+    'countNotification':countNotification, 'notificationList':notificationList, 'decidedMatch':decidedMatch, 'attendedPlayer':attendedPlayer})
 
 def editScorer(request):
     attendedPlayer_id = request.POST.getlist('attendedPlayer_id[]')
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     decidedMatch_id = request.POST.get('decidedMatch_id')
     decidedMatch = get_object_or_404(DecidedMatch, pk = decidedMatch_id)
     myTeamScore = request.POST.get('myTeamScore')
     vsTeamScore = request.POST.get('vsTeamScore')
     if fnsuser != decidedMatch.myTeam.teamleader and fnsuser != decidedMatch.vsTeam.teamleader:
         message = '팀주장만 결과를 입력할 수 있습니다.'
-        return render(request, 'decidedDetail.html', {'countNotification':countNotification, 'notification':notification, 
+        return render(request, 'decidedDetail.html', {'countNotification':countNotification, 'notificationList':notificationList, 
         'message':message, 'fnsuser':fnsuser, 'decidedMatch': decidedMatch})
 
 
@@ -204,7 +250,7 @@ def editScorer(request):
     vsTeamScore = request.POST.get('vsTeamScore')
     scoredPlayer = ScoredPlayer.objects.filter(match=decidedMatch.match, team = fnsuser.teamname).all()
     return render(request, 'editScorer.html', 
-    {'countNotification':countNotification, 'notification':notification, 'scoredPlayer': scoredPlayer, 
+    {'countNotification':countNotification, 'notificationList':notificationList, 'scoredPlayer': scoredPlayer, 
     'attendedPlayer_id':attendedPlayer_id, 'number':number, 'attendedPlayer': attendedPlayer , 'score': score , 
     'fnsuser':fnsuser, 'myTeamScore': myTeamScore, 'vsTeamScore': vsTeamScore , 'decidedMatch': decidedMatch})
 
@@ -213,8 +259,16 @@ def editTeamResult(request):
     decidedMatch_id = request.POST.get('decidedMatch_id')
     decidedMatch = get_object_or_404(DecidedMatch, pk = decidedMatch_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     result = get_object_or_404(Result, pk = decidedMatch.result.id)
 
     result.myTeamScore = request.POST.get('myTeamScore')
@@ -284,7 +338,8 @@ def editTeamResult(request):
     decidedMatch.save()
     result.save()
     matches = DecidedMatch.objects.all().order_by('-created')
-    return render(request, 'decidedMatch.html', {'countNotification':countNotification, 'notification':notification, 
+    return render(request, 'decidedMatch.html', {'countNotification':countNotification, 
+    'notificationList':notificationList, 
     'fnsuser':fnsuser, 'matches':matches ,'result':result, 'decidedMatch':decidedMatch})
 
 
@@ -309,8 +364,15 @@ def myConfirm(request, decidedMatch_id):
     myScoredPlayer = ScoredPlayer.objects.filter(match = decidedMatch.match, team = decidedMatch.myTeam).all()
     vsScoredPlayer = ScoredPlayer.objects.filter(match = decidedMatch.match, team = decidedMatch.vsTeam).all()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     result = decidedMatch.result
 
     if decidedMatch.vs_confirm:
@@ -387,7 +449,7 @@ def myConfirm(request, decidedMatch_id):
             user.save()
 
     return render(request, 'decidedDetail.html', {'fnsuser':fnsuser, 'decidedMatch':decidedMatch, 'myAttendedPlayer':myAttendedPlayer,
-    'state':state, 'countNotification':countNotification, 'notification':notification, 'vsAttendedPlayer':vsAttendedPlayer,'myScoredPlayer':myScoredPlayer,'vsScoredPlayer':vsScoredPlayer})
+    'state':state, 'countNotification':countNotification, 'notificationList':notificationList, 'vsAttendedPlayer':vsAttendedPlayer,'myScoredPlayer':myScoredPlayer,'vsScoredPlayer':vsScoredPlayer})
 
 def vsConfirm(request, decidedMatch_id):
     decidedMatch = get_object_or_404(DecidedMatch, pk = decidedMatch_id)
@@ -410,8 +472,15 @@ def vsConfirm(request, decidedMatch_id):
     myScoredPlayer = ScoredPlayer.objects.filter(match = decidedMatch.match, team = decidedMatch.myTeam).all()
     vsScoredPlayer = ScoredPlayer.objects.filter(match = decidedMatch.match, team = decidedMatch.vsTeam).all()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     result = decidedMatch.result
 
     if decidedMatch.my_confirm:
@@ -487,5 +556,5 @@ def vsConfirm(request, decidedMatch_id):
             
 
     return render(request, 'decidedDetail.html', {'fnsuser':fnsuser, 'decidedMatch':decidedMatch, 'myAttendedPlayer':myAttendedPlayer,
-    'state':state, 'countNotification':countNotification, 'notification':notification, 'vsAttendedPlayer':vsAttendedPlayer,'myScoredPlayer':myScoredPlayer,'vsScoredPlayer':vsScoredPlayer})
+    'state':state, 'countNotification':countNotification, 'notificationList':notificationList, 'vsAttendedPlayer':vsAttendedPlayer,'myScoredPlayer':myScoredPlayer,'vsScoredPlayer':vsScoredPlayer})
     

@@ -6,9 +6,19 @@ from .models import CS
 # Create your views here.
 
 def cs(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     cs = CS.objects.all().order_by('-created')
     # 객체를 한 페이지로 자르기
     paginator = Paginator(cs, 10)
@@ -17,20 +27,34 @@ def cs(request):
     # request된 페이지를 얻어온 뒤 return 해 준다.
     csList = paginator.get_page(page)
 
-    return render(request, 'cs.html', {'fnsuser':fnsuser, 'notification':notification, 
+    return render(request, 'cs.html', {'fnsuser':fnsuser, 'notificationList':notificationList, 
     'csList':csList, 'cs':cs , 'countNotification':countNotification})
 
 def csEditform(request, cs_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     cs = get_object_or_404(CS, pk=cs_id)
-    return render(request, 'csEdit.html', {'cs':cs, 'fnsuser':fnsuser, 'notification':notification,'countNotification':countNotification})
+    return render(request, 'csEdit.html', {'cs':cs, 'fnsuser':fnsuser, 'notificationList':notificationList,'countNotification':countNotification})
         
 def csEdit(request, cs_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     cs = CS()
     cs.title = request.POST.get('title')
     cs.content = request.POST.get('content')
@@ -44,14 +68,21 @@ def csEdit(request, cs_id):
     # request된 페이지를 얻어온 뒤 return 해 준다.
     csList = paginator.get_page(page)
     message = '성공적으로 글이 수정되었습니다.'
-    return render(request, 'cs.html', {'fnsuser':fnsuser,'notification':notification,
+    return render(request, 'cs.html', {'fnsuser':fnsuser,'notificationList':notificationList,
     'cs':cs, 'countNotification':countNotification, 'csList':csList, 'message':message})
     
 
 def csNew(request):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     if request.method == 'GET':
         return render(request, 'csNew.html', {'fnsuser':fnsuser,'notification':notification,'countNotification':countNotification})
@@ -69,13 +100,21 @@ def csNew(request):
         # request된 페이지를 얻어온 뒤 return 해 준다.
         csList = paginator.get_page(page)
         message = '성공적으로 글이 작성되었습니다.'
-        return render(request, 'cs.html', {'fnsuser':fnsuser,'notification':notification,
+        return render(request, 'cs.html', {'fnsuser':fnsuser,'notificationList':notificationList,
         'cs':cs, 'countNotification':countNotification, 'csList':csList, 'message':message})
     
 def csDetail(request, cs_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     cs = get_object_or_404(CS, pk = cs_id)
     if cs.user != fnsuser:
         cs = CS.objects.all().order_by('-created')
@@ -85,18 +124,25 @@ def csDetail(request, cs_id):
         # request된 페이지를 얻어온 뒤 return 해 준다.
         csList = paginator.get_page(page)
         message = '글 작성자만 확인할 수 있습니다.'
-        return render(request, 'cs.html', {'fnsuser':fnsuser,'notification':notification,
+        return render(request, 'cs.html', {'fnsuser':fnsuser,'notificationList':notificationList,
         'cs':cs, 'countNotification':countNotification, 'csList':csList, 'message':message})
     
     
 
-    return render(request, 'csDetail.html', {'fnsuser':fnsuser,'notification':notification,
+    return render(request, 'csDetail.html', {'fnsuser':fnsuser,'notificationList':notificationList,
     'countNotification':countNotification, 'cs':cs})
 
 def csDelete(request, cs_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     cs = get_object_or_404(CS, pk = cs_id)
     cs.delete()
     cs = CS.objects.all().order_by('-created')
@@ -106,7 +152,7 @@ def csDelete(request, cs_id):
     # request된 페이지를 얻어온 뒤 return 해 준다.
     csList = paginator.get_page(page)
     message = '성공적으로 삭제하셨습니다.'
-    return render(request, 'cs.html', {'fnsuser':fnsuser,'notification':notification, 'message':message,
+    return render(request, 'cs.html', {'fnsuser':fnsuser,'notificationList':notificationList, 'message':message,
     'countNotification':countNotification, 'cs':cs, 'csList':csList})
 
     

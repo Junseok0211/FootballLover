@@ -22,19 +22,39 @@ def home(request):
     user_id = request.session.get('userId')
     if user_id:
         fnsuser = FNSUser.objects.get(pk=user_id)
-        notification = fnsuser.to.all().order_by('-created')
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
         countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
         return render(request, 'home.html', {'countNotification':countNotification, 'league':league, 
-        'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting, 'name':fnsuser.name, 'fnsuser':fnsuser, 'notification':notification, 'countNotification':countNotification})
+        'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting, 'name':fnsuser.name, 'fnsuser':fnsuser, 'notificationList':notificationList, 'countNotification':countNotification})
     return render(request, 'home.html', {'league':league, 'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting})
 
 def about(request):
-    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
-    return render(request, 'about.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    if not request.session.get('userId'):
+        return render(request, 'about.html')
+    else:
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        return render(request, 'about.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
     personal = PersonalMatching.objects.all().order_by('-created')
     # 객체를 한 페이지로 자르기
     paginator = Paginator(personal, 8)
@@ -45,27 +65,45 @@ def personal(request):
     
     errormessage = ''
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    if not (request.session.get('userId')):
-        errormessage = '로그인을 해주세요.'
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'personal.html', {'countNotification':countNotification, 'personal':personal, 
-    'personalList':personalList, 'errormessage':errormessage, 'notification':notification, 'fnsuser':fnsuser})
+    'personalList':personalList, 'errormessage':errormessage, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal_detail(request, personal_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     personalMatching = get_object_or_404(PersonalMatching, pk = personal_id)
     comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     is_liked = False
 
     if personalMatching.attendance.filter(id=request.session.get('userId')).exists():
         is_liked = True
 
     attendance = personalMatching.attendance.all()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    return render(request, 'personal_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching, 
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'personal_detail.html', {'countNotification':countNotification, 'commentList':commentList,
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching, 
     'is_liked': is_liked, 'total_attendance': personalMatching.total_attendance(), 'attendance':attendance})
 
 @require_POST
@@ -76,6 +114,12 @@ def personalcm_write(request):
         personalMatching_id = request.POST.get('personalMatching_id', '').strip()
         personalMatching = get_object_or_404(PersonalMatching, pk=personalMatching_id)
         comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+        # 객체를 한 페이지로 자르기
+        commentPaginator = Paginator(comments, 15)
+        # request에 담아주기
+        commentPage = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        commentList = commentPaginator.get_page(commentPage)
         content = request.POST.get('content', '').strip()
 
         if not content: 
@@ -95,12 +139,18 @@ def personalcm_write(request):
             newNotification.save()
             # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     return render(request, 'personal_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'errormessage':errormessage, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching})
+    'notificationList':notificationList, 'errormessage':errormessage, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def deletePC(request, personalComment_id):
     personalComment = get_object_or_404(PersonalComment, pk=personalComment_id)
@@ -108,19 +158,38 @@ def deletePC(request, personalComment_id):
     personalComment.delete()
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    comments = PersonalComment.objects.filter(post=personalMatching).order_by('-created')
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'personal_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def editPC(request, personalComment_id):
     errormessage = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     personalComment = get_object_or_404(PersonalComment, pk = personalComment_id)
 
@@ -132,9 +201,15 @@ def editPC(request, personalComment_id):
         personalComment.save()
     
     personalMatching = personalComment.post
-    comments = PersonalComment.objects.filter(post=personalMatching).order_by('-created')
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personalReply_write(request):
     errormessage = None
@@ -146,6 +221,12 @@ def personalReply_write(request):
         personalComment = get_object_or_404(PersonalComment, pk = comment_id)
 
         comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+        # 객체를 한 페이지로 자르기
+        commentPaginator = Paginator(comments, 15)
+        # request에 담아주기
+        commentPage = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        commentList = commentPaginator.get_page(commentPage)
         content = request.POST.get('content', '').strip()
 
         if not content:
@@ -167,12 +248,18 @@ def personalReply_write(request):
             newNotification.save()
             # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     return render(request, 'personal_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'errormessage':errormessage, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching})
+    'notificationList':notificationList, 'errormessage':errormessage, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def deletePersonalReply(request, reply_id):
     personalReply = get_object_or_404(PersonalReply, pk=reply_id)
@@ -180,19 +267,38 @@ def deletePersonalReply(request, reply_id):
     personalReply.delete()
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    comments = PersonalComment.objects.filter(post=personalMatching).order_by('-created')
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'personal_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def editPersonalReply(request, reply_id):
     errormessage = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     personalReply = get_object_or_404(PersonalReply, pk = reply_id)
 
@@ -204,15 +310,28 @@ def editPersonalReply(request, reply_id):
         personalReply.save()
 
     personalMatching = personalReply.post
-    comments = PersonalComment.objects.filter(post=personalMatching).order_by('-created')
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal_new(request):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    return render(request, 'personal_new.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'personal_new.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal_create(request):
     personalMatching =  PersonalMatching()
@@ -245,13 +364,26 @@ def personal_editForm(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk = personal_id)
     userId = request.session.get('userId')
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if(userId != personalMatching.user.id):
         personal = PersonalMatching.objects.order_by('-created')
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(personal, 8)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        personalList = paginator.get_page(page)
         error = '글을 작성한 사용자만 수정할 수 있습니다.'
-        return render(request, 'personal.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'personal':personal, 'error':error})
-    return render(request, 'personal_editForm.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'personalMatching':personalMatching})
+        return render(request, 'personal.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
+    return render(request, 'personal_editForm.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalMatching':personalMatching})
 
 def personal_edit(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk=personal_id)
@@ -281,14 +413,26 @@ def personal_delete(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk=personal_id)
     userId = request.session.get('userId')
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if(userId != personalMatching.user.id):
         personal = PersonalMatching.objects.order_by('-created')
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(personal, 8)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        personalList = paginator.get_page(page)
         error = '글을 작성한 사용자만 삭제할 수 있습니다.'
         return render(request, 'personal.html', {'countNotification':countNotification, 
-        'notification':notification, 'fnsuser':fnsuser, 'personal':personal, 'error':error})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
     personalMatching.delete()
     return redirect('/personal')
     
@@ -296,8 +440,13 @@ def personal_delete(request, personal_id):
 def personal_attendance(request):
     personalMatching = get_object_or_404(PersonalMatching, pk = request.POST.get('personal_id'))
     is_liked = personalMatching.attendance.filter(id=request.session.get('userId')).exists()
-
-    
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
     if is_liked:
         personal = get_object_or_404(FNSUser, pk= request.session.get('userId'))
@@ -307,7 +456,9 @@ def personal_attendance(request):
     elif personalMatching.number <= personalMatching.total_attendance():
         error = '모집인원이 다 모아져서 참가신청이 안됩니다.'
         attendance = personalMatching.attendance.all()
-        return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 'is_liked': is_liked, 'total_attendance': personalMatching.total_attendance(), 'attendance':attendance, 'error':error})
+        return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 
+        'is_liked': is_liked, 'total_attendance': personalMatching.total_attendance(), 
+        'attendance':attendance, 'error':error, 'commentList':commentList})
     
     else:    
         personal = get_object_or_404(FNSUser, pk= request.session.get('userId'))
@@ -327,40 +478,64 @@ def personal_attendance(request):
 
 
 def teamMatching(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
     teamMatching = TeamMatching.objects.all().filter(is_applied=False).order_by('-created')
 
     # 객체를 한 페이지로 자르기
     paginator = Paginator(teamMatching, 8)
     # request에 담아주기
-    page = request.GET.get('page')
+    teamPage = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
-    teamList = paginator.get_page(page)
+    teamList = paginator.get_page(teamPage)
 
     errormessage = ''
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if not (request.session.get('userId')):
         errormessage = '로그인을 해주세요.'
 
     return render(request, 'teamMatching/teamMatching.html', {'countNotification':countNotification, 
-    'teamList':teamList, 'notification':notification, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'errormessage':errormessage})
+    'teamList':teamList, 'notificationList':notificationList, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'errormessage':errormessage})
 
 def teamMatching_new(request):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     errormessage = ''
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if not (fnsuser.teamname):
         errormessage = '팀에 가입해야 글을 작성할 수 있습니다.'
         
     return render(request, 'teamMatching/teamMatching_new.html', {'countNotification':countNotification, 
-    'errormessage':errormessage, 'notification':notification, 'fnsuser':fnsuser})
+    'errormessage':errormessage, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def teamMatching_detail(request, teamMatching_id):
     teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     applied_teams = TmAppliedTeam.objects.filter(match=teamMatching).all()
     errormessage = ''
@@ -371,29 +546,53 @@ def teamMatching_detail(request, teamMatching_id):
     elif TmAppliedTeam.objects.filter(team=fnsuser.teamname, match=teamMatching).exists():
         is_applied = True
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-
-    return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'is_applied':is_applied, 'fnsuser':fnsuser, 'comments':comments, 'applied_teams':applied_teams, 'teamMatching':teamMatching, 'errormessage':errormessage})
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 'commentList':commentList,
+    'notificationList':notificationList, 'is_applied':is_applied, 'fnsuser':fnsuser, 'comments':comments, 'applied_teams':applied_teams, 'teamMatching':teamMatching, 'errormessage':errormessage})
 
 def tmcomment_write(request):    
-   error = None
-   fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))   
-   notification = fnsuser.to.all().order_by('-created')
-   countNotification = notification.filter(userCheck = False).count()
-   if request.method == 'POST':
+    error = None
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))   
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    if request.method == 'POST':
         teamMatching_id = request.POST.get('teamMatching_id', '').strip()
         teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
         comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
-       
+        # 객체를 한 페이지로 자르기
+        commentPaginator = Paginator(comments, 15)
+        # request에 담아주기
+        commentPage = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        commentList = commentPaginator.get_page(commentPage)
         content = request.POST.get('content', '').strip()
 
         if not content:
             error = '댓글을 입력해주세요.'
 
         if not error:
-            comment = TMComment.objects.create(user=fnsuser, post_id= teamMatching_id, content= content)
+            comments = TMComment.objects.create(user=fnsuser, post_id= teamMatching_id, content= content)
+            # 객체를 한 페이지로 자르기
+            commentPaginator = Paginator(comments, 15)
+            # request에 담아주기
+            commentPage = request.GET.get('page')
+            # request된 페이지를 얻어온 뒤 return 해 준다.
+            commentList = commentPaginator.get_page(commentPage)
 
             newNotification1 = Notification.objects.create(
             creator = get_object_or_404(FNSUser, pk=request.session.get('userId')),
@@ -406,7 +605,7 @@ def tmcomment_write(request):
             # return redirect(reverse('teamMatching_detail', kwargs={'teamMatching_id':teamMatching_id}))
 
         return render(request, 'teamMatching/teamMatching_detail.html', {'error':error, 'countNotification':countNotification, 
-        'notification':notification, 'countNotification':countNotification, 'fnsuser':fnsuser, 'comments':comments, 'teamMatching':teamMatching})
+        'notificationList':notificationList, 'countNotification':countNotification, 'fnsuser':fnsuser, 'commentList':commentList, 'teamMatching':teamMatching})
 
 def deleteTC(request, teamComment_id):
     tmComment = get_object_or_404(TMComment, pk=teamComment_id)
@@ -415,18 +614,36 @@ def deleteTC(request, teamComment_id):
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
-
-    notification = fnsuser.to.all().order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'teamMatching':teamMatching})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'teamMatching':teamMatching})
 
 def editTC(request, teamComment_id):
     error = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     tmComment = get_object_or_404(TMComment, pk = teamComment_id)
 
@@ -439,8 +656,14 @@ def editTC(request, teamComment_id):
     
     teamMatching = tmComment.post
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     return render(request, 'teamMatching/teamMatching_detail.html', {'teamMatching':teamMatching, 'error':error,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def teamReply_write(request):
     error = None
@@ -452,6 +675,12 @@ def teamReply_write(request):
         tmComment = get_object_or_404(TMComment, pk = comment_id)
 
         comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+        # 객체를 한 페이지로 자르기
+        commentPaginator = Paginator(comments, 15)
+        # request에 담아주기
+        commentPage = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        commentList = commentPaginator.get_page(commentPage)
         content = request.POST.get('content', '').strip()
 
         if not content:
@@ -473,12 +702,18 @@ def teamReply_write(request):
             newNotification.save()
             # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'error':error, 'fnsuser':fnsuser, 'comments':comments, 'teamMatching':teamMatching})
+    'notificationList':notificationList, 'error':error, 'fnsuser':fnsuser, 'commentList':commentList, 'teamMatching':teamMatching})
 
 def deleteTeamReply(request, reply_id):
     teamReply = get_object_or_404(TeamReply, pk=reply_id)
@@ -487,18 +722,37 @@ def deleteTeamReply(request, reply_id):
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'teamMatching':teamMatching})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'teamMatching':teamMatching})
 
 def editTeamReply(request, reply_id):
     error = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     teamReply = get_object_or_404(TeamReply, pk = reply_id)
 
@@ -511,31 +765,53 @@ def editTeamReply(request, reply_id):
 
     teamMatching = teamReply.post
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     return render(request, 'teamMatching/teamMatching_detail.html', {'teamMatching':teamMatching, 'error':error,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 
 def teamApplication(request, teamMatching_id):
     teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     message = ''
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
     if fnsuser.teamname.name == None:
         message = '먼저 팀에 가입해주세요.'
-        return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-        'notification':notification, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'message':message})
+        return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 'commentList':commentList,
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'message':message})
 
     if teamMatching.myteam == fnsuser.teamname:
         message = '자기 팀에게 매치신청을 할 수 없습니다.'
-        return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-        'notification':notification, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'message':message})
+        return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 'commentList':commentList, 
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'message':message})
 
     if TmAppliedTeam.objects.filter(match=teamMatching, team=fnsuser.teamname).exists():
         message = '이미 매치 신청을 하셨습니다.'
-        return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-        'notification':notification, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'message':message})
+        return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 'commentList':commentList,
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'message':message})
 
     tmAppliedTeam = TmAppliedTeam.objects.create(team=fnsuser.teamname, match=teamMatching)
     applied_teams = TmAppliedTeam.objects.filter(match=teamMatching).all()
@@ -554,8 +830,17 @@ def teamApplication(request, teamMatching_id):
            
     newNotification.teamMatchingApplyText()
     newNotification.save()
-    return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'is_applied':is_applied, 'teamMatching':teamMatching, 'applied_teams':applied_teams, 'message':message})
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 'commentList':commentList, 
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'is_applied':is_applied, 'teamMatching':teamMatching, 'applied_teams':applied_teams, 'message':message})
 
 def teamCancel(request, teamMatching_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
@@ -563,16 +848,29 @@ def teamCancel(request, teamMatching_id):
     TmAppliedTeam.objects.filter(match=teamMatching, team=fnsuser.teamname).delete()
     applied_teams = TmAppliedTeam.objects.filter(match=teamMatching).all()
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     is_applied = False
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     if TmAppliedTeam.objects.filter(match=teamMatching, team=fnsuser.teamname).exists():
         is_applied = True
 
     message = '성공적으로 매치신청을 취소하셨습니다.'
     return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'is_applied':is_applied, 'fnsuser':fnsuser, 'comments':comments, 'applied_teams':applied_teams, 'teamMatching':teamMatching, 'message':message})
+    'notificationList':notificationList, 'is_applied':is_applied, 'fnsuser':fnsuser, 'commentList':commentList, 'applied_teams':applied_teams, 'teamMatching':teamMatching, 'message':message})
 
 
 def applied_team(request, teamMatching_id):
@@ -580,24 +878,38 @@ def applied_team(request, teamMatching_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     applied_teams = TmAppliedTeam.objects.filter(match=teamMatching).all()
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
-    notification = fnsuser.to.all().order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_applied = False
     if applied_teams.filter(team=fnsuser.teamname).exists():
         is_applied = True
     if teamMatching.user != fnsuser:
         error = '글 작성자만 확인할 수 있습니다.'
-        return render(request, 'teamMatching/teamMatching_detail.html', {'notification':notification, 'error':error, 'comments':comments,
+        return render(request, 'teamMatching/teamMatching_detail.html', {'notificationList':notificationList, 
+        'fnsuser':fnsuser, 'error':error, 'commentList':commentList,
         'countNotification':countNotification, 'is_applied':is_applied, 'applied_teams':applied_teams, 'teamMatching':teamMatching})
     
-    return render(request, 'teamMatching/applied_team.html', {'countNotification':countNotification, 'notification':notification,
-    'comments':comments, 'fnsuser':fnsuser, 'applied_teams':applied_teams, 'teamMatching':teamMatching})
+    return render(request, 'teamMatching/applied_team.html', {'countNotification':countNotification, 'notificationList':notificationList,
+    'commentList':commentList, 'fnsuser':fnsuser, 'applied_teams':applied_teams, 'teamMatching':teamMatching})
 
 def match_approve(request, teamMatching_id, team_id):
     teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
     team = get_object_or_404(Team, pk=team_id)
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    TmAppliedTeam.objects.filter(match=teamMatching, team=fnsuser.teamname).delete()
+    TmAppliedTeam.objects.filter(match=teamMatching, team=team).delete()
     applied_team = TmAppliedTeam.objects.filter(match=teamMatching).all()
     teamMatching.vs_team = team
     teamMatching.save()
@@ -610,12 +922,60 @@ def match_approve(request, teamMatching_id, team_id):
     decidedMatch.timeTo = teamMatching.time_to
     decidedMatch.match = teamMatching
     decidedMatch.save()
+
+    newNotification = Notification.objects.create(
+        creator = get_object_or_404(FNSUser, pk=request.session.get('userId')),
+        to = teamMatching.user,
+        teamMatching = teamMatching,
+        notification_type = Notification.acceptSuggestion,
+        team = fnsuser.teamname,
+    )
+    newNotification.acceptSuggestionText()
+    newNotification.save()
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     message = '성공적으로 매칭이 되었습니다.'
 
-    return render(request, 'teamMatching/applied_team.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'message':message, 'applied_team':applied_team, 'teamMatching':teamMatching})
+    return render(request, 'teamMatching/applied_team.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'message':message, 'applied_team':applied_team, 'teamMatching':teamMatching})
+
+def match_deny(request, teamMatching_id, team_id):
+    teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
+    team = get_object_or_404(Team, pk=team_id)
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    TmAppliedTeam.objects.filter(match=teamMatching, team=team).delete()
+    applied_team = TmAppliedTeam.objects.filter(match=teamMatching).all()
+    
+    newNotification = Notification.objects.create(
+        creator = get_object_or_404(FNSUser, pk=request.session.get('userId')),
+        to = teamMatching.user,
+        teamMatching = teamMatching,
+        notification_type = Notification.denySuggestion,
+        team = fnsuser.teamname,
+    )
+    newNotification.denySuggestionText()
+    newNotification.save()
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    message = '매치신청을 거절하였습니다.'
+
+    return render(request, 'teamMatching/applied_team.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'message':message, 'applied_team':applied_team, 'teamMatching':teamMatching})
+
 
 
 def teamMatching_editForm(request, teamMatching_id):
@@ -623,33 +983,61 @@ def teamMatching_editForm(request, teamMatching_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     applied_teams = TmAppliedTeam.objects.filter(match=teamMatching).all()
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
-    notification = fnsuser.to.all().order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_applied = False
     if TmAppliedTeam.objects.filter(match=teamMatching, team=fnsuser.teamname).exists():
         is_applied = True
     if teamMatching.user != fnsuser:
         error = '글을 작성한 사용자만 수정할 수 있습니다.'
-        return render(request, 'teamMatching/teamMatching_detail.html', {'notification':notification, 'fnsuser':fnsuser, 'error':error, 'comments':comments,
+        return render(request, 'teamMatching/teamMatching_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'error':error, 'commentList':commentList,
         'countNotification':countNotification, 'is_applied':is_applied, 'applied_teams':applied_teams, 'teamMatching':teamMatching})
     
    
     return render(request, 'teamMatching/teamMatching_editForm.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'teamMatching':teamMatching})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'teamMatching':teamMatching})
 
 def teamMatching_delete(request, teamMatching_id):
     teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     applied_teams = TmAppliedTeam.objects.filter(match=teamMatching).all()
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
-    notification = fnsuser.to.all().order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_applied = False
     if TmAppliedTeam.objects.filter(match=teamMatching, team=fnsuser.teamname).exists():
         is_applied = True
     if teamMatching.user != fnsuser:
         error = '글을 작성한 사용자만 삭제할 수 있습니다.'
-        return render(request, 'teamMatching/teamMatching_detail.html', {'notification':notification, 'fnsuser':fnsuser, 'error':error, 'comments':comments,
+        return render(request, 'teamMatching/teamMatching_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'error':error, 'commentList':commentList,
         'countNotification':countNotification, 'is_applied':is_applied, 'applied_teams':applied_teams, 'teamMatching':teamMatching})
     
     teamMatching.delete()
@@ -708,6 +1096,10 @@ def teamMatching_edit(request, team_id):
     return redirect('/teamMatching')
 
 def recruiting(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
     recruiting = Recruiting.objects.all().order_by('-created')
 
        # 객체를 한 페이지로 자르기
@@ -718,21 +1110,35 @@ def recruiting(request):
     recruitingList = paginator.get_page(page)
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'recruiting/recruiting.html', {'countNotification':countNotification, 
-    'recruitingList':recruitingList, 'notification':notification, 'fnsuser':fnsuser, 'recruiting':recruiting})
+    'recruitingList':recruitingList, 'notificationList':notificationList, 'fnsuser':fnsuser, 'recruiting':recruiting})
 
 def recruiting_new(request):
     teams = Team.objects.all()
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if not (fnsuser.teamname):
         errormessage = '팀을 먼저 가입해주세요.'
-        return render(request, 'recruiting/recruiting_new.html', {'notification':notification, 'fnsuser':fnsuser, 'teams':teams, 'errormessage':errormessage})
+        return render(request, 'recruiting/recruiting_new.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'teams':teams, 'errormessage':errormessage})
 
-    return render(request, 'recruiting/recruiting_new.html', {'notification':notification, 'countNotification':countNotification, 
+    return render(request, 'recruiting/recruiting_new.html', {'notificationList':notificationList, 'countNotification':countNotification, 
     'fnsuser':fnsuser, 'teams':teams})
 
 def recruiting_create(request):
@@ -744,7 +1150,10 @@ def recruiting_create(request):
     if vs_team_id == 'basic':
         errormessage = '상대팀을 선택해주세요'
         teams = Team.objects.all()
-        return render(request, 'recruiting/recruiting_new.html', {'teams':teams, 'errormessage':errormessage}) 
+        notification = fnsuser.to.all()
+        countNotification = notification.filter(userCheck = False).count()
+        return render(request, 'recruiting/recruiting_new.html', {'teams':teams, 'errormessage':errormessage,
+        'fnsuser':fnsuser, 'notification':notification, 'countNotification':countNotification}) 
     
     elif vs_team_id == '친선경기':
         vs_team_id = None
@@ -787,8 +1196,21 @@ def recruiting_detail(request, recruiting_id):
     applied_players = recruiting.applied_player.all()
     accepted_players = recruiting.accepted_player.all()
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
-    notification = fnsuser.to.all().order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_writer = False
     if recruiting.user == fnsuser:
         is_writer = True
@@ -799,15 +1221,14 @@ def recruiting_detail(request, recruiting_id):
     if accepted_players.filter(pk=fnsuser.id).exists():
         is_applied = True
     
-    return render(request, 'recruiting/recruiting_detail.html', {'notification':notification, 'fnsuser':fnsuser, 'recruiting':recruiting, 'comments':comments,
-    'countNotification':countNotification, 'applied_players':applied_players, 'accepted_players':accepted_players, 'is_writer':is_writer, 'is_applied':is_applied })
+    return render(request, 'recruiting/recruiting_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'recruiting':recruiting, 'comments':comments,
+    'countNotification':countNotification, 'applied_players':applied_players, 
+    'commentList':commentList, 'accepted_players':accepted_players, 'is_writer':is_writer, 'is_applied':is_applied })
 
 def recruiting_apply(request, recruiting_id):
     recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
     pk = request.session.get('userId')
     fnsuser = get_object_or_404(FNSUser, pk=pk)
-    notification = fnsuser.to.all().order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
     is_applied = recruiting.applied_player.filter(pk=pk).exists()
     is_vsteam = False
     if recruiting.vs_team == fnsuser.teamname:
@@ -816,18 +1237,24 @@ def recruiting_apply(request, recruiting_id):
     applied_players = recruiting.applied_player.all()
     members = recruiting.myteam.member.all()
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     is_member = members.filter(pk=pk).exists()
     if is_member:
         message = '이미 팀 회원이십니다.'
         applied_players = recruiting.applied_player.all()
-        return render(request, 'recruiting/recruiting_detail.html', {'recruiting': recruiting, 'comments':comments,
+        return render(request, 'recruiting/recruiting_detail.html', {'recruiting': recruiting, 'commentList':commentList,
         'accepted_players': accepted_players, 'message':message, 'applied_players':applied_players 
         , 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
 
     if is_vsteam:
         message = '상대팀 회원이십니다.'
         applied_players = recruiting.applied_player.all()
-        return render(request, 'recruiting/recruiting_detail.html', {'recruiting': recruiting, 'comments':comments,
+        return render(request, 'recruiting/recruiting_detail.html', {'recruiting': recruiting, 'commentList':commentList,
         'accepted_players': accepted_players, 'message':message, 'applied_players':applied_players 
         , 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
 
@@ -846,31 +1273,56 @@ def recruiting_apply(request, recruiting_id):
            
         newNotification.recruitingApplyText()
         newNotification.save()
+
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     
     return render(request, 'recruiting/recruiting_detail.html', {'recruiting': recruiting, 'accepted_players': accepted_players, 
-    'countNotification':countNotification, 'message':message, 'applied_players':applied_players, 'comments':comments, 'notification':notification, 'fnsuser':fnsuser})
+    'countNotification':countNotification, 'message':message, 'applied_players':applied_players, 'commentList':commentList, 'notificationList':notificationList, 'fnsuser':fnsuser})
     
 
 def recruiting_list(request, recruiting_id):
     recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
     pk = request.session.get('userId')
     fnsuser = get_object_or_404(FNSUser, pk=pk)
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     members = recruiting.myteam.member.all()
     applied_players = recruiting.applied_player.all()
     accepted_players = recruiting.accepted_player.all()
     message = ''
-    return render(request, 'recruiting/recruiting_list.html', {'notification':notification, 'fnsuser':fnsuser, 
+    return render(request, 'recruiting/recruiting_list.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
     'countNotification':countNotification, 'recruiting': recruiting, 'applied_players': applied_players})
 
 def recruiting_accept(request, recruiting_id, player_id):
     recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
     fnsuser1 = get_object_or_404(FNSUser, pk=player_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     accepted = recruiting.accepted_player.count()
     if recruiting.number <= accepted:
         message = '참여인원보다 많은 인원을 수락할 수 없습니다.'
@@ -894,24 +1346,38 @@ def recruiting_accept(request, recruiting_id, player_id):
            
     newNotification.recruitingAcceptedText()
     newNotification.save()
-
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     message = '성공적으로 용병수락이 되었습니다.'
     is_writer = False
     user = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     if recruiting.user == user:
         is_writer = True
-    return render(request, 'recruiting/recruiting_detail.html', {'notification':notification, 'fnsuser':fnsuser,
+    return render(request, 'recruiting/recruiting_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
     'countNotification':countNotification, 'message':message, 'applied_players':applied_players, 
-    'recruiting':recruiting, 'accepted_players':accepted_players, 'is_writer':is_writer, 'comments':comments})
+    'recruiting':recruiting, 'accepted_players':accepted_players, 'is_writer':is_writer, 'commentList':commentList})
 
 def recruiting_deny(request, recruiting_id, player_id):
     recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
     fnsuser1 = get_object_or_404(FNSUser, pk=player_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
-    
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     recruiting.applied_player.remove(fnsuser1)
     recruiting.save()
     
@@ -928,20 +1394,36 @@ def recruiting_deny(request, recruiting_id, player_id):
     newNotification.recruitingDeniedText()
     newNotification.save()
 
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     message = '성공적으로 용병신청을 거절하였습니다.'
     is_writer = False
     user = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     if recruiting.user == user:
         is_writer = True
-    return render(request, 'recruiting/recruiting_detail.html', {'notification':notification, 'fnsuser':fnsuser,
+    return render(request, 'recruiting/recruiting_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
     'countNotification':countNotification, 'message':message, 'applied_players':applied_players, 
-    'recruiting':recruiting, 'accepted_players':accepted_players, 'is_writer':is_writer, 'comments':comments})
+    'recruiting':recruiting, 'accepted_players':accepted_players, 'is_writer':is_writer, 'commentList':commentList})
 
 
 def recruiting_cancel(request, recruiting_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     recruiting = get_object_or_404(Recruiting, pk = recruiting_id)
     if recruiting.applied_player.filter(pk=fnsuser.id).exists():
         recruiting.applied_player.remove(fnsuser)
@@ -951,14 +1433,21 @@ def recruiting_cancel(request, recruiting_id):
     applied_players = recruiting.applied_player.all()
     accepted_players = recruiting.accepted_player.all()
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     is_writer = False
     if recruiting.user == fnsuser:
         is_writer = True
 
     is_applied = False
     message = '성공적으로 매치신청을 취소하셨습니다.'
-    return render(request, 'recruiting/recruiting_detail.html', {'notification':notification, 'fnsuser':fnsuser,
-    'countNotification':countNotification, 'message':message, 'recruiting':recruiting, 'comments':comments,
+    return render(request, 'recruiting/recruiting_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
+    'countNotification':countNotification, 'message':message, 'recruiting':recruiting, 'commentList':commentList,
     'applied_players':applied_players, 'accepted_players':accepted_players, 'is_writer':is_writer, 'is_applied':is_applied })
 
 
@@ -970,15 +1459,22 @@ def recruiting_editForm(request, recruiting_id):
     teams = Team.objects.all()
     recruiting = get_object_or_404(Recruiting, pk = recruiting_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    return render(request, 'recruiting/recruiting_editForm.html', {'notification':notification, 'fnsuser':fnsuser,
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'recruiting/recruiting_editForm.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
     'countNotification':countNotification, 'recruiting':recruiting, 'teams':teams})
 
 def recruiting_edit(request, recruiting_id):
     recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     recruiting.title = request.POST.get('title')
     vs_team_id = request.POST.get('vs_team')
     if vs_team_id == 'basic':
@@ -1032,7 +1528,7 @@ def recruiting_delete(request, recruiting_id):
 def recomment_write(request):    
     error = None
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
     if request.method == 'POST':
         recruiting_id = request.POST.get('recruiting_id', '').strip()
@@ -1056,10 +1552,27 @@ def recomment_write(request):
            
             newNotification.recruitingCommentText()
             newNotification.save()
-            # return redirect(reverse('recruiting_detail', kwargs={'recruiting_id':recruiting_id}))
+            
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+            countNotification = notification.filter(userCheck = False).count()
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+            # 객체를 한 페이지로 자르기
+            paginator = Paginator(notification, 5)
+            # request에 담아주기
+            page = request.GET.get('page')
+            # request된 페이지를 얻어온 뒤 return 해 준다.
+            notificationList = paginator.get_page(page)
 
-        return render(request, 'recruiting/recruiting_detail.html', {'notification':notification, 'fnsuser':fnsuser,
-        'countNotification':countNotification, 'error':error, 'fnsuser':fnsuser, 'comments':comments, 'recruiting':recruiting})
+    comments = REComment.objects.filter(post = recruiting.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
+    return render(request, 'recruiting/recruiting_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
+    'countNotification':countNotification, 'error':error, 'fnsuser':fnsuser, 'commentList':commentList, 'recruiting':recruiting})
 
 def deleteRC(request, recruitingComment_id):
     reComment = get_object_or_404(REComment, pk=recruitingComment_id)
@@ -1068,18 +1581,38 @@ def deleteRC(request, recruitingComment_id):
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     return render(request, 'recruiting/recruiting_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'recruiting':recruiting})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'recruiting':recruiting})
 
 def editRC(request, recruitingComment_id):
     error = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     reComment = get_object_or_404(REComment, pk = recruitingComment_id)
 
@@ -1092,12 +1625,19 @@ def editRC(request, recruitingComment_id):
     
     recruiting = reComment.post
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     return render(request, 'recruiting/recruiting_detail.html', {'recruiting':recruiting, 'error':error,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def recruitingReply_write(request):
     error = None
-    if request.method == 'POST':
+    if  request.method == 'POST':
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))    
         recruiting_id = request.POST.get('recruiting_id', '').strip()
         recruiting = get_object_or_404(Recruiting, pk=recruiting_id)
@@ -1122,16 +1662,30 @@ def recruitingReply_write(request):
             reComment = reComment
             )
            
-            newNotification.recruitingReplyText()
-            newNotification.save()
-            # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
+        newNotification.recruitingReplyText()
+        newNotification.save()
+        # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
 
-    notification = fnsuser.to.all().order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
-    
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
 
-    return render(request, 'recruiting/recruiting_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'error':error, 'fnsuser':fnsuser, 'comments':comments, 'recruiting':recruiting})
+        comments = REComment.objects.filter(post = recruiting.id).order_by('-created')
+        # 객체를 한 페이지로 자르기
+        commentPaginator = Paginator(comments, 15)
+        # request에 담아주기
+        commentPage = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        commentList = commentPaginator.get_page(commentPage)
+
+        return render(request, 'recruiting/recruiting_detail.html', {'countNotification':countNotification, 
+        'notificationList':notificationList, 'error':error, 'fnsuser':fnsuser, 'commentList':commentList, 'recruiting':recruiting})
 
 def deleteRecruitingReply(request, reply_id):
     recruitingReply = get_object_or_404(RecruitingReply, pk=reply_id)
@@ -1139,19 +1693,38 @@ def deleteRecruitingReply(request, reply_id):
     recruitingReply.delete()
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    comments = REComment.objects.filter(post = recruiting.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'recruiting/recruiting_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'recruiting':recruiting})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'recruiting':recruiting})
 
 def editRecruitingReply(request, reply_id):
     error = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     recruitingReply = get_object_or_404(RecruitingReply, pk = reply_id)
 
@@ -1164,14 +1737,24 @@ def editRecruitingReply(request, reply_id):
 
     recruiting = recruitingReply.post
     comments = REComment.objects.filter(post=recruiting).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     return render(request, 'recruiting/recruiting_detail.html', {'recruiting':recruiting, 'error':error,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 
 
 
 # League 관련 views
 def league(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
     leagues = League.objects.all().order_by('-created')
 
        # 객체를 한 페이지로 자르기
@@ -1182,19 +1765,33 @@ def league(request):
     leagueList = paginator.get_page(page)
 
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if not (request.session.get('userId')):
         login = '로그인을 해주세요.'
-        return render(request, 'league/league.html', {'leagueList':leagueList, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'leagues':leagues, 'login':login}) 
-    return render(request, 'league/league.html', {'leagueList':leagueList, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'leagues':leagues})
+        return render(request, 'league/league.html', {'leagueList':leagueList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'leagues':leagues, 'login':login}) 
+    return render(request, 'league/league.html', {'leagueList':leagueList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'leagues':leagues})
 
 def league_new(request):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    if fnsuser.name == '양준석':
-        return render(request, 'league/league_new.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    if fnsuser.isStaff == True:
+        return render(request, 'league/league_new.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
     else:
         message = '매니저만 글을 작성할 수 있습니다.'
         leagues = League.objects.all().order_by('-created')
@@ -1206,7 +1803,7 @@ def league_new(request):
         leagueList = paginator.get_page(page)
         
         return render(request, 'league/league.html', {'countNotification':countNotification, 
-        'leagueList':leagueList, 'notification':notification, 'fnsuser':fnsuser, 'leagues':leagues, 'message':message})
+        'leagueList':leagueList, 'notificationList':notificationList, 'fnsuser':fnsuser, 'leagues':leagues, 'message':message})
 
 def league_create(request):
     league = League()
@@ -1233,10 +1830,23 @@ def league_create(request):
 
 def league_detail(request, league_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     league = get_object_or_404(League, pk=league_id)
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
     is_personal = LgPlayerAttendance.objects.filter(match=league, player=fnsuser).exists()
     is_team = False
@@ -1244,21 +1854,29 @@ def league_detail(request, league_id):
         is_team = LgTeamAttendance.objects.filter(match=league, team = fnsuser.teamname).exists()
     attended_players = LgPlayerAttendance.objects.filter(match=league).all()
     attended_teams = LgTeamAttendance.objects.filter(match=league).all()
-    return render(request, 'league/league_detail.html', {'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_players':attended_players, 'league':league,
-    'countNotification':countNotification, 'attended_teams':attended_teams, 'is_team':is_team, 'is_personal':is_personal})
+    return render(request, 'league/league_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'comments':comments, 'attended_players':attended_players, 'league':league,
+    'countNotification':countNotification, 'attended_teams':attended_teams, 'is_team':is_team, 
+    'commentList':commentList, 'is_personal':is_personal})
 
 def league_editForm(request, league_id):
     league = get_object_or_404(League, pk = league_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    return render(request, 'league/league_editForm.html', {'notification':notification, 'fnsuser':fnsuser,
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'league/league_editForm.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
     'countNotification':countNotification, 'league':league})
 
 def league_edit(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     league.title = request.POST.get('title')
     league.location = request.POST.get('location')
     time_from = request.POST.get('time_from')
@@ -1286,10 +1904,24 @@ def league_delete(request, league_id):
 
 def personal_apply(request, league_id):
     league = get_object_or_404(League, pk=league_id)
-    comments = LGComment.objects.all().filter(post = league).order_by('-created')
+    comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     attended_players = LgPlayerAttendance.objects.all().filter(match=league)
     attended_teams = LgTeamAttendance.objects.all().filter(match=league)
     is_personal = attended_players.filter(match=league, player=fnsuser).exists()
@@ -1300,8 +1932,8 @@ def personal_apply(request, league_id):
 
     if is_personal:
         message = '이미 참가신청을 했습니다.'
-        return render(request, 'league/league_detail.html', {'notification':notification, 'fnsuser':fnsuser,
-        'countNotification':countNotification, 'comments':comments, 'attended_players':attended_players, 'league':league,
+        return render(request, 'league/league_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser,
+        'countNotification':countNotification, 'commentList':commentList, 'attended_players':attended_players, 'league':league,
         'attended_teams':attended_teams, 'is_team':is_team, 'is_personal':is_personal, 'message':message})
     else:
         message = '참가신청을 완료했습니다.'
@@ -1318,16 +1950,40 @@ def personal_apply(request, league_id):
            
         newNotification.leaguePersonalApplyText()
         newNotification.save()
-        return render(request, 'league/league_detail.html', {'notification':notification, 'fnsuser':fnsuser, 
+
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        return render(request, 'league/league_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-        'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+        'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
 
 def personal_cancel(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+    
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     LgPlayerAttendance.objects.filter(match=league, player=fnsuser).delete()
     attended_players = LgPlayerAttendance.objects.filter(match=league).all()
     attended_teams = LgTeamAttendance.objects.filter(match=league).all()
@@ -1337,17 +1993,31 @@ def personal_cancel(request, league_id):
     if fnsuser.teamname:
         is_team = LgTeamAttendance.objects.filter(match=league, team=fnsuser.teamname).exists()
     
-    return render(request, 'league/league_detail.html', {'notification':notification, 'fnsuser':fnsuser, 
+    return render(request, 'league/league_detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
     'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-    'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+    'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
 
 
 def team_apply(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     attended_players = LgPlayerAttendance.objects.filter(match=league).all()
     attended_teams = LgTeamAttendance.objects.filter(match=league).all()
     is_personal = LgPlayerAttendance.objects.filter(match=league, player=fnsuser).exists()
@@ -1357,19 +2027,19 @@ def team_apply(request, league_id):
         message = '팀에 먼저 가입해주세요'
         is_team = False
         return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-        'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
    
     is_team = LgTeamAttendance.objects.filter(match=league, team=fnsuser.teamname).exists()  
     if fnsuser != fnsuser.teamname.teamleader:
         message = '팀대표만 신청할 수 있습니다.'
         return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-        'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
 
     else:
         if is_team:
             message = '이미 신청하셨습니다.'
             return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-            'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+            'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
         else:
             lgTeamAttendance = LgTeamAttendance.objects.create(team = fnsuser.teamname, match=league)
             attended_teams = LgTeamAttendance.objects.filter(match=league).all()
@@ -1385,15 +2055,39 @@ def team_apply(request, league_id):
                 
             newNotification.leagueTeamApplyText()
             newNotification.save()
+
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+            countNotification = notification.filter(userCheck = False).count()
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+            # 객체를 한 페이지로 자르기
+            paginator = Paginator(notification, 5)
+            # request에 담아주기
+            page = request.GET.get('page')
+            # request된 페이지를 얻어온 뒤 return 해 준다.
+            notificationList = paginator.get_page(page)
             return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-            'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+            'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
 
 def team_cancel(request, league_id):
     league = get_object_or_404(League, pk=league_id)
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     attended_players = LgPlayerAttendance.objects.filter(match=league).all()
     attended_teams = LgTeamAttendance.objects.filter(match=league).all()
     is_personal = LgPlayerAttendance.objects.filter(player=fnsuser).exists()
@@ -1403,13 +2097,13 @@ def team_cancel(request, league_id):
         message = '팀에 먼저 가입해주세요'
         is_team = False
         return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-        'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
    
     is_team = LgTeamAttendance.objects.filter(match=league, team = fnsuser.teamname).exists()  
     if fnsuser != fnsuser.teamname.teamleader:
         message = '팀대표만 취소할 수 있습니다.'
         return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-        'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
 
     else:
         message = '성공적으로 취소되었습니다.'
@@ -1417,17 +2111,22 @@ def team_cancel(request, league_id):
         attended_teams = LgTeamAttendance.objects.filter(match=league).all()
         is_team = LgTeamAttendance.objects.filter(match=league, team = fnsuser.teamname).exists()
         return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'attended_players':attended_players, 'league':league,
-        'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
+        'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'attended_teams':attended_teams, 'is_personal':is_personal, 'is_team':is_team, 'message':message})
     
 def lgcomment_write(request):    
     error = None
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')    
-    countNotification = notification.filter(userCheck = False).count()
+    
     if request.method == 'POST':
         league_id = request.POST.get('league_id', '').strip()
         league = get_object_or_404(League, pk=league_id)
-        comments = LGComment.objects.filter(post = league.id).order_by('-created')
+        comments = LGComment.objects.filter(post = league).order_by('-created')
+        # 객체를 한 페이지로 자르기
+        commentPaginator = Paginator(comments, 15)
+        # request에 담아주기
+        commentPage = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        commentList = commentPaginator.get_page(commentPage)
        
         content = request.POST.get('content', '').strip()
 
@@ -1446,10 +2145,18 @@ def lgcomment_write(request):
            
             newNotification.leagueCommentText()
             newNotification.save()
-            # return redirect(reverse('league_detail', kwargs={'league_id':league_id}))
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')    
+            countNotification = notification.filter(userCheck = False).count()
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+            # 객체를 한 페이지로 자르기
+            paginator = Paginator(notification, 5)
+            # request에 담아주기
+            page = request.GET.get('page')
+            # request된 페이지를 얻어온 뒤 return 해 준다.
+            notificationList = paginator.get_page(page)
 
-        return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser,
-        'error':error, 'fnsuser':fnsuser, 'comments':comments, 'league':league})
+        return render(request, 'league/league_detail.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser,
+        'error':error, 'fnsuser':fnsuser, 'commentList':commentList, 'league':league})
 
 
 def deleteLC(request, leagueComment_id):
@@ -1459,18 +2166,37 @@ def deleteLC(request, leagueComment_id):
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'league/league_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'league':league})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'league':league})
 
 def editLC(request, leagueComment_id):
     error = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     lgComment = get_object_or_404(LGComment, pk = leagueComment_id)
 
@@ -1483,8 +2209,14 @@ def editLC(request, leagueComment_id):
     
     league = lgComment.post
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     return render(request, 'league/league_detail.html', {'league':league, 'error':error,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def leagueReply_write(request):
     error = None
@@ -1515,14 +2247,30 @@ def leagueReply_write(request):
            
             newNotification.leagueReplyText()
             newNotification.save()
+
+            
             # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
     return render(request, 'league/league_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'error':error, 'fnsuser':fnsuser, 'comments':comments, 'league':league})
+    'notificationList':notificationList, 'error':error, 'fnsuser':fnsuser, 'commentList':commentList, 'league':league})
 
 def deleteLeagueReply(request, reply_id):
     leagueReply = get_object_or_404(LeagueReply, pk=reply_id)
@@ -1531,18 +2279,37 @@ def deleteLeagueReply(request, reply_id):
 
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
 
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)   
     return render(request, 'league/league_detail.html', {'countNotification':countNotification, 
-    'notification':notification, 'fnsuser':fnsuser, 'comments':comments, 'league':league})
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'league':league})
 
 def editLeagueReply(request, reply_id):
     error = None
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     content = request.POST.get('content')
     leagueReply = get_object_or_404(LeagueReply, pk = reply_id)
 
@@ -1555,8 +2322,14 @@ def editLeagueReply(request, reply_id):
 
     league = leagueReply.post
     comments = LGComment.objects.filter(post = league).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
     return render(request, 'league/league_detail.html', {'league':league, 'error':error,
-    'comments':comments, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
         
 

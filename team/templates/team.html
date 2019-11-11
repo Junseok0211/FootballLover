@@ -36,8 +36,8 @@ function checkForm(frm){
 <div class="team">
   <div class="container">
     <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
-      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀 검색</span>
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
+      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀 검색</span>
     </div>
     <div class="row align-items-center">
       <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-size: 20px;">등록되어 있는 팀을 확인하고 가입신청 혹은 매치신청을 할 수 있습니다.</p>  
@@ -77,7 +77,7 @@ function checkForm(frm){
   </div>
 
 
-<table class="table mt-3">
+<table class="table mt-3 tableControl">
   <thead class="thead-dark">
     <tr class="row">
       <th class="text-center col-md-2 col-4">팀이름</th>
@@ -106,6 +106,7 @@ function checkForm(frm){
       <script>
         var i = 0; 
       </script>
+      {% if teams %}
       {% for team in teams %}
       <script>
         i += 1;
@@ -118,8 +119,8 @@ function checkForm(frm){
         <td class="text-center col-md-1 col-2"> {{ team.point }} </td>
         <td class="text-center col-md-1 col-2"> {{ team.matchcount }} </td>
         <td class="text-center col-md-1 col-2">
-          <span class="text-center mr-2">{{ team.win }}</span>
-          <span class="text-center mr-2">{{ team.draw }}</span>
+          <span class="text-center mr-2">{{ team.win }} /</span>
+          <span class="text-center mr-2">{{ team.draw }} /</span>
           <span class="text-center">{{ team.lose }}</span>
         </td>
         <td class="text-center col-1"> {{ team.gf }} </td>
@@ -134,9 +135,16 @@ function checkForm(frm){
         </td>
         
       </tr>
+      {% endfor %}
+      {% else %}
+      <tr class="row">
+        <td colspan="10">등록된 팀이 없습니다.</td>
+      </tr>
+      {% endif %}
     </tbody>
-    {% endfor %}
+    
 </table>
+<hr class="my-3">
 <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
         {% if teamList.has_previous %}

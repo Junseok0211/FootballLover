@@ -47,6 +47,7 @@ urlpatterns = [
     path('applied_team/<int:teamMatching_id>', match.views.applied_team, name = "applied_team"),
     path('teamCancel/<int:teamMatching_id>', match.views.teamCancel, name="teamCancel"),
     path('match_approve/<int:teamMatching_id>/<int:team_id>', match.views.match_approve, name = "match_approve"),
+    path('match_deny/<int:teamMatching_id>/<int:team_id>', match.views.match_deny, name = "match_deny"),
     path('tmcomment_write/', match.views.tmcomment_write, name = "tmcomment_write"),
     path('deleteTC/<int:teamComment_id>', match.views.deleteTC, name='deleteTC'),
     path('editTC/<int:teamComment_id>', match.views.editTC, name='editTC'),

@@ -17,8 +17,9 @@ class FNSUser(TimeStampedModel):
                                 verbose_name='아이디')
     email = models.EmailField(max_length=30,
                                   verbose_name='사용자이메일')
-    password = models.CharField(max_length=15, validators=[MinLengthValidator(8)],
+    password = models.CharField(max_length=150,
                                 verbose_name='비밀번호')
+    # password = models.CharField(max_length=15, validators=[MinLengthValidator(8)],
     name = models.CharField(max_length=10,
                             verbose_name='이름')
     region = models.CharField(max_length = 10,

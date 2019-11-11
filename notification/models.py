@@ -10,6 +10,7 @@ class Notification(models.Model):
     teamApplicationDenied = 'teamApplicationDenied'
     suggestTeamMatching = 'suggestTeamMatching' 
     acceptSuggestion = 'acceptSuggestion'
+    denySuggestion = 'denySuggestion'
 
     prComment = 'prComment'
     teamComment = 'teamComment'
@@ -51,7 +52,8 @@ class Notification(models.Model):
         (teamReply, 'teamReply'),
         (recruitingReply, 'recruitingReply'),
         (leagueReply, 'leagueReply'),
-        (acceptSuggestion, 'acceptSuggestion')
+        (acceptSuggestion, 'acceptSuggestion'),
+        (denySuggestion, 'denySuggestion'),
         
     }
 
@@ -111,7 +113,11 @@ class Notification(models.Model):
         self.save()
 
     def acceptSuggestionText(self):
-        self.text = '[' + self.team.name + ']팀이 매칭신청을 수락했습니다.'
+        self.text = '[' + self.team.name + ']팀이 매치신청을 수락했습니다.'
+        self.save()
+
+    def denySuggestionText(self):
+        self.text = '[' + self.team.name + ']팀이 매치신청을 거절했습니다.'
         self.save()
 
     def personalApplyText(self):

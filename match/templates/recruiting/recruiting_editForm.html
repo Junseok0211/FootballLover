@@ -8,6 +8,16 @@ alert("{{ errormessage }}");
 {% endif %}
 <script language="javascript">
         function formCheck(frm){
+            var today = new Date()
+            var year = today.getFullYear();
+            var month = today.getMonth() +1;
+            var date = today.getDate();
+            var hour = today.getHours();
+            var matchDay = frm.time_from.value;
+            var matchYear = matchDay.substring(0,4);
+            var matchMonth = matchDay.substring(5,7);
+            var matchDate = matchDay.substring(8,10);
+            var matchHour = matchDay.substring(11,13);
                if(frm.title.value == ""){
                    alert("제목을 입력해주세요");
                    frm.title.focus();
@@ -28,6 +38,33 @@ alert("{{ errormessage }}");
                    frm.time_from.focus();
                    return false;
                }
+               if(Number(matchYear) < year){
+                    alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                    frm.time_from.focus();
+                    return false;
+                }
+                else{
+                    if(Number(matchMonth) < month){
+                        alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                        frm.time_from.focus();
+                        return false;
+                    }
+                    else{ 
+                        if(Number(matchDate) < date){
+                            alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                            frm.time_from.focus();
+                            return false;
+                        }
+                        else if(Number(matchDate) == date){
+                            if(Number(matchHour) <= hour){
+                                alert("matchhour :" + matchHour + "hour :" + hour);
+                                alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                                frm.time_from.focus();
+                                return false;
+                            }
+                        } 
+                   }
+                }
                if (frm.time_to.value == ""){
                    alert("종료시간을 입력해주세요");
                    frm.time_to.focus();
@@ -35,6 +72,11 @@ alert("{{ errormessage }}");
                }
                if (frm.number.value == ""){
                    alert("모집인원을 입력해주세요");
+                   frm.number.focus();
+                   return false;
+               }
+               if (frm.number.value <= 0){
+                   alert("모집인원은 1명이상 선택해야 합니다.");
                    frm.number.focus();
                    return false;
                }
@@ -54,11 +96,11 @@ alert("{{ errormessage }}");
 <div class="recruiting">
   <div class="container">
     <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
-      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">용병모집</span>
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
+      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:lightsalmon;">용병모집</span>
     </div>
     <div class="row align-items-center">
-      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살 용병을 구합니다.</p>  
+      <p class="text-center col-12 float-center text-stroke" style="font-weight: bold; font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살 용병을 구합니다.</p>  
     </div>
   </div>
 </div>
@@ -115,11 +157,11 @@ alert("{{ errormessage }}");
         <div class="form-group row">
             <label class="col-lg-2 col-sm-12 col-form-label" for="time_from">시작시간</label>
             <div class="col-lg-3 col-sm-12">
-            <input id="time_from" name = "time_from" class="form-control" type="text">
+            <input id="time_from" name = "time_from" class="form-control" type="text" readonly autocomplete="off">
             </div>
             <label class="col-lg-2 col-sm-12 col-form-label" for="time_to">종료시간</label>
             <div class="col-lg-3 col-sm-12">
-            <input id="time_to" name = "time_to" type="text" class="form-control">
+            <input id="time_to" name = "time_to" type="text" class="form-control" readonly autocomplete="off">
             </div>
         </div>
 

@@ -100,8 +100,8 @@ function check(re, what, message) {
 <div class="team">
   <div class="container">
     <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
-      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀 검색</span>
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
+      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀 검색</span>
     </div>
     <div class="row align-items-center">
       <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-size: 20px;">등록되어 있는 팀을 확인하고 가입신청 혹은 매치신청을 할 수 있습니다.</p>  
@@ -343,9 +343,17 @@ function check(re, what, message) {
                 <label for="school" class="col-lg-2 col-sm-12">학교</label>
                 <select id="school" class="form-control col-12 col-md-6" name = "school" >
                     <option selected disabled hidden value="school">학교</label>
-                    <option value="남서울대">남서울대</option>
-                    <option value="타대학교">타대학교</option>
-                    <option value="지역주민">지역주민</option>
+                        <option selected disabled hidden value="school">학교</label>
+                        <option value="남서울대학교">남서울대학교</option>
+                        <option value="백석대학교">백석대학교</option>
+                        <option value="나사렛대학교">나사렛대학교</option>
+                        <option value="상명대학교">상명대학교</option>
+                        <option value="한국기술교육대학교">한국기술교육대학교</option>
+                        <option value="단국대학교">단국대학교</option>
+                        <option value="호서대학교">호서대학교</option>
+                        <option value="공주대학교">공주대학교</option>
+                        <option value="선문대학교">선문대학교</option>
+                        <option value="지역주민">기타</option>
                 </select>
             </div> 
             <button type="submit" class="btn btn-dark float-right">등록</button>

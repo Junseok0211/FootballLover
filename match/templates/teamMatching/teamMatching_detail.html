@@ -22,11 +22,11 @@ alert('{{message}}');
 <div class="teamMatching">
   <div class="container">
     <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
-      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀매칭</span>
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
+      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:rgb(226, 211, 4);">팀매칭</span>
     </div>
     <div class="row align-items-center">
-      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살의 상대팀을 구합니다.</p>  
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-weight: bold; font-size: 20px;">축구 혹은 풋살을 같이 할 상대팀을 구합니다.</p>  
     </div>
   </div>
 </div>
@@ -67,7 +67,7 @@ alert('{{message}}');
             <tr class="row">
                 <th scope="row" class="col-4">주최팀</th>
                 <td style="text-align: left;" class="col-8">
-                {{teamMatching.myteam}}    
+                <a class="text-decoration-none" href="{% url 'detail' teamMatching.myteam.id %}"><b>{{teamMatching.myteam}}</b></a>
                 </td>
             </tr>
             <tr class="row">
@@ -101,7 +101,7 @@ alert('{{message}}');
           </tbody>
         </table>
       </div>
-      <div class="col-md-5 col-12 ml-0" style="border-left:silver 2px solid;">
+      <div class="col-md-5 col-12 ml-0 personalDetail">
           <table class="table">
             <thead>
               <tr class="row">
@@ -125,7 +125,7 @@ alert('{{message}}');
                           <a href = "{% url 'applied_team' teamMatching.id %}">
                             <button style="margin: 10px;" type="button" class="btn btn-outline-success">신청현황확인</button>
                           </a> 
-                          <p style="color:red;">글 작성자만 매치신청 수락을 할 수 있습니다.</p>
+                          <p class="pl-3" style="color:red;">글 작성자만 매치신청 수락을 할 수 있습니다.</p>
                           {% endif %}
                       </div>  
                   </td>
@@ -160,9 +160,9 @@ alert('{{message}}');
             </table>
             <hr>
             <div class="align-items-end">
-              <a href="{% url 'teamMatching' %}"><button type="button" class="btn btn-success col-3">목록으로</button></a>
-              <a href="{% url 'teamMatching_editForm' teamMatching.id %}"><button onclick="check()" type="button" class="btn btn-success col-3">수정하기</button></a>
-              <a href="{% url 'teamMatching_delete' teamMatching.id %}"><button onclick="return deletePC()" type="button" class="btn btn-success col-3">삭제하기</button></a>
+              <a href="{% url 'teamMatching_editForm' teamMatching.id %}"><button onclick="check()" type="button" class="btn btn-success col-3">수정</button></a>
+              <a href="{% url 'teamMatching_delete' teamMatching.id %}"><button onclick="return deletePC()" type="button" class="btn btn-success col-3">삭제</button></a>
+              <a href="{% url 'teamMatching' %}"><button type="button" class="btn btn-success col-4">목록으로</button></a>
             </div>
       </div>
         
@@ -208,7 +208,7 @@ alert('{{message}}');
 
   <!-- 댓글 목록 -->
   <div class="container">
-    {% for comment in comments %}
+    {% for comment in commentList %}
     <!-- 댓글 대댓글 전체 래핑 -->
     <div class="commentWrapper">
       <!-- 댓글 래퍼 -->
@@ -220,14 +220,14 @@ alert('{{message}}');
             <img class="float-right" style="margin-left:10px; border-radius: 70px;" width="35px" height="35px" src="{{ comment.user.userimg.url }}">
             </a>
           </div>
-          <div id = "{{comment.id}}" class="col-sm-10 col-9">
+          <div id = "{{comment.id}}" class="col-sm-10 col-8">
             <h6 class="media-heading user_name">
             <strong>{{ comment.user }}</strong> 
             | {{comment.passedTime}}
             </h6>
             <h6>{{ comment.content }}</h6>
           </div>
-          <div class="btn-group col-1">
+          <div class="btn-group col-2 col-md-1">
             <button type="button" class="btn btn-light dropdown-toggle" style="color:white !important; border:none !important; background-color: white !important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="far fa-caret-square-down" style="color: black !important;"></i>
             </button>
@@ -277,7 +277,7 @@ alert('{{message}}');
     <div class="replyAll" id="test1">
       <!-- 답글쓰기 -->
       <div class="row writeReply" id = write>
-        <div class="col-md-1 col-3">
+        <div class="col-md-1 col-2">
             <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
         </div>
         <div class="col-1">
@@ -308,7 +308,7 @@ alert('{{message}}');
       <div class="replyWrapper" id = replyWrapper>
       <!-- replyDetail -->
         <div class="row replyDetail">
-          <div class="col-md-1 col-3">
+          <div class="col-md-1 col-2">
               <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
           </div>
           <div class="col-1">
@@ -340,7 +340,7 @@ alert('{{message}}');
 
         <!-- replyEditForm -->
         <div class="row replyEditForm">
-          <div class="col-md-1 col-3">
+          <div class="col-md-1 col-2">
               <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
           </div>
           <div class="col-1">
@@ -371,13 +371,37 @@ alert('{{message}}');
       <!-- 답글 래퍼 끝 -->
       <!-- 답글 목록 끝 -->
     </div>
-    
+   
   </div>
   <!-- commentWrapper 끝 -->
 
-      <!--답글 끝  -->
+      <!--댓글 끝  -->
     {% endfor %}
-  
+ <!-- 댓글 페이지네이션 -->
+ <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if commentList.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{commentList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{commentList.previous_page_number}}</a>
+      </li>
+      {% endif %}
+      
+      <li class="page-item disabled"><a class="page-link" href="#">{{commentList.number}}</a></li>
+      {% if commentList.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{commentList.next_page_number}}">{{commentList.next_page_number}}</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{commentList.paginator.num_pages}}">마지막으로</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+    <!-- 댓글 페이지네이션 끝 -->
+        
 
 </div>
 

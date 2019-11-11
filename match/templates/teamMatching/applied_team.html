@@ -16,11 +16,11 @@ var i = 0;
 <div class="teamMatching">
   <div class="container">
     <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
-      <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">팀매칭</span>
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
+      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:rgb(226, 211, 4);">팀매칭</span>
     </div>
     <div class="row align-items-center">
-      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">축구 혹은 풋살의 상대팀을 구합니다.</p>  
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-weight: bold; font-size: 20px;">축구 혹은 풋살을 같이 할 상대팀을 구합니다.</p>  
     </div>
   </div>
 </div>
@@ -35,19 +35,18 @@ var i = 0;
 </div>
 <hr>
 <div class="container mt-4 mb-4">
-<table class="table">
+<table class="table px-0 mx-0">
   <thead class="thead-dark">
     <tr class="row">
       <th class="col-1">#</th>
       <th class="text-center col-md-2 col-4">팀이름</th>
       <th class="text-center col-md-1 col-3">활동지역</th>
       <th class="text-center col-md-2 col-4">학교</th>
-      <th class="text-center col-md-1 col-3">경기수</th>
       <th class="text-center col-1">승</th>
       <th class="text-center col-1">무</th>
       <th class="text-center col-1">패</th>
       <th class="text-center col-md-1 col-3">승점</th>
-      <th class="text-center col-md-1 col-3">수락여부</th>
+      <th class="text-center col-md-2 col-6 px-0 mx-0">수락여부</th>
     </tr>
   </thead>
     <tbody>
@@ -67,7 +66,6 @@ var i = 0;
         </td>
         <td class="text-center col-md-1 col-3"> {{ team.team.city }} </td>
         <td class="text-center col-md-2 col-4"> {{ team.team.school }} </td>
-        <td class="text-center col-md-1 col-3"> {{ team.team.matchcount }} </td>
         <td class="text-center col-1"> {{ team.team.win }} </td>
         <td class="text-center col-1"> {{ team.team.draw }} </td>
         <td class="text-center col-1"> {{ team.team.lose }} </td>
@@ -82,8 +80,9 @@ var i = 0;
           document.write(point);
         </script>  
         </td>
-        <td style="padding-right: 0; margin-right: 0;" class="float-right col-md-1 col-3 pl-0 ml-0">
-            <a style="margin-right: 0;" class="btn btn-dark float-right" href="{% url 'match_approve' teamMatching.id team.team.id %}" role="button">매치수락</a>            
+        <td class="float-right col-md-2 col-6 px-0 mx-0">
+            <a style="margin-right: 10px;" class="btn btn-dark float-right" href="{% url 'match_deny' teamMatching.id team.team.id %}" role="button" style="display: inline-block;">거절</a>            
+            <a style="margin-right: 10px;" class="btn btn-dark float-right" href="{% url 'match_approve' teamMatching.id team.team.id %}" role="button" style="display: inline-block;">수락</a>            
         </td>
       </tr>
       {% endfor %}

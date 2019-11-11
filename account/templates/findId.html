@@ -152,6 +152,28 @@
                 </div>
                 </form>
         <script type="text/javascript">
+function formCheck(frm){
+        var checkSMS = document.getElementById('checkSMS');
+        var sendSMS = document.getElementById('sendSMS');
+        var pwCheck = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; // 비밀번호 검사할 정규식
+        var idCheck = /^[a-zA-Z0-9]{8,15}$/; // 아이디가 적합한지 검사할 정규식
+        var phoneCheck = /^[0-9]{11}$/;
+        var authCheck = /^[0-9]{5}$/;
+        var name = document.getElementById("name");;
+        var email = document.getElementById("email");
+
+        if(frm.name.value == ""){
+                alert("이름을 입력해주세요");
+                frm.name.focus();
+                return false;
+        }
+        if(frm.email.value == ""){
+                alert("이메일을 입력해주세요");
+                frm.auth_number.focus();
+                return false;
+        }
+}
+
         $(".txtb input").on("focus", function(){
                 $(this).addClass("focus"); 
         });

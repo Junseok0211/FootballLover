@@ -16,11 +16,11 @@
 <div class="league">
   <div class="container">
     <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'logo_korean.png' %}" alt="logo" class="src mr-4" width="170px" style="vertical-align: middle;">
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
       <span class="align-middle mt-2" style="font-family: 'Do Hyeon'; font-size: 45px; color:blanchedalmond;">남서울 풋살데이</span>
     </div>
     <div class="row align-items-center">
-      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 20px;">매주 수요일 5시 남서울대 다목적구장에서 풋살 밀어내기가 진행됩니다.</p>  
+      <p class="text-center col-12 float-center text-stroke" style="font-weight: bold; font-family: 'Noto Sans KR'; color:white; font-size: 20px;">매주 수요일 5시 남서울대 다목적구장에서 풋살 밀어내기가 진행됩니다.</p>  
     </div>
   </div>
 </div>
@@ -41,15 +41,16 @@
     </a>
 </div>
 <div class="row mb-1">
+  {% if leagueList %}
     {% for league in leagueList %}
     <div class="col-md-6 col-12">
         <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-3 d-flex flex-column position-static mt-0">
             <div style="border-bottom: rgb(22, 236, 236) 1px solid;" class="row mb-2">
-              <div class="col-4">
+              <div class="col-md-4 col-6">
                 <strong class="d-inline-block mb-2 text-info" style="font-size: 30px;">밀어내기</strong>
               </div>
-              <div class="col-8">
+              <div class="col-md-8 col-6">
               {% autoescape on %}
               <span class="text-muted row" style="font-size: 14px;">
                 {{league.location}}
@@ -72,6 +73,23 @@
         </div>
       </div>
       {% endfor %}
+      {% else %}
+    <div class="col-12">
+        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+          <div class="col p-3 d-flex flex-column position-static mt-0">
+            <div style="border-bottom: black 1px solid;" class="row mb-2">
+              <div class="col-4">
+                <strong class="d-inline-block mb-2 text-info" style="font-size: 30px;">밀어내기</strong>
+              </div>
+            </div>
+            <h4 class="mb-2 font-weight-bold">
+              <span class="font-weight-bold">아직 남서울 풋살데이 글이 없습니다.</span>
+            </h4>
+            <p class="card-text mb-auto">곧 남서울 풋살데이 글이 올라올 예정입니다.</p>
+          </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 <hr>
 <nav aria-label="Page navigation example">

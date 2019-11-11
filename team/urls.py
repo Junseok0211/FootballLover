@@ -12,6 +12,7 @@ urlpatterns = [
     path('applied_list/<int:team_id>', views.applied_list, name = "applied_list"),
     path('approve/<int:team_id>/<int:fnsuser_id>', views.approve, name = 'approve'),
     path('dropout/<int:team_id>', views.dropout, name="dropout"),
+    path('editForm/<int:team_id>', views.editForm, name="editForm"),
     path('update/', views.update, name = "update"),
     path('delete/', views.delete, name = "delete"),
     path('searchTeam/', views.searchTeam, name = "searchTeam"),

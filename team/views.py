@@ -18,8 +18,15 @@ def team(request):
 
 
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
           # 객체를 한 페이지로 자르기
     teamPaginator = Paginator(teams, 10)
@@ -27,7 +34,7 @@ def team(request):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     teamList = teamPaginator.get_page(page)
-    return render(request, 'team.html', {'countNotification':countNotification, 'notification':notification, 
+    return render(request, 'team.html', {'countNotification':countNotification, 'notificationList':notificationList, 
     'teamList':teamList, 'fnsuser':fnsuser, 'teams' : teams})
 
 def detail(request, team_id):
@@ -35,31 +42,45 @@ def detail(request, team_id):
     members = team.member.all()
     is_member = team.member.filter(pk=request.session.get('userId')).exists()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
-    return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 
+    return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
     'countNotification':countNotification, 'team': team, 'members': members, 'is_member':is_member, 'is_applied':is_applied})
 
 def new(request):
     userId = request.session.get('userId')
     teams = Team.objects.all()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if not (userId):
         error = '로그인을 해야 팀을 생성할 수 있습니다.'
-        return render(request, 'team.html', {'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'team.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'error':error, 'teams' : teams})
 
     if fnsuser.teamname:
         error = '한 사람이 여러 개의 팀을 만들 수 없습니다.'
         teams = Team.objects.all()
-        return render(request, 'team.html', {'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'team.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'error':error, 'teams' : teams})
 
-    return render(request, 'new.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser})
+    return render(request, 'new.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def create(request):
     team = Team()
@@ -68,7 +89,7 @@ def create(request):
     team.name = request.POST.get('name')
     team.introduction = request.POST.get('introduction')
     team.region = request.POST.get('region')
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     if request.POST.get('seoul') is not None:
             city = request.POST.get('seoul')
         
@@ -106,14 +127,6 @@ def create(request):
     fnsuser.save()
     return redirect('/team/')
 
-def update(request, team_id):
-    team = get_object_or_404(Team, pk=team_id)
-    team.name = request.GET['name']
-    team.region = request.GET['region']
-    team.city = request.GET['city']
-    team.school = request.GET['school']
-    team.save()
-    return redirect('/team/')
 
 def delete(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
@@ -128,24 +141,31 @@ def application(request, team_id):
     fnsuser = get_object_or_404(FNSUser, pk=pk)
     is_applied = team.applied_member.filter(pk=pk).exists()
     members = team.member.all()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_member = members.filter(pk=pk).exists()
     applied_number = fnsuser.applied.all().count()
     if applied_number == 1:
         message = '동시에 여러 팀에 지원하실 수 없습니다.'
-        return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'team': team, 'members': members, 'message':message })
 
     if is_member:
         message = '이미 팀 회원이십니다.'
-        return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'team': team, 'members': members, 'message':message })
 
     is_othermember = fnsuser.teamname
     if is_othermember:
         message = '이미 다른 팀에 가입하셨습니다.'
-        return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'team': team, 'members': members, 'message':message })
 
     if is_applied:
@@ -163,22 +183,38 @@ def application(request, team_id):
             
         newNotification.joinTeamText()
         newNotification.save()
+
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
 
-    return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 'is_applied':is_applied,
+    return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'is_applied':is_applied,
     'countNotification':countNotification, 'team': team, 'members': members, 'message':message, 'is_member':is_member })
     
 def cancelApplication(request, team_id):
     team = get_object_or_404(Team, pk = team_id)
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     team.applied_member.remove(fnsuser)
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     teams = Team.objects.all()
     countNotification = notification.filter(userCheck = False).count()
-
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
     message = '가입신청을 취소했습니다.'
-    return render(request, 'team.html', {'message':message, 'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'teams' : teams})
+    return render(request, 'team.html', {'message':message, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'teams' : teams})
 
 def teamApplicationDenied(request, team_id, player_id):
     team = get_object_or_404(Team, pk = team_id)
@@ -194,15 +230,23 @@ def teamApplicationDenied(request, team_id, player_id):
             
     newNotification.teamApplicationDeniedText()
     newNotification.save()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     teams = Team.objects.all()
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
     is_member = team.member.filter(pk=request.session.get('userId')).exists()
 
     message = '가입신청을 거절했습니다.'
     return render(request, 'detail.html', {'message':message, 'countNotification':countNotification, 
-    'is_member':is_member, 'is_applied':is_applied, 'notification':notification, 'fnsuser':fnsuser, 'teams' : teams, 'team':team})
+    'is_member':is_member, 'is_applied':is_applied, 'notificationList':notificationList, 'fnsuser':fnsuser, 'teams' : teams, 'team':team})
 
 
 
@@ -211,8 +255,16 @@ def applied_list(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     pk = request.session.get('userId')
     fnsuser = get_object_or_404(FNSUser, pk=pk)
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
     members = team.member.all()
     applied_members = team.applied_member.all()
     message = ''
@@ -220,18 +272,18 @@ def applied_list(request, team_id):
     is_member = team.member.filter(pk=request.session.get('userId')).exists()
     if team.teamleader != fnsuser:
         message = '팀대표만 참가신청현황을 볼 수 있습니다.'
-        return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 'is_member':is_member,
+        return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'is_member':is_member,
         'is_applied':is_applied, 'countNotification':countNotification, 'team': team, 'members': members, 'message':message })
 
     else:
-        return render(request, 'applied_list.html', {'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'applied_list.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 
         'countNotification':countNotification, 'team': team, 'applied_members': applied_members, 'message':message })
 
 def approve(request, team_id, fnsuser_id):
     team = get_object_or_404(Team, pk=team_id)
     fnsuser1 = get_object_or_404(FNSUser, pk=fnsuser_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
     team.applied_member.remove(fnsuser1)
     team.save()
@@ -251,14 +303,31 @@ def approve(request, team_id, fnsuser_id):
     newNotification.save()
     message = '성공적으로 가입수락이 되었습니다.'
 
-    return render(request, 'applied_list.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    return render(request, 'applied_list.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 
     'message':message, 'applied_members':applied_members, 'team':team})
 
 def dropout(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_member = team.member.filter(pk=request.session.get('userId')).exists()
     is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
     message = ''
@@ -269,7 +338,7 @@ def dropout(request, team_id):
         fnsuser.save()
         message = '성공적으로 팀탈퇴가 되었습니다.'
         teams = Team.objects.all().order_by('created')
-        return render(request, 'team.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 
+        return render(request, 'team.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 
         'teams': teams, 'message':message})
         
     else:
@@ -277,7 +346,7 @@ def dropout(request, team_id):
             message = '팀 탈퇴를 하기 전 대표를 변경해주세요.'
             members = team.member.all()
             is_member = team.member.filter(pk=request.session.get('userId')).exists()
-            return render(request, 'detail.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 
+            return render(request, 'detail.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 
             'is_member':is_member, 'is_applied':is_applied, 'team': team, 'members':members, 'is_member':is_member, 'message':message})
 
         else:
@@ -291,13 +360,20 @@ def dropout(request, team_id):
     
     message = '성공적으로 팀탈퇴가 되었습니다.'
     is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
-    return render(request, 'detail.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 
+    return render(request, 'detail.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 
     'team': team, 'members':members, 'is_member':is_member, 'message':message, 'is_applied':is_applied})
 
 def searchTeam(request):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     condition = request.POST.get('condition')
     content = request.POST.get('content')
     teams = None
@@ -314,7 +390,7 @@ def searchTeam(request):
     count = str(teams.count())    
 
 
-    return render(request, 'team.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 
+    return render(request, 'team.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 
     'teams':teams, 'count':count})
 
 def changeCaptain(request, team_id):
@@ -326,11 +402,18 @@ def changeCaptain(request, team_id):
     team.save()
     members = team.member.all()
     is_member = team.member.filter(pk=request.session.get('userId')).exists()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
     message = '성공적으로 주장이 변경되었습니다.'
-    return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 'message'
+    return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'message'
     'countNotification':countNotification, 'team': team, 'members': members, 'is_member':is_member, 'is_applied':is_applied})
 
 
@@ -338,10 +421,17 @@ def suggestTeamMatching(request, team_id):
     if request.method == 'GET':
         fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
         myteam = fnsuser.teamname
-        notification = fnsuser.to.all().order_by('-created')
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
         countNotification = notification.filter(userCheck = False).count()
-        return render(request, 'suggestTeamMatching.html', {'myteam':myteam, 'notification':notification, 
-        'team_id':team_id, 'countNotification':countNotification})
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        return render(request, 'suggestTeamMatching.html', {'myteam':myteam, 'notificationList':notificationList, 
+        'team_id':team_id, 'countNotification':countNotification, 'fnsuser':fnsuser})
 
     elif request.method == 'POST':
         fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
@@ -383,42 +473,63 @@ def suggestTeamMatching(request, team_id):
             newNotification.save()
 
         is_member = vs_team.member.filter(pk=request.session.get('userId')).exists()
-        notification = fnsuser.to.all().order_by('-created')
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
         countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
         is_applied = fnsuser.applied.all().filter(pk=team_id).exists()
         message = '성공적으로 매치신청을 했습니다.'
         members = vs_team.member.all()
-        return render(request, 'detail.html', {'notification':notification, 'fnsuser':fnsuser, 'message':message,
+        return render(request, 'detail.html', {'notificationList':notificationList, 'fnsuser':fnsuser, 'message':message,
         'members':members, 'countNotification':countNotification, 'team': vs_team, 'is_member':is_member, 'is_applied':is_applied})
 
 def suggestList(request, team_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     team = get_object_or_404(Team, pk = team_id)
     teams = Team.objects.all()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     if(fnsuser.teamname != team):
         message = '팀원만 확인할 수 있습니다.'
         return render(request, 'team.html', {'fnsuser':fnsuser, 'teams':teams, 'message':message,
-        'notification':notification,'countNotification':countNotification})
+        'notificationList':notificationList,'countNotification':countNotification})
 
     teamMatching = TeamMatching.objects.all().filter(is_applied=True, vs_team = team)
     return render(request, 'suggestList.html', {'fnsuser':fnsuser, 'teamMatching':teamMatching,
-    'notification':notification,'countNotification':countNotification})
+    'notificationList':notificationList,'countNotification':countNotification})
 
 def suggestDetail(request, teamMatching_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     teamMatching = get_object_or_404(TeamMatching, pk = teamMatching_id)
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     teams = Team.objects.all()
     if(fnsuser.teamname != teamMatching.vs_team):
         message = '팀원만 확인할 수 있습니다.'
         return render(request, 'team.html', {'fnsuser':fnsuser, 'teams':team, 'message':message,
-        'notification':notification,'countNotification':countNotification})
+        'notificationList':notificationList,'countNotification':countNotification})
 
     return render(request, 'suggestDetail.html', {'fnsuser':fnsuser, 'teamMatching':teamMatching,
-    'notification':notification,'countNotification':countNotification})
+    'notificationList':notificationList,'countNotification':countNotification})
 
 def acceptSuggest(request, teamMatching_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
@@ -433,7 +544,7 @@ def acceptSuggest(request, teamMatching_id):
     decidedMatch.timeTo = teamMatching.time_to
     decidedMatch.match = teamMatching
     decidedMatch.save()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
     teams = Team.objects.all()
     
@@ -442,6 +553,7 @@ def acceptSuggest(request, teamMatching_id):
     newNotification = Notification.objects.create(
         creator = get_object_or_404(FNSUser, pk=request.session.get('userId')),
         to = teamMatching.user,
+        teamMatching = teamMatching,
         notification_type = Notification.acceptSuggestion,
         team = fnsuser.teamname,
     )
@@ -449,16 +561,60 @@ def acceptSuggest(request, teamMatching_id):
     newNotification.save()
     teamMatching = TeamMatching.objects.all().filter(is_applied=True, vs_team = fnsuser.teamname)
 
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'suggestList.html', {'fnsuser':fnsuser, 'teamMatching':teamMatching,
-    'notification':notification,'countNotification':countNotification})
+    'notificationList':notificationList,'countNotification':countNotification})
 
 def denySuggest(request, teamMatching_id):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     teamMatching = get_object_or_404(TeamMatching, pk = teamMatching_id)
     teamMatching.delete()
-    notification = fnsuser.to.all().order_by('-created')
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
     teams = Team.objects.all()
-    return render(request, 'team.html', {'countNotification':countNotification, 'notification':notification, 'fnsuser':fnsuser, 'teams' : teams})
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    return render(request, 'team.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'teams' : teams})
 
+def editForm(request, team_id):
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    team = get_object_or_404(Team, pk = team_id)
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    return render(request, 'editForm.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'team' : team})
+
+def update(request):
+    team = get_object_or_404(Team, pk=team_id)
+    team.name = request.POST.get('name')
+    team.introduction = request.POST.get('introduction')
+    team.region = request.POST.get('region')
+    team.city = request.POST.get('city')
+    team.school = request.POST.get('school')
+    team.save()
+    teams = Team.objects.all()
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    return render(request, 'team.html', {'countNotification':countNotification, 
+    'teams':teams, 'notificationList':notificationList, 'fnsuser':fnsuser, 'team' : team})
+
+    return redirect('/team/')
 

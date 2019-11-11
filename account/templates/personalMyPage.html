@@ -23,8 +23,8 @@
         <div class="row card p-4">
             <div class="col-12">
                 <h5 class="card-title font-weight-bold text-info">기본정보</h5>
-                <span class="mt-3">프로필사진, 이름, 이메일, 휴대전화 정보 등을 수정합니다.</span>
-                <a role="button" href="#" class="text-black font-weight-bold p-2 pl-3 pr-3 mb-3 text-decoration-none float-right" style="font-size:10px;
+                <span class="mt-3">프로필사진, 이름, 이메일 등을 수정합니다.</span>
+                <a role="button" href="{% url 'editAccount' %}" class="text-black font-weight-bold p-2 pl-3 pr-3 mb-3 text-decoration-none float-right" style="font-size:10px;
                 font-family:'Nanum Gothic'; background-color: #DFDFDF; border-radius: 15px; color:black;">수정</a>
             </div>
         </div>
@@ -32,9 +32,14 @@
         <div class="row card p-4 mt-4">
             <div class="col-12">
                 <h5 class="card-title font-weight-bold text-info">팀 정보</h5>
+                {% if fnsuser.teamname %}
                 <span class="mt-3">팀기록을 볼 수 있는 팀 페이지로 이동합니다.</span>
                 <a role="button" href="{% url 'detail' fnsuser.teamname.id %}" class="text-black font-weight-bold p-2 px-3 mb-3 text-decoration-none float-right" style="font-size:10px;
                 font-family:'Nanum Gothic'; background-color: #DFDFDF; border-radius: 15px; color:black;">이동</a>
+                {% else %}
+                <span class="mt-3">팀에 먼저 가입해주세요.</span>
+                
+                {% endif %}
             </div>
         </div>
 
