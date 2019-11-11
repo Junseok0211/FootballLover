@@ -11,3 +11,8 @@ db.sqlite3
 db.sqlite3-journal
 media
 setrets.json
+
+# elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
