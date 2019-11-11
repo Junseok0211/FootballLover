@@ -59,8 +59,8 @@ alert("{{ message }}")
       <script>
         var i = 0; 
       </script>
-      {% if matches %}
-      {% for match in matches %}
+      {% if matchList %}
+      {% for match in matchList %}
       <script>
         i += 1;
       </script>
@@ -74,14 +74,22 @@ alert("{{ message }}")
           </strong>
         </th>
         <td class="text-center col-md-2 col-5"> {{ match.location }} </td>
-        <td class="text-center col-md-2 col-3"> {{ match.myTeam }} </td>
-        <td class="text-center col-md-2 col-3"> {{ match.vsTeam }} </td>
+        <td class="text-center col-md-2 col-3"> 
+          <a href="{% url 'detail' match.myTeam.id %}" class="text-decoration-none" style="color: black;">
+            <b>{{ match.myTeam }}</b>
+          </a>
+        </td>
+        <td class="text-center col-md-2 col-3"> 
+          <a href="{% url 'detail' match.myTeam.id %}" class="text-decoration-none" style="color: black;">
+            <b>{{ match.vsTeam }} </b>
+          </a>  
+        </td>
         {% autoescape on %}
         <td class="text-center col-md-3 col-8"> {{ match.timeFrom|date:"Y년 M d일 H:i" }} - {{match.timeTo|date:"H:i"}} </td>
         {% endautoescape %}
         <td class="text-center col-md-2 col-4 mt-0"> 
           <a href="{% url 'decidedDetail' match.id %}">
-            <button class="btn btn-success">자세히 보기</button>
+            <button class="btn btn-success textDetail">자세히 보기</button>
           </a> 
         </td>
         

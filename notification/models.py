@@ -31,6 +31,9 @@ class Notification(models.Model):
     leaguePersonalApply = 'leaguePersonalApply'
     leagueTeamApply = 'leagueTeamApply'
     
+    resultInput = 'resultInput'
+    resultEdit = 'resultEdit'
+    resultConfirm = 'resultConfirm'
 
     TYPE_CHOICES = {
         (joinTeam, 'joinTeam'),
@@ -54,6 +57,9 @@ class Notification(models.Model):
         (leagueReply, 'leagueReply'),
         (acceptSuggestion, 'acceptSuggestion'),
         (denySuggestion, 'denySuggestion'),
+        (resultInput, 'resultInput'),
+        (resultEdit,'resultEdit'),
+        (resultConfirm, 'resultConfirm'),
         
     }
 
@@ -164,4 +170,15 @@ class Notification(models.Model):
         self.text = self.creator.name + '님이 회원님의 댓글에 답글을 작성했습니다.' + self.lgComment.summary() +'...'
         self.save()
 
+    def resultInputText(self):
+        self.text = self.team.name + '팀이 [' + self.teamMatching.title + '] 경기의 점수를 입력했습니다.'
+        self.save()
+
+    def resultEditText(self):
+        self.text = self.team.name + '팀이 [' + self.teamMatching.title + '] 경기의 점수를 수정했습니다.'
+        self.save()
+
+    def resultConfirmText(self):
+        self.text = self.team.name + '팀이 [' + self.teamMatching.title + '] 경기의 결과를 확정했습니다.'
+        self.save()
    

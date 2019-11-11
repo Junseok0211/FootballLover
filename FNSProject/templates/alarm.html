@@ -73,6 +73,16 @@
 
               {% elif alarm.notification_type == "acceptSuggestion" %}
               <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "resultInput" %}
+              <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "resultEdit" %}
+              <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "resultConfirm" %}
+              <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+             
               {% endif %}
 
             <!-- 확인을 안했다면 -->
@@ -139,6 +149,15 @@
               {% elif alarm.notification_type == "acceptSuggestion" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
               
+              {% elif alarm.notification_type == "resultInput" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "resultEdit" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+              {% elif alarm.notification_type == "resultConfirm" %}
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
               {% endif %}
               <!-- 알람종류 끝 -->
             {% endif %}

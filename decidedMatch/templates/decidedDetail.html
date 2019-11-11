@@ -93,16 +93,16 @@ alert("{{ message }}")
 <div class="container">
     <div class="row bg-light mb-2 pt-2 pb-0" style="border-bottom:lightslategrey solid 1px;">
         <div class="col-3">
-            <p class="text-center"><b>출전선수</b></p>
+            <p class="text-center textDetail2"><b>출전선수</b></p>
         </div>
         <div class="col-3">
-            <p class="text-center"><b>득점선수</b></p>
+            <p class="text-center textDetail2"><b>득점선수</b></p>
         </div>
         <div class="col-3">
-            <p class="text-center"><b>득점선수</b></p>
+            <p class="text-center textDetail2"><b>득점선수</b></p>
         </div>
         <div class="col-3">
-            <p class="text-center"><b>출전선수</b></p>
+            <p class="text-center textDetail2"><b>출전선수</b></p>
         </div>
     </div>
     <div class="row">
@@ -110,7 +110,11 @@ alert("{{ message }}")
             
             {% for member in myAttendedPlayer %}
             <div class="row justify-content-center">
-                <button class="btn btn-secondary">{{member.player}}</button>
+                <button class="btn btn-secondary">
+                    <a class="text-decoration-none text-white" href="{% url 'myPage' member.player.id %}">
+                        {{member.player}}
+                    </a>
+                </button>
             </div>
             <hr class = "mt-1 mb-1">
             {% endfor %}
@@ -123,7 +127,7 @@ alert("{{ message }}")
            <div class="row justify-content-center">
               
                
-               <span class="mr-2" style="margin-top: 10px;">
+               <span class="mr-2 textDetail" style="margin-top: 10px;">
                 <strong>
                 <script>
                     i += 1;
@@ -135,7 +139,11 @@ alert("{{ message }}")
                 {% if member.player is None %}
                 <button class="btn btn-outline-secondary">자책골</button>
                 {% else %}
-                <button class="btn btn-outline-secondary">{{member.player}}</button>
+                <button class="btn btn-outline-secondary">
+                    <a class="text-decoration-none" style="color: black;" href="{% url 'myPage' member.player.id %}">
+                        {{member.player}}
+                    </a>
+                </button>
                 {% endif %}
            </div>
            <hr class = "mt-1 mb-1">
@@ -149,7 +157,7 @@ alert("{{ message }}")
             <div class="row justify-content-center"> 
             
             
-                <span class="mr-2" style="margin-top: 10px;"> 
+                <span class="mr-2 textDetail" style="margin-top: 10px;"> 
                 <strong>
                 <script>
                     num += 1;
@@ -161,7 +169,11 @@ alert("{{ message }}")
                 {% if member.player is None %}
                 <button class="btn btn-outline-secondary">자책골</button>
                 {% else %}
-                <button class="btn btn-outline-secondary">{{member.player}}</button>
+                <button class="btn btn-outline-secondary">
+                    <a class="text-decoration-none" style="color: black;" href="{% url 'myPage' member.player.id %}">
+                        {{member.player}}
+                    </a>
+                </button>
                 {% endif %}
             </div>
             <hr class = "mt-1 mb-1">
@@ -172,7 +184,11 @@ alert("{{ message }}")
             
             {% for member in vsAttendedPlayer %}
             <div class="row justify-content-center">
-            <button class="btn btn-secondary">{{member.player}}</button>
+            <button class="btn btn-secondary">
+                <a class="text-decoration-none text-white" href="{% url 'myPage' member.player.id %}">
+                    {{member.player}}
+                </a>
+            </button>
             </div>
             <hr class = "mt-1 mb-1">
             {% endfor %}
@@ -199,7 +215,7 @@ alert("{{ message }}")
                     {% if decidedMatch.vsTeam.teamleader == fnsuser %}
                     <p class="mr-3 mt-2"><b>[{{decidedMatch.myTeam}}]</b>팀이 결과를 수정했습니다. 점수와 득점선수를 확인해주세요.</p>
                     {% else %}
-                    <p class="mr-3 mt-2"><b>{{decidedMatch.vsTeam}}</b>이 수정된 내용를 확인하고 있습니다.</p>
+                    <p class="mr-3 mt-2"><b>{{decidedMatch.vsTeam}}</b>팀이 수정된 내용를 확인하고 있습니다.</p>
                     {% endif %}
                 {% else %}
                     <p class="mr-3 mt-2" class="mr-3"><b>{{decidedMatch.vsTeam}}</b>의 입력을 기다리고 있습니다.</p>
@@ -219,7 +235,7 @@ alert("{{ message }}")
                 {% if decidedMatch.myTeam.teamleader == fnsuser %}
                 <p class="mr-3 mt-2">[<b>{{decidedMatch.vsTeam}}</b>]팀이 결과를 수정했습니다. 점수와 득점선수를 확인해주세요.</p>
                 {% else %}
-                <p class="mr-3 mt-2"><b>{{decidedMatch.myTeam}}</b>이 수정된 내용를 확인하고 있습니다.</p>
+                <p class="mr-3 mt-2"><b>{{decidedMatch.myTeam}}</b>팀이 수정된 내용를 확인하고 있습니다.</p>
                 {% endif %}
                 {% else %}
                 <p class="mr-3 mt-2"><b>{{decidedMatch.myTeam}}</b>의 입력을 기다리고 있습니다.</p>

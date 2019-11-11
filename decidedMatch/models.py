@@ -7,7 +7,7 @@ from account.models import FNSUser
 class DecidedMatch(models.Model):
     myTeam = models.ForeignKey(Team, related_name="myDecidedTeam", on_delete=models.CASCADE, null=True)
     vsTeam = models.ForeignKey(Team, related_name="vsDecidedTeam", on_delete=models.CASCADE, null=True)
-    match = models.OneToOneField(TeamMatching, on_delete=models.CASCADE, null = True)
+    match = models.OneToOneField(TeamMatching, related_name="decidedMatch", on_delete=models.CASCADE, null = True)
     timeFrom = models.DateTimeField()
     timeTo = models.DateTimeField()
     location = models.CharField(max_length=50, null=False)

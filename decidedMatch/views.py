@@ -24,12 +24,12 @@ def decidedMatch(request):
         # 객체를 한 페이지로 자르기
     matchPaginator = Paginator(matches, 10)
     # request에 담아주기
-    page = request.GET.get('page')
+    matchPage = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
-    matchList = matchPaginator.get_page(page)
+    matchList = matchPaginator.get_page(matchPage)
     
-    return render(request, 'decidedMatch.html', {'countNotification':countNotification, 'matchList':matchList,
-    'notificationList':notificationList, 'fnsuser':fnsuser, 'matches':matches})
+    return render(request, 'decidedMatch.html', {'countNotification':countNotification,
+    'notificationList':notificationList, 'fnsuser':fnsuser, 'matchList':matchList})
 
 def decidedDetail(request, decidedMatch_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))

@@ -54,22 +54,22 @@ alert("{{ message }}")
 <div class="container mt-4 mb-4">
 <table class="table">
     <thead class="table-success">
-      <tr>
-        <th scope="col-2" style="text-align: center;">시간</th>
-        <th scope="col-2" style="text-align: center;">홈팀</th>
-        <th scope="col-2" style="text-align: center;">상대팀</th>
-        <th scope="col-2" style="text-align: center;">장소</th>
+      <tr class="row table-success">
+        <th scope="col-2" class="text-center col-md-3 col-7" style="text-align: center;">시간</th>
+        <th scope="col-2" class="text-center col-md-3 col-5" style="text-align: center;">홈팀</th>
+        <th scope="col-2" class="text-center col-md-3 col-5" style="text-align: center;">상대팀</th>
+        <th scope="col-2" class="text-center col-md-3 col-7" style="text-align: center;">장소</th>
   
       </tr>
     </thead>
     <tbody>
-      <tr style="border-bottom:lightslategrey 1px solid;">
+      <tr style="border-bottom:lightslategrey 1px solid;" class="row">
         {% autoescape on %}
-        <td style="text-align: center;"> {{ decidedMatch.timeFrom|date:"Y년 M d일 H:i" }} - {{decidedMatch.timeTo|date:"H:i"}} </td>
+        <td class="text-center col-md-3 col-7" style="text-align: center;"> {{ decidedMatch.timeFrom|date:"Y년 M d일 H:i" }} - {{decidedMatch.timeTo|date:"H:i"}} </td>
         {% endautoescape %}
-        <td style="text-align: center;"> {{ decidedMatch.myTeam }} </td>
-        <td style="text-align: center;"> {{ decidedMatch.vsTeam }} </td>
-        <td style="text-align: center;"> {{ decidedMatch.location }} </td>
+        <td class="text-center col-md-3 col-5" style="text-align: center;"> {{ decidedMatch.myTeam }} </td>
+        <td class="text-center col-md-3 col-5" style="text-align: center;"> {{ decidedMatch.vsTeam }} </td>
+        <td class="text-center col-md-3 col-7" style="text-align: center;"> {{ decidedMatch.location }} </td>
       </tr>
     </tbody>
 </table>
@@ -102,7 +102,7 @@ alert("{{ message }}")
       {% endif %}
     </div>  
     
-    <input class = "btn btn-dark col-12 ml-0 mr-0" type="submit" value="다음">
+    <input class = "btn btn-dark col-12 ml-0 mr-md-0 mr-3" type="submit" value="다음">
   </div>
   
 </form>
