@@ -1,0 +1,1 @@
+web: gunicorn FNSProject.wsgi --log-file -
