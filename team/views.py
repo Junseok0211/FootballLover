@@ -12,32 +12,35 @@ from notification.models import Notification
 def team(request):
     teams = Team.objects.all().order_by('created')
     if not request.session.get('userId'):
-        errormessage = '로그인을 해주세요.'
-        return render(request, 'login.html', {'errormessage':errormessage})
-    
+        teamPaginator = Paginator(teams, 10)
+        page = request.GET.get('page')
+        teamList = teamPaginator.get_page(page)
+        return render(request, 'team.html', {'teamList':teamList})
+    else:
+        fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
 
-
-    fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
-    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
-    # 객체를 한 페이지로 자르기
-    paginator = Paginator(notification, 5)
-    # request에 담아주기
-    page = request.GET.get('page')
-    # request된 페이지를 얻어온 뒤 return 해 준다.
-    notificationList = paginator.get_page(page)
-
-          # 객체를 한 페이지로 자르기
-    teamPaginator = Paginator(teams, 10)
-    # request에 담아주기
-    page = request.GET.get('page')
-    # request된 페이지를 얻어온 뒤 return 해 준다.
-    teamList = teamPaginator.get_page(page)
-    return render(request, 'team.html', {'countNotification':countNotification, 'notificationList':notificationList, 
-    'teamList':teamList, 'fnsuser':fnsuser, 'teams' : teams})
+            # 객체를 한 페이지로 자르기
+        teamPaginator = Paginator(teams, 10)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        teamList = teamPaginator.get_page(page)
+        return render(request, 'team.html', {'countNotification':countNotification, 'notificationList':notificationList, 
+        'teamList':teamList, 'fnsuser':fnsuser, 'teams' : teams})
 
 def detail(request, team_id):
+    if not request.session.get('userId'):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
     team = get_object_or_404(Team, pk=team_id)
     members = team.member.all()
     is_member = team.member.filter(pk=request.session.get('userId')).exists()
@@ -57,6 +60,9 @@ def detail(request, team_id):
     'countNotification':countNotification, 'team': team, 'members': members, 'is_member':is_member, 'is_applied':is_applied})
 
 def new(request):
+    if not request.session.get('userId'):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
     userId = request.session.get('userId')
     teams = Team.objects.all()
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
