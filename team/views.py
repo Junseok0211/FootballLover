@@ -601,26 +601,64 @@ def editForm(request, team_id):
     team = get_object_or_404(Team, pk = team_id)
     notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
-    return render(request, 'editForm.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'team' : team})
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
 
-def update(request):
+    return render(request, 'editForm.html', 
+    {'countNotification':countNotification, 'notificationList': notificationList, 'fnsuser':fnsuser, 'team': team})
+
+def update(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     team.name = request.POST.get('name')
     team.introduction = request.POST.get('introduction')
     team.region = request.POST.get('region')
-    team.city = request.POST.get('city')
+    if request.POST.get('seoul') is not None:
+        team.city = request.POST.get('seoul')
+    
+    elif request.POST.get('gyeonggi') is not None:
+        team.city = request.POST.get('gyeonggi')
+
+    elif request.POST.get('north_chungcheong') is not None:
+        team.city = request.POST.get('north_chungcheong')
+    
+    elif request.POST.get('south_chungcheong') is not None:
+        team.city = request.POST.get('south_chungcheong')
+    
+    elif request.POST.get('north_jeolla') is not None:
+        team.city = request.POST.get('north_jeolla')
+
+    elif request.POST.get('south_jeolla') is not None:
+        team.city = request.POST.get('south_jeolla')
+
+    elif request.POST.get('north_gyeongsang') is not None:
+        team.city = request.POST.get('north_gyeongsang')
+
+    elif request.POST.get('south_gyeongsang') is not 'south_gyeongsang':
+        team.city = request.POST.get('south_gyeongsang')
+
+    elif request.POST.get('jeju') is not 'jeju':
+        team.city = request.POST.get('jeju')
+
+    
     team.school = request.POST.get('school')
     team.save()
     teams = Team.objects.all()
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
-    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
     return render(request, 'team.html', {'countNotification':countNotification, 
     'teams':teams, 'notificationList':notificationList, 'fnsuser':fnsuser, 'team' : team})
 
-    return redirect('/team/')
 

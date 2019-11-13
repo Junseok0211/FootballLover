@@ -90,7 +90,7 @@ function check(re, what, message) {
             return false;
         }
 
-        alert("팀 생성이 완료되었습니다.");
+        alert("팀 정보 수정이 완료되었습니다.");
         return true;
     }
 </script>
@@ -121,7 +121,7 @@ function check(re, what, message) {
 <div class="container mt-4 mb-4">
         <div class="row mt-5">
             <div class="col-12 text-center bg-info" style="border-radius: 10px;">
-            <h1 style="font-family: 'Do Hyeon'; color:white; padding:10px;">팀 생성하기</h1>
+            <h1 style="font-family: 'Do Hyeon'; color:white; padding:10px;">팀 수정하기</h1>
             </div>
         </div>
       <div class="row">
@@ -131,7 +131,7 @@ function check(re, what, message) {
       </div>
       <div class="row mt-3">
         <div class="col-12">
-          <form name = "register" onsubmit="return formCheck(this);" method="POST" action="{% url 'update' %}" enctype="multipart/form-data">
+          <form name = "register" onsubmit="return formCheck(this);" method="POST" action="{% url 'update' team.id %}" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group row">
                 <label for="teamimg" class="col-lg-2 col-sm-12">팀 사진</label>
@@ -343,9 +343,17 @@ function check(re, what, message) {
                 <label for="school" class="col-lg-2 col-sm-12">학교</label>
                 <select id="school" class="form-control col-12 col-md-6" name = "school" >
                     <option selected disabled hidden value="school">학교</label>
-                    <option value="남서울대">남서울대</option>
-                    <option value="타대학교">타대학교</option>
-                    <option value="지역주민">지역주민</option>
+                    <option value="남서울대학교">남서울대학교</option>
+                    <option value="백석대학교">백석대학교</option>
+                    <option value="나사렛대학교">나사렛대학교</option>
+                    <option value="상명대학교">상명대학교</option>
+                    <option value="한국기술교육대학교">한국기술교육대학교</option>
+                    <option value="단국대학교">단국대학교</option>
+                    <option value="호서대학교">호서대학교</option>
+                    <option value="공주대학교">공주대학교</option>
+                    <option value="선문대학교">선문대학교</option>
+                    <option value="타 대학 재학생">타대학 재학생</option>
+                    <option value="지역주민">기타</option>
                 </select>
             </div> 
             <button type="submit" class="btn btn-dark float-right">수정하기</button>

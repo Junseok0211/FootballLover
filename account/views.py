@@ -358,10 +358,10 @@ def editAccount(request):
             res_data['school'] = school
 
         else:
-            if FNSUser.objects.filter(username = username):
-                res_data['error'] = '중복된 아이디가 있습니다.'    
-                return render(request, 'myPage.html', {'res_data':res_data, 'fnsuser':fnsuser, 
-                'notificationList':notificationList, 'countNotification':countNotification})
+            # if FNSUser.objects.filter(username = username):
+            #     res_data['error'] = '중복된 아이디가 있습니다.'    
+            #     return render(request, 'myPage.html', {'res_data':res_data, 'fnsuser':fnsuser, 
+            #     'notificationList':notificationList, 'countNotification':countNotification})
 
             res_data['error'] = '성공'
             fnsuser.userimg = userimg
