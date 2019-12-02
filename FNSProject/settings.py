@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap4',
     'bootstrap_datepicker_plus',
+    'storages',
 ]
 
 # SESSION_COOKIE_SECURE = True
@@ -138,17 +139,36 @@ USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+# ROOT_DIR = os.path.dirname(BASE_DIR)
+CONFIG_SECRET_DIR = os.path.join(BASE_DIR, 'config_secret')
+CONFIG_SETTINGS_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')
+config_secret = json.loads(open(CONFIG_SETTINGS_COMMON_FILE).read())
 
-STATIC_URL = '/static/'
-STATICFILES_DIR = [
-    os.path.join(BASE_DIR, 'FNSProject', 'static'),
-    os.path.join(BASE_DIR, 'account', 'static'),
-]# static 파일들이 현재 어디에 있는지를 쓰는 곳
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# static 파일들이 어디로 모일 것인지를 쓰는 곳
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_FILE_STORAGE = 'FNSProject.storages.MediaStorage'
+STATICFILES_STORAGE = 'FNSProject.storages.StaticStorage'
+MEDIAFILES_LOCATION = 'media'
+STATICFILES_LOCATION = 'static'
+AWS_ACCESS_KEY_ID = config_secret['aws']['access_key_id']
+AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
+AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    STATIC_DIR,
+]
+AWS_LOCATION = 'ap-northeast-2'
+STATIC_URL = 'https://%s/%s/static/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+# STATICFILES_DIR = [
+#     os.path.join(BASE_DIR, 'FNSProject', 'static'),
+#     os.path.join(BASE_DIR, 'account', 'static'),
+# ]# static 파일들이 현재 어디에 있는지를 쓰는 곳
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# # static 파일들이 어디로 모일 것인지를 쓰는 곳
+
+MEDIA_URL = 'https://%s/%s/media/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Heroku: Update database configuration from $DATABASE_URL.

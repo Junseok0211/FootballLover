@@ -63,7 +63,8 @@ def test(request):
     'fnsuser':fnsuser, 'countNotification':countNotification, 'notificationList':notificationList})
 
 def test2(request):
-    return render(request, 'test2.html')
+    fnsuser = FNSUser.objects.all()
+    return render(request, 'test2.html', {'fnsuser':fnsuser})
 
 def test3(request):
     date = request.POST.get('date')

@@ -60,7 +60,7 @@ class FNSUser(TimeStampedModel):
             "type": "SMS",
             "from": "01050509042",
             "to": [self.phone_number],
-            "content": "[FNS] 인증 번호 [{}]를 입력해주세요.".format(self.auth_number)
+            "content": "[풋볼러버] 인증 번호 [{}]를 입력해주세요.".format(self.auth_number)
         }
         headers = {
             "Content-Type": "application/json",
