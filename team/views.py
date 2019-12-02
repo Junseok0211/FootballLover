@@ -615,6 +615,8 @@ def editForm(request, team_id):
 def update(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     team.name = request.POST.get('name')
+    if(request.FILES['teamimg'] is not None):
+            team.teamimg = request.FILES['teamimg']
     team.introduction = request.POST.get('introduction')
     team.region = request.POST.get('region')
     if request.POST.get('seoul') is not None:
