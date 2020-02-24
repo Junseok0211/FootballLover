@@ -18,7 +18,7 @@ def home(request):
     teamMatching = TeamMatching.objects.filter(time_from__gt = today, is_applied=False).order_by('-time_from')
     recruiting = Recruiting.objects.filter(time_from__gt = today).order_by('-time_from')
     league = League.objects.order_by('-created').first()
-    
+    personal_notice = PersonalMatching.objects.order_by('-created').first()
     user_id = request.session.get('userId')
     if user_id:
         fnsuser = FNSUser.objects.get(pk=user_id)
@@ -31,9 +31,9 @@ def home(request):
         page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
         notificationList = paginator.get_page(page)
-        return render(request, 'home.html', {'countNotification':countNotification, 'league':league, 
+        return render(request, 'home.html', {'personal_notice':personal_notice, 'countNotification':countNotification, 'league':league, 
         'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting, 'name':fnsuser.name, 'fnsuser':fnsuser, 'notificationList':notificationList, 'countNotification':countNotification})
-    return render(request, 'home.html', {'league':league, 'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting})
+    return render(request, 'home.html', {'personal_notice':personal_notice, 'league':league, 'personalMatching':personalMatching, 'teamMatching':teamMatching, 'recruiting':recruiting})
 
 def about(request):
     if not request.session.get('userId'):

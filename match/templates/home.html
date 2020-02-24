@@ -88,17 +88,16 @@ alert("{{errormessage}}");
       <!-- col-6 끝 -->
       <!-- col-6 시작 -->
       <div class="col-md-6 col-12 " style="height: 50%;">
-        <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
+        <!-- <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
           <div class="col d-flex flex-column position-static mt-0">
-        <div class="d-none d-md-block p-0">
-          <iframe width="100%" height="330" src="https://www.youtube.com/embed/AD-KWfufsFQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <div class="d-block d-md-none p-0">
-          <iframe width="100%" height="160" src="https://www.youtube.com/embed/mBGVwBWDD98" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          <iframe width="100%" height="160" src="https://www.youtube.com/embed/AD-KWfufsFQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        </div>
-        </div>
+            <div class="d-none d-md-block p-0">
+              <iframe width="100%" height="330" src="https://www.youtube.com/embed/AD-KWfufsFQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="d-block d-md-none p-0">
+              <iframe width="100%" height="160" src="https://www.youtube.com/embed/mBGVwBWDD98" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div> -->
           <!-- <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
             <div class="col p-3 d-flex flex-column position-static mt-0">
               <div style="border-bottom: rgb(0, 0, 0) 1px solid;" class="row mb-2">
@@ -136,6 +135,60 @@ alert("{{errormessage}}");
               </p>
             </div>
           </div> -->
+          <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-3 d-flex flex-column position-static mt-0">
+              <div style="border-bottom: rgb(0, 0, 0) 1px solid;" class="row mb-2">
+                <div class="col-md-3 col-12">
+                  <strong class="d-inline-block mb-2" style="color:white; font-size: 28px; background-color: coral; padding:5px;">공지사항</strong>
+                </div>
+                <div class="col-md-9 col-12">
+                  <strong class="d-inline-block mb-2 text-info float-left" style="font-size: 30px; padding:5px;">개인매칭</strong>
+                </div>
+              </div>
+              <h4 class="mb-2 font-weight-bold row">
+                <span class="col">제목 | 
+                  {% if personal_notice %}
+                    {{personal_notice.title}}
+                  {% else %}
+                    글이 없습니다.
+                  {% endif %}
+                </span>
+              </h4>
+              <h4 class="row">
+                <span class="col"><strong>장소 |</strong>
+                  <span style="font-size: 18px;">
+                    {% if personal_notice %}
+                    {{personal_notice.location}}
+                    {% else %}
+                    글이 없습니다.
+                    {% endif %}
+                  </span>
+                </span>
+              </h4>
+              <h4 class="row">
+                  <span class="col"><strong>시간 |</strong>
+                    {% autoescape on %}
+                    <span style="color:red; font-size: 18px;">
+                    {% if personal_notice %}
+                    {{personal_notice.time_from|date:"m월d일 H:00"}} -
+                    {{personal_notice.time_to|date:"H:00"}}
+                    {% else %}
+                    글이 없습니다.
+                    {% endif %}
+                  </span>
+                  {% endautoescape %}
+                  </span>
+                </h4>
+              <p class="card-text pt-3" style="border-top:black 1px solid;">
+                {% if personal_notice %}
+                {{personal_notice.summary}}
+                <a href="{% url 'personal_detail' personal_notice.id %}" class="text-decoration-none stretched-link">...자세히 보기</a>
+                {% else %}
+                글이 없습니다.
+                {% endif %}
+              </p>
+            </div>
+          </div>
         </div>
         <!-- col-6 끝 -->
         <!-- row 끝 -->
