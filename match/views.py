@@ -354,6 +354,7 @@ def personal_new(request):
 def personal_create(request):
     personalMatching =  PersonalMatching()
     personalMatching.title = request.POST.get('title')
+    personalMatching.sport = request.POST.get('sport')
     personalMatching.location = request.POST.get('location')
     time_from = request.POST.get('time_from')
     year = time_from[:4]
@@ -406,6 +407,7 @@ def personal_editForm(request, personal_id):
 def personal_edit(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk=personal_id)
     personalMatching.title = request.POST.get('title')
+    personalMatching.sport = request.POST.get('sport')
     personalMatching.location = request.POST.get('location')    
     time_from = request.POST.get('time_from')
     year = time_from[:4]
@@ -1082,6 +1084,7 @@ def teamMatching_create(request):
     teamMatching.myteam = team
     teamMatching.user = fnsuser
     teamMatching.title = request.POST.get('title')
+    teamMatching.sport = request.POST.get('sport')
     teamMatching.location = request.POST.get('location')
     time_from = request.POST.get('time_from')
     year = time_from[:4]
@@ -1106,6 +1109,7 @@ def teamMatching_edit(request, team_id):
     fnsuser = get_object_or_404(FNSUser, pk= request.session.get('userId'))
     teamMatching = get_object_or_404(TeamMatching, pk=team_id)
     teamMatching.title = request.POST.get('title')
+    teamMatching.sport = request.POST.get('sport')
     teamMatching.location = request.POST.get('location')
     time_from = request.POST.get('time_from')
     year = time_from[:4]
@@ -1187,6 +1191,7 @@ def recruiting_create(request):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     recruiting.user = fnsuser
     recruiting.title = request.POST.get('title')
+    recruiting.sport = request.POST.get('sport')
     vs_team_id = request.POST.get('vs_team')
     if vs_team_id == 'basic':
         errormessage = '상대팀을 선택해주세요'
@@ -1205,7 +1210,7 @@ def recruiting_create(request):
         if fnsuser.teamname == vs_team:
             errormessage = '자기 팀하고 시합을 할 수 없습니다. 친선경기로 선택해주세요.'
             teams = Team.objects.all()
-            return render(request, 'recruiting/recruiting_new.html', {'teams':teams, 'errormessage':errormessage}) 
+            return render(request, 'recruiting/recruiting_new.html', {'teams':teams, 'errormessage':errormessage, 'fnsuser':fnsuser}) 
         else:
             recruiting.vs_team = vs_team
 
@@ -1229,7 +1234,10 @@ def recruiting_create(request):
     recruiting.rank = request.POST.get('rank')
     recruiting.content = request.POST.get('content')
     recruiting.save()
-    return redirect('/recruiting')
+    notification = fnsuser.to.all()
+    countNotification = notification.filter(userCheck = False).count()
+    return render(request, 'recruiting/recruiting_detail.html', {'fnsuser':fnsuser, 'recruiting':recruiting,
+    'notification':notification, 'countNotification':countNotification})
 
 def recruiting_detail(request, recruiting_id):
     if not (request.session.get('userId')):
@@ -1520,6 +1528,7 @@ def recruiting_edit(request, recruiting_id):
     fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
     notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     recruiting.title = request.POST.get('title')
+    recruiting.sport = request.POST.get('sport')
     vs_team_id = request.POST.get('vs_team')
     if vs_team_id == 'basic':
         errormessage = '상대팀을 선택해주세요'

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,7 +30,13 @@ def login(request):
             res_data['error'] = '모든 값을 입력해야 합니다.'
 
         else:
-            fnsuser = FNSUser.objects.get(username = username)
+            try:
+                fnsuser = FNSUser.objects.get(username = username)
+            except ObjectDoesNotExist:
+                res_data['error'] = '일치하는 아이디가 없습니다.'
+                return render(request, 'login.html', res_data)
+            # fnsuser = get_object_or_404(FNSUser, username = username)
+                
             if check_password(password, fnsuser.password):
                 # 비밀번호 일치, 로그인 처리
                 # 세션
@@ -38,6 +45,7 @@ def login(request):
                 return redirect('/')
             else:
                 res_data['error'] = '비밀번호가 틀렸습니다.'
+            
 
         return render(request, 'login.html', res_data)
 

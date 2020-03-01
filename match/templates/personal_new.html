@@ -19,11 +19,17 @@
                    frm.title.focus();
                    return false;
                }
+               if(frm.sport.value == "스포츠를 선택하세요."){
+                   alert("스포츠를 선택해주세요");
+                   frm.sport.focus();
+                   return false;
+               }
                if(frm.location.value == "장소를 선택하세요."){
                    alert("장소를 선택해주세요");
                    frm.location.focus();
                    return false;
                }
+               
                if(frm.time_from.value == ""){
                    alert("시작시간을 입력해주세요");
                    frm.time_from.focus();
@@ -137,7 +143,17 @@ $('#toDate').datetimepicker({
             <input class="form-control" id="title" type="text" name = "title" placeholder="제목을 입력하세요" >
             </div>
         </div>
-
+        <div class="form-group row">
+            <label class="col-lg-1 col-sm-12 col-form-label" for="sport">스포츠</label>
+            <div class="col-lg-11 col-sm-12">
+            <select class="form-control" id="sport" name="sport">
+                <option selected disabled hidden>스포츠를 선택하세요.</option>
+                <option value="Futsal">풋살</option>
+                <option value="Football">축구</option>
+                <option value="Basketball">농구</option>
+            </select>
+            </div>
+        </div>
         <div class="form-group row">
             <label class="col-lg-1 col-sm-12 col-form-label" for="location">장소</label>
             <div class="col-lg-11 col-sm-12">

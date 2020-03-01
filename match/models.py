@@ -13,6 +13,7 @@ class PersonalMatching(models.Model):
     time_from = models.DateTimeField(null = True, blank = True)
     time_to = models.DateTimeField(null = True, blank = True)
 
+    sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
     location = models.CharField(max_length=50, null=False)
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)
@@ -137,6 +138,7 @@ class TeamMatching(models.Model):
     time_from = models.DateTimeField()
     time_to = models.DateTimeField()
 
+    sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
     location = models.CharField(max_length=50, null=False)
     rank = models.CharField(max_length = 20, null = True)
 
@@ -243,7 +245,7 @@ class TeamReply(models.Model):
                             message = str(timeLap) + '분 전'
                         return message
                 else:
-                    return modified
+                    return modified 
             else:
                 return modified
         else:
@@ -259,6 +261,7 @@ class Recruiting(models.Model):
     time_from = models.DateTimeField()
     time_to = models.DateTimeField()
 
+    sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
     location = models.CharField(max_length=50, null=False)
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)
