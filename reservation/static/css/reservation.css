@@ -1,0 +1,416 @@
+.reservation_wrap {
+    max-width: 360px;
+}
+
+.location {
+    display: flex;
+    flex-direction: row;
+    max-width: 328px;
+    margin: 10px auto;
+}
+
+.location>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 120%;
+    text-align: center;
+    color: #000000;
+    margin-top: 3px;
+    margin-right: 10px;
+}
+
+.location>div>input {
+    background: #EEEEEE;
+    border-radius: 3px;
+    width: 288px;
+    height: 25px;
+    font-size: 12px;
+}
+
+.searchBtn {
+    width: 328px;
+    height: 34px;
+    text-align: center;
+    line-height: 34px;
+    left: calc(50% - 328px/2);
+    top: 327px;
+    background: #28AAE3;
+    border-radius: 2px;
+    margin: -15px auto 0px;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    color: #FFFFFF;
+}
+
+.playground {
+    display: flex;
+    flex-direction: row;
+    max-width: 328px;
+    margin: 10px auto;
+    height: 87px;
+    padding-top: 15px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.possibleBtn1 {
+    width: 72px;
+    height: 22px;
+    left: calc(50% - 72px/2 + 128px);
+    top: 385px;
+    background: #FF1F00;
+    border-radius: 2px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.possibleBtn2 {
+    width: 72px;
+    height: 22px;
+    left: calc(50% - 72px/2 + 128px);
+    top: 385px;
+    background: #28AAE3;
+    border-radius: 2px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.possibleBtn1>a,
+.possibleBtn2>a {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 120%;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.pName {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 120%;
+    color: #131313;
+}
+
+.pLocation {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 120%;
+    color: #8C8C8C;
+}
+
+.box1 {
+    width: 20%;
+    text-align: center;
+}
+
+.box1>i {
+    font-size: 40px;
+    margin-top: -15px;
+}
+
+.box1>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 120%;
+    text-align: center;
+    margin-top: -5px;
+}
+
+.box2 {
+    width: 60%;
+    text-align: left;
+}
+
+.pPrice {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 120%;
+    text-align: center;
+    color: #131313;
+    margin-top: 5px;
+}
+
+#playground .Pname {
+    height: 60px;
+    line-height: 60px;
+    display: flex;
+    justify-content: row;
+    padding-top: 17px;
+}
+
+#playground .Pname>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 120%;
+    margin-left: 17px;
+}
+
+#playground .reservationBtn {
+    width: 62px;
+    height: 25px;
+    line-height: 25px;
+    background: #EEEEEE;
+    border-radius: 3px;
+    position: absolute;
+    right: 17px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#playground .playgroundInfo {
+    width: 100%;
+    height: 288px;
+    background: #EEEEEE;
+}
+
+.info1 {
+    height: 97px;
+    border-bottom: 1px solid #E1E1E1;
+    display: flex;
+    justify-content: row;
+}
+
+.goReservation {
+    width: 72px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #28AAE3;
+    border-radius: 2px;
+    position: absolute;
+    right: 16px;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+
+.info2 {
+    height: 75px;
+}
+
+.info3 {
+    height: 114px;
+    border-top: 1px solid #E1E1E1;
+}
+
+.info3>div {
+    display: flex;
+    justify-content: space-around;
+}
+
+.info1,
+.info2,
+.info3 {
+    padding-top: 16px;
+    padding-left: 19px;
+    padding-right: 19px;
+}
+
+.info1,
+.info2,
+.info3>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 120%;
+    color: #131313;
+}
+
+.options>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    /* or 14px */
+    text-align: center;
+    color: #8C8C8C;
+}
+
+.options>i {
+    font-size: 30px;
+    text-align: center;
+}
+
+.priceInfo {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 0.5em;
+    /* or 14px */
+    color: #8C8C8C;
+}
+
+#reservation_result {
+    width: 90%;
+    margin: 10px auto;
+    padding: 16px;
+}
+
+.duplicatie {
+    text-align: center;
+}
+
+.duplicatie>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.goBack {
+    width: 90%;
+    height: 50px;
+    line-height: 50px;
+    margin: 0 auto;
+    background: #EEEEEE;
+}
+
+.checkBtn {
+    background: #E1E1E1;
+    border-radius: 2px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+}
+
+.checkBtn>p {
+    text-align: center;
+    color: #131313;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.checkArea {
+    padding-top: 40px;
+}
+
+.checkArea>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.detailInfo {
+    width: 100%;
+    height: 37px;
+    line-height: 37px;
+    background: #EEEEEE;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -10px;
+    border-top: 2px solid black;
+}
+
+.headTitle {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.subTile {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    color: #8C8C8C;
+}
+
+.subValue {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    color: #131313;
+}
+
+.payBtn {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background: #28AAE3;
+    border-radius: 2px;
+    margin-top: 30px;
+    text-align: center;
+    color: #FFFFFF;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.reservation_list {
+    width: 90%;
+    height: 30px;
+    margin: 4px auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.not {
+    background: #EEEEEE;
+    border-radius: 2px;
+}
+
+.not>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    color: #000000;
+}
+
+.done {
+    background: #8C8C8C;
+    border-radius: 2px;
+}
+
+.done>p {
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 120%;
+    color: #000000;
+}
+
+.payBtn {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background: #28AAE3;
+    border-radius: 2px;
+    margin-top: 30px;
+    text-align: center;
+    color: #FFFFFF;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block contents %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+
+<div id="reservation_wrap">
+
+    <div class="header_img">
+        <img src="https://apjc.thecisconetwork.com/media/file-20180926195024-6291.jpg" alt="" style="width:100%;">
+    </div>
+
+    <div class="location">
+        <p class="">지역</p>
+        <div>
+            <input type="text" placeholder="구장을 검색하세요!">
+        </div>
+    </div>
+
+    <div class="searchBtn">
+        검색하기
+    </div>
+
+    {% for playground in playgrounds %}
+
+
+    <div class="playground">
+
+        <div class="box1">
+            <p>1Km</p>
+            <i class="material-icons">
+                map
+            </i>
+        </div>
+        <div class="box2">
+            <a href="{% url 'playground' id=playground.id %}">
+                <p class="pName">{{ playground.playgroundName }}</p>
+                <p class="pLocation">{{ playground.playgroundLocation }}</p>
+            </a>
+        </div>
+        <div class="box3">
+            {% if playground.possibleReservation == 1 %}
+            <div class="possibleBtn2"><a>대관가능</a></div>
+            {% else %}
+            <div class="possibleBtn1"><a>대관불가</a></div>
+            {% endif %}
+            <p class="pPrice">{{ playground.weekDayPrice }}</p>
+        </div>
+
+    </div>
+
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

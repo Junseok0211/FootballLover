@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block contents %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+
+<div id="goReservation">
+
+    <!-- <div class="selectDay">
+        <a href="?selectedDay=20200310">
+            <p>3월 5일</p>
+        </a>
+    </div> -->
+
+    <div>
+        {% for reservation in reservationPossible %}
+        {% if reservation.2 == 0 %}
+
+        <div class="reservation_list not">
+            <input type="hidden" value="{{reservation.0}}00" class="selectedTime">
+            <input type="hidden" value="{{reservation.1}}" class="price">
+            <p>{{reservation.0}}:00</p>
+            <p>{{reservation.1}} 원</p>
+            <p style="color:#28AAE3;">예약가능</p>
+        </div>
+
+        {% else %}
+
+        <div class="reservation_list done">
+            <p>{{reservation.0}}:00</p>
+            <p>{{reservation.1}} 원</p>
+            <p style="color:red;">예약불가</p>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <form action="{% url 'tryReservation' %}?id={{playground.id}}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="playground" value="{{playground.playgroundName}}" name="playground">
+        <input type="hidden" id="totalPrice" name="totalPrice" value="0">
+        <input type="hidden" id="reservationTime" name="reservationTime">
+        <input type="hidden" id="reservationDate" name="reservationDate" value="{{today}}">
+        <input type="hidden" value="예약">
+        <div class="payBtn" style="width:90%; margin:20px auto;">
+            예약하기
+        </div>
+    </form>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+    crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+
+        let reservationTimeArray = [];
+        $(".reservation_list").not(".done").click(function () {
+            let selectedTime = $(this).children(".selectedTime").val();
+            let price = $(this).children(".price").val();
+
+            let totalPrice = $("#totalPrice").val();
+
+            let check = reservationTimeArray.indexOf(selectedTime);
+            if (check == -1) {
+
+                reservationTimeArray.push(selectedTime);
+                $("#reservationTime").val(reservationTimeArray.join(","));
+                $(this).css("background-color", "#28AAE3");
+                $(this).children().css("color", "black");
+
+                let sumPrice = parseInt(totalPrice) + parseInt(price);
+                $("#totalPrice").val(sumPrice);
+
+            } else {
+
+                reservationTimeArray.splice(check, 1);
+                $("#reservationTime").val(reservationTimeArray.join(","));
+                $(this).css("background-color", "#EEEEEE");
+                $(this).children().css("color", "black");
+
+                let sumPrice = parseInt(totalPrice) - parseInt(price);
+                $("#totalPrice").val(sumPrice);
+
+            }
+        });
+
+        $(".payBtn").click(function () {
+            $(this).parent().submit();
+        });
+
+    });
+</script>
+
+{% endblock %}

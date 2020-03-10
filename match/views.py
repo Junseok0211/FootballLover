@@ -20,6 +20,21 @@ def home(request):
     league = League.objects.order_by('-created').first()
     personal_notice = PersonalMatching.objects.order_by('-created').first()
     user_id = request.session.get('userId')
+
+    # 자동로그인 쿠키가 있는 경우 자동로그인
+    if request.COOKIES.get('username') is not None:
+        username = request.COOKIES.get('username')
+        fnsuser = get_object_or_404(FNSUser, username = username)
+        sessionId = request.COOKIES.get('sessionId')
+        
+        if sessionId == fnsuser.sessionId:
+            request.session['userId'] = fnsuser.id
+            request.session['name'] = fnsuser.name
+            notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+            countNotification = notification.filter(userCheck=False).count()
+            return render(request, 'home.html', {'fnsuser':fnsuser, 'notification':notification,'countNotification':countNotification})
+            
+
     if user_id:
         fnsuser = FNSUser.objects.get(pk=user_id)
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')

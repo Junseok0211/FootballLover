@@ -103,5 +103,6 @@ urlpatterns = [
     path('rank/', include('rank.urls')),
     path('notification/', include('notification.urls')),
     path('customerService/', include('customerService.urls')),
+    path('reservation/', include('reservation.urls')),
 
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

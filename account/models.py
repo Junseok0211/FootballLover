@@ -37,6 +37,7 @@ class FNSUser(TimeStampedModel):
     registered_date = models.DateTimeField(auto_now_add=True,
                                            verbose_name='등록시간', null = True, blank = True)
 
+    sessionId = models.CharField(null=True, default=None, max_length=100)
     phone_number = models.CharField(verbose_name='휴대폰 번호', unique = True, max_length=11)
     auth_number = models.IntegerField(verbose_name='인증 번호', blank=True, null=True)
 

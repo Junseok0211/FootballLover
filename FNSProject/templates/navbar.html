@@ -1,0 +1,94 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top mx-0 px-0 pl-md-3">
+  
+    <a href="{% url 'home' %}"><img src="{% static 'KoreanLogo.png' %}" alt="logo" 
+    class="src mr-5" height="50px" width="160px" class="mr-4"></a>
+  
+    <div class="text-muted mr-md-5 d-block d-md-none">
+      <!-- 만약 로그인이 됐다면 알람 나타내기 -->
+      {% if request.session.name %}
+      {% include 'alarm.html' %}
+      {% endif %}
+    </div>
+    <!-- 메뉴버튼 -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0 p-2">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'playground_list' %}">구장대관<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'personal' %}">개인매칭</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'teamMatching' %}" tabindex="-1" aria-disabled="true">팀매칭</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'recruiting' %}" tabindex="-1" aria-disabled="true">용병모집</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'league' %}" tabindex="-1" aria-disabled="true">밀어내기</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'team' %}" tabindex="-1" aria-disabled="true">팀 목록</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'individualRank' %}" tabindex="-1" aria-disabled="true">순위</a>
+        </li>
+        <li class="nav-item down d-none d-md-block">
+          <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">기타</a>
+          <div class="down-content">
+            <a class="nav-link" href="{% url 'decidedMatch' %}" tabindex="-1" aria-disabled="true">일정보기</a>
+            <a class="nav-link" href="{% url 'result' %}" tabindex="-1" aria-disabled="true">결과보기</a>
+            <a class="nav-link" href="{% url 'cs' %}" tabindex="-1" aria-disabled="true">문의하기</a>
+          </div>
+        </li>
+        
+        <li class="nav-item dropup d-block d-md-none">
+          <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">기타</a>
+          <div class="dropup-content">
+            <a class="nav-link" href="{% url 'decidedMatch' %}" tabindex="-1" aria-disabled="true">일정보기</a>
+            <a class="nav-link" href="{% url 'result' %}" tabindex="-1" aria-disabled="true">결과보기</a>
+            <a class="nav-link" href="{% url 'cs' %}" tabindex="-1" aria-disabled="true">문의하기</a>
+          </div>
+        </li>
+        {% if request.session.name %}
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'logout' %}" tabindex="-1" aria-disabled="true">로그아웃</a>
+          </li>
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'myPage' fnsuser.id %}" tabindex="-1" aria-disabled="true">마이페이지</a>
+          </li>
+        {% else %}
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'login' %}" tabindex="-1" aria-disabled="true">로그인</a>
+          </li>
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'register' %}" tabindex="-1" aria-disabled="true">회원가입</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  
+    <div class="text-muted mr-md-5 d-none d-md-block">
+      <!-- 로그인 시 -->
+      {% if request.session.name %}
+        <a href="{% url 'logout' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그아웃</a> |
+        <a href="{% url 'myPage' fnsuser.id %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">마이페이지</a>
+      {% include 'alarm.html' %}
+  
+      <!-- 로그인 안되면 -->
+      {% else %}
+        <a href="{% url 'login' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그인</a> |
+        <a href="{% url 'register' %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">회원가입</a>
+      {% endif %}
+    </div>  
+    <div id="ex1" class="row justify-content-end">
+      <i class="fa fa-envelope fa-5x fa-border icon-grey badge pr-0 mr-0"></i>
+    </div>
+    
+  </nav>
+  

@@ -65,7 +65,9 @@ body{
       font-size:13px;
 }
 
-
+.autolog{
+      margin-bottom: 10px;
+}
 @media screen and (max-width: 900px){
 .login-form{
       font-family: "Nanum Gothic";

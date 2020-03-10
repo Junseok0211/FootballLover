@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
+
 <div class="dropdown" style="display: inline-block;">
         <button onclick="myFunction()" class="dropbtn bg-light badge1 dropdown-toggle mr-md-4 mr-0 pt-0" data-badge="{{countNotification}}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
         <div id="myDropdown" class="alarmDropdown-content dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

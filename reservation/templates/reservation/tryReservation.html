@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block contents %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+
+<div id="reservation_result">
+
+    {% if err_msg == "duplicate reservation" %}
+
+    <div class="duplicatie">
+        <p>동일 시간에 예약 내역이 있습니다!</p>
+
+        <a href="/reservation/goReservation/{{id}}">
+            <div class="goBack">돌아가기</div>
+        </a>
+    </div>
+
+    {% else %}
+
+    <div class="selected_payment">
+
+        <div class="checkBtn">
+            <p>예매내용 확인</p>
+        </div>
+
+        <div class="checkArea">
+            <p class="headTitle">{{reservedDateToString}} {{reserved_time.0}}:00 - {{reserved_time.1}}:00</p>
+            <div class="detailInfo">
+                <p class="subTile">{{playground}}</p>
+                <p class="subValue">총 {{reservationLength}}시간</p>
+            </div>
+
+            <br>
+
+            <p class="headTitle">결제금액</p>
+            <div class="detailInfo">
+                <p class="subTile">총 결제금액</p>
+                <p class="subValue">{{totalPrice}} 원</p>
+            </div>
+        </div>
+
+        <form action="{% url 'resultReservation' %}?id={{playground.id}}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="playground" value="{{playground.playgroundName}}" name="playground">
+            <input type="hidden" id="reservationTime" name="reservationTime" value="{{reservationTime}}">
+            <input type="hidden" id="reservationDate" name="reservationDate" value="{{reservationDate}}">
+            <input type="hidden" id="totalPrice" name="totalPrice" value="{{totalPrice}}">
+            <input type="hidden" value="예약">
+            <div class="payBtn">
+                결제하기
+            </div>
+        </form>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $(".payBtn").click(function () {
+            $(this).parent().submit();
+        });
+
+    });
+</script>
+
+
+{% endblock %}

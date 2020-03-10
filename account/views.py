@@ -19,11 +19,27 @@ import requests
 
 def login(request):
     if request.method == 'GET':
+        if request.COOKIES.get('username') is not None:
+            username = request.COOKIES.get('username')
+            fnsuser = get_object_or_404(FNSUser, username = username)
+            if not request.session.session_key:
+                request.session.create()
+            sessionId = request.session.session_key
+            if sessionId == fnsuser.sessionId:
+                request.session['userId'] = fnsuser.id
+                request.session['name'] = fnsuser.name
+                notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+                countNotification = notification.filter(userCheck=False).count()
+                return render(request, 'home.html', {'fnsuser':fnsuser, 'notification':notification,'countNotification':countNotification})
+            
         return render(request, 'login.html')
+    # 해당 쿠키에 값이 없을 경우 None을 return 한다.
+
 
     elif request.method == 'POST':
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
+        autolog = request.POST.get('autolog', None)
 
         res_data = {}
         if not (username and password):
@@ -42,6 +58,22 @@ def login(request):
                 # 세션
                 request.session['userId'] = fnsuser.id
                 request.session['name'] = fnsuser.name
+                
+                if autolog == "true":
+                    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+                    countNotification = notification.filter(userCheck=False).count()
+                    
+                    response = render(request, 'home.html', {'fnsuser':fnsuser, 'notification':notification,
+                    'countNotification':countNotification})
+                    if not request.session.session_key:
+                        request.session.create()
+                    response.set_cookie('username', username, 2592000) #유효기간 한 달
+                    sessionId = request.session.session_key
+                    response.set_cookie('sessionId', sessionId, 2592000)
+                    fnsuser.sessionId = sessionId
+                    fnsuser.save()
+                    return response
+                
                 return redirect('/')
             else:
                 res_data['error'] = '비밀번호가 틀렸습니다.'
@@ -55,7 +87,10 @@ def logout(request):
         del(request.session['userId'])
         del(request.session['name'])
 
-    return redirect('/')
+    response = render(request, 'home.html')
+    response.delete_cookie('username')
+    response.delete_cookie('sessionId')
+    return response
 
 def test(request):
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))

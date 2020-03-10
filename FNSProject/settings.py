@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rank.apps.RankConfig',
     'notification.apps.NotificationConfig',
     'customerService.apps.CustomerserviceConfig',
+    'reservation.apps.ReservationConfig',
     
 
     'rest_framework',
@@ -155,8 +156,10 @@ AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
 AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
 STATICFILES_DIRS = [
     STATIC_DIR,
+    os.path.join(BASE_DIR, 'FNSProject', 'static'),
 ]
 AWS_LOCATION = 'ap-northeast-2'
 STATIC_URL = 'https://%s/%s/static/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block contents %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+
+<div id="playground">
+    <div>
+        <img src="https://footballlover.s3.ap-northeast-2.amazonaws.com/media/{{playground.playgorundPhoto}}" alt="" style="width:100%;">
+    </div>
+    <div class="Pname">
+        <p>
+            {{playground.playgroundName}}
+        </p>
+
+        {% if playground.possibleReservation == 1 %}
+        <div class="reservationBtn">
+            제휴센터
+        </div>
+        {% else %}
+        <div class="reservationBtn">
+            비제휴센터
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="playgroundInfo">
+
+        <div class="info1">
+            <div>
+                <p>예약가격</p>
+                <p class="priceInfo">평일 주간 : {{playground.weekDayPrice}} 원 / 평일 야간 {{playground.weekNightPrice}} 원</p>
+                <p class="priceInfo">주말 주간 : {{playground.weekendDayPrice}} 원 / 주말 야간 {{playground.weekendNightPrice}} 원</p>
+            </div>
+
+            {% if playground.possibleReservation == 1 %}
+            <a href="{% url 'goReservation' id=playground.id %}">
+                <div class="goReservation">
+                    대관하기
+                </div>
+            </a>
+            {% else %}
+            <div class="goReservation">
+                전화문의
+            </div>
+            {% endif %}
+
+        </div>
+        <div class="info2">
+            <p>규격</p>
+        </div>
+        <div class="info3">
+            <p>편의시설</p>
+            <div>
+
+                {% if playground.playgroundOption1 == 1 %}
+                <div class="options">
+                    <i class="material-icons">
+                        sports_soccer
+                    </i>
+                    <p>공대여</p>
+                </div>
+                {% endif %}
+
+                {% if playground.playgroundOption2 == 1 %}
+                <div class="options">
+                    <i class="material-icons">
+                        sports_soccer
+                    </i>
+                    <p>공대여</p>
+                </div>
+                {% endif %}
+
+                {% if playground.playgroundOption3 == 1 %}
+                <div class="options">
+                    <i class="material-icons">
+                        sports_soccer
+                    </i>
+                    <p>공대여</p>
+                </div>
+                {% endif %}
+
+                {% if playground.playgroundOption4 == 1 %}
+                <div class="options">
+                    <i class="material-icons">
+                        sports_soccer
+                    </i>
+                    <p>공대여</p>
+                </div>
+                {% endif %}
+
+                {% if playground.playgroundOption5 == 1 %}
+                <div class="options">
+                    <i class="material-icons">
+                        sports_soccer
+                    </i>
+                    <p>공대여</p>
+                </div>
+                {% endif %}
+
+                {% if playground.playgroundOption6 == 1 %}
+                <div class="options">
+                    <i class="material-icons">
+                        sports_soccer
+                    </i>
+                    <p>공대여</p>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
