@@ -441,4 +441,7 @@ label{
     .textDetail2{
         font-size:12px ;
     }
+    .footer p{
+        font-size: 8px;
+    }
 }
