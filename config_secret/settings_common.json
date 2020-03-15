@@ -1,7 +1,7 @@
 {
     "aws": {
-      "access_key_id": "AKIAV3TGSJWYCO364ZG4",
-      "secret_access_key": "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",
-      "s3_bucket_name": "footballlover"
+      "access_key_id": "",
+      "secret_access_key": "",
+      "s3_bucket_name": ""
     }
   }
