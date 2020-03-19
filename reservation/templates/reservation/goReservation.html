@@ -1,18 +1,58 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load hDate %}
 
 {% block contents %}
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="{% static 'css/reservation.css' %}">
 
-<div id="goReservation">
+<style>
+    .date_nav {
+        max-width: 720px;
+        margin: 10px;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: auto;
+    }
 
-    <!-- <div class="selectDay">
-        <a href="?selectedDay=20200310">
-            <p>3월 5일</p>
+    .selectDay {
+        width: 100px;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+        font-size: 12px;
+        border: 1px solid #eaeaea;
+    }
+
+    .active {
+        background-color: #28AAE3;
+        color: #FFFFFF;
+        font-weight: bold;
+    }
+</style>
+
+<div class="common_area">
+
+    <div class="date_nav">
+        {% for possibleDate in weekArray %}
+
+        {% if possibleDate == selectedDay %}
+        <a href="?selectedDay={{possibleDate}}">
+            <div class="selectDay active">
+                {{possibleDate|hDate}}
+            </div>
         </a>
-    </div> -->
+        {% else %}
+        <a href="?selectedDay={{possibleDate}}">
+            <div class="selectDay">
+                {{possibleDate|hDate}}
+            </div>
+        </a>
+        {% endif %}
+
+        {% endfor %}
+    </div>
 
     <div>
         {% for reservation in reservationPossible %}
@@ -43,7 +83,7 @@
         <input type="hidden" id="playground" value="{{playground.playgroundName}}" name="playground">
         <input type="hidden" id="totalPrice" name="totalPrice" value="0">
         <input type="hidden" id="reservationTime" name="reservationTime">
-        <input type="hidden" id="reservationDate" name="reservationDate" value="{{today}}">
+        <input type="hidden" id="reservationDate" name="reservationDate" value="{{selectedDay}}">
         <input type="hidden" value="예약">
         <div class="payBtn" style="width:90%; margin:20px auto;">
             예약하기

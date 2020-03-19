@@ -1,0 +1,197 @@
+<!-- 댓글 목록 -->
+<div class="">
+    {% for comment in commentList %}
+    <!-- 댓글 대댓글 전체 래핑 -->
+    <div class="commentWrapper">
+      <!-- 댓글 래퍼 -->
+      <div class="wrapper">
+        <!-- 상세 댓글 -->
+        <div class="row detail">
+          <div class="col-sm-1 col-2">
+            <a href="{% url 'myPage' comment.user.id %}">
+            <img class="float-right" style="margin-left:10px; border-radius: 70px;" width="35px" height="35px" src="{{ comment.user.userimg.url }}">
+            </a>
+          </div>
+          <div id = "{{comment.id}}" class="col-sm-11 col-8">
+            <h6 class="media-heading user_name">
+            <strong>{{ comment.user }}</strong> 
+            | {{comment.passedTime}}
+            </h6>
+            <h6>{{ comment.content }}</h6>
+          </div>
+          <div class="btn-group col-sm-1 col-2" style="z-index: 1000;">
+            <button type="button" class="btn btn-light dropdown-toggle" style="color:white !important; border:none !important; background-color: white !important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="far fa-caret-square-down" style="color: black !important;"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              {% if comment.user == fnsuser %}
+                <button class="dropdown-item edit" type="button">수정</button>
+                <a href ="{% url 'deletePC' comment.id%}" onclick="return deletePC()"><button class="dropdown-item" type="button" id="deletePC">삭제</button></a>
+              {% endif %}
+              {% if comment.reply.all.count == 0 %}
+              <button class="dropdown-item reply" type="button">답글 달기</button>
+              {% else %}
+              <button class="dropdown-item reply" type="button">답글 {{comment.reply.all.count}}개</button>
+              {% endif %}
+              <button class="dropdown-item allReplyCancel" type="button">답글 닫기</button>
+            </div>
+          </div>
+        </div>
+        <!-- 상세 댓글 끝 -->
+
+        <!-- 댓글 수정 폼 -->
+        <div class="row editForm">
+          <div class="col-sm-1 col-2">
+            <img class="float-right" style="border-radius: 70px;" width="40px" height="40px" src="{{ comment.user.userimg.url }}">
+          </div>
+          <div id = "{{comment.id}}" class="col-sm-9 col-10">
+            <form method="post" action="{% url 'editPC' comment.id %}" enctype="multipart/form-data" class="col-lg-12 col-md-10">
+            {% csrf_token %}
+              <input type="hidden" name="personalMatching_id" value="{{ personalMatching.id }}">
+              <div class="form-group row">
+                <textarea class="form-control" name="content" rows="1" placeholder="댓글을 수정하세요"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-2 col-12">
+              <div class="form-group float-right">
+                <button type="submit" class="btn btn-outline-primary">수정</button>
+                <button type="button" style="margin-right: 5px;" class="btn btn-outline-primary cancel">취소</button>
+              </div>
+            </form>
+          </div> 
+        </div>
+        <!-- 댓글수정폼 끝 -->
+      <hr style="margin-top:0.5rem;">
+      </div>
+      <!-- 댓글래퍼 끝 -->
+
+    <!-- 답글 -->
+    <div class="replyAll" id="test1">
+      <!-- 답글쓰기 -->
+      <div class="row writeReply" id = write>
+        <div class="col-md-1 col-2">
+            <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
+        </div>
+        <div class="col-1">
+          <img class="float-right" style="border-radius: 70px;" width="30px" height="30px" src="{{ fnsuser.userimg.url }}">
+        </div>
+        <div class="col-8 mx-0 px-0">
+          <form method="post" action="{% url 'personalReply_write' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="personalMatching_id" value="{{ personalMatching.id }}">
+            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+            <div class="form-group col-12">
+              <textarea class="form-control" name="content" rows="1" placeholder="답글을 입력하세요"></textarea>
+            </div>
+        </div>
+          
+        <div class="form-group col-md-2 col-12">
+          <button type="reset" class="float-right btn btn-outline-primary">취소</button>    
+          <button type="submit" style="margin-right: 5px;" class="btn btn-outline-primary float-right">등록</button>
+        </div>
+          </form>
+      </div>
+      <hr style="margin-top: 0;">
+      <!-- 답글쓰기 끝 -->
+
+      <!-- 답글 목록 -->
+      {% for reply in comment.reply.all %}
+      
+      <div class="replyWrapper" id = replyWrapper>
+      <!-- replyDetail -->
+        <div class="row replyDetail">
+          <div class="col-md-1 col-3">
+              <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
+          </div>
+          <div class="col-1">
+              <a href="{% url 'myPage' reply.user.id %}">
+                <img class="float-right" style="border-radius: 70px;" width="40px" height="40px" src="{{ reply.user.userimg.url }}">
+              </a>
+          </div>
+          <div class="col-md-9 col-6">
+            <h6 class="media-heading user_name">
+            <strong>{{ reply.user }}</strong> 
+            | {{reply.passedTime}}
+            </h6>
+            <h6>: {{ reply.content }}</h6>
+          </div>
+          {% if reply.user == fnsuser %}
+          <div class="btn-group col-1">
+            <button type="button" class="btn btn-light dropdown-toggle" style="color:white !important; border:none !important; background-color: white !important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="far fa-caret-square-down" style="color: black !important;"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item replyEdit" type="button">수정</button>
+              <a href ="{% url 'deletePersonalReply' reply.id%}" onclick="return deletePC()"><button class="dropdown-item" type="button" id="deletePC">삭제</button></a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        
+        <!-- replyDetail 끝 -->
+
+        <!-- replyEditForm -->
+        <div class="row replyEditForm">
+          <div class="col-md-1 col-2">
+              <i class="fas fa-arrow-alt-circle-right float-right" style="width:35px; height:35px; padding-top:10px;"></i>
+          </div>
+          <div class="col-1">
+            <img class="float-right" style="border-radius: 70px;" width="30px" height="30px" src="{{ reply.user.userimg.url }}">
+          </div>
+          <div class="col-8" style="margin-left:0; padding-left:0; margin-right: 0; padding-right: 0;">
+            <form method="post" action="{% url 'editPersonalReply' reply.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+              <input type="hidden" name="personalMatching_id" value="{{ personalMatching.id }}">
+                
+              <div class="form-group col-12">
+                <textarea class="form-control" name="content" rows="1" placeholder="답글을 수정하세요"></textarea>
+              </div>
+          </div>
+          <div class="col-md-2 col-12 ">
+            <div class="form-group float-right">
+              <button type="submit" class="btn btn-outline-primary">수정</button>
+              <button type="reset"class="btn btn-outline-primary">취소</button>
+            </div>
+            </form>
+          </div>  
+        </div>
+        <!-- replyEditForm 끝 -->
+       
+      </div>
+      <hr>
+      {% endfor %}
+      <!-- 답글 래퍼 끝 -->
+      <!-- 답글 목록 끝 -->
+    </div>
+    
+  </div>
+  <!-- commentWrapper 끝 -->
+
+      <!--답글 끝  -->
+    {% endfor %}
+  </div>
+  <!-- 댓글 끝 -->
+  <!-- 댓글 페이지네이션 -->
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if commentList.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{commentList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{commentList.previous_page_number}}</a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item disabled"><a class="page-link" href="#">{{commentList.number}}</a></li>
+    {% if commentList.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{commentList.next_page_number}}">{{commentList.next_page_number}}</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{commentList.paginator.num_pages}}">마지막으로</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+  <!-- 댓글 페이지네이션 끝 -->

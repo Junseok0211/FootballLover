@@ -1,11 +1,21 @@
+.common_area {
+    max-width: 720px;
+    margin:0 auto;
+}
+
 .reservation_wrap {
-    max-width: 360px;
+    max-width: 720px;
+}
+
+#reservation_wrap {
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .location {
     display: flex;
     flex-direction: row;
-    max-width: 328px;
+    max-width: 720px;
     margin: 10px auto;
 }
 
@@ -24,13 +34,13 @@
 .location>div>input {
     background: #EEEEEE;
     border-radius: 3px;
-    width: 288px;
-    height: 25px;
+    width: 90%;
+    height: 34px;
     font-size: 12px;
 }
 
 .searchBtn {
-    width: 328px;
+    width: 15%;
     height: 34px;
     text-align: center;
     line-height: 34px;
@@ -38,7 +48,6 @@
     top: 327px;
     background: #28AAE3;
     border-radius: 2px;
-    margin: -15px auto 0px;
     font-family: Noto Sans KR;
     font-style: normal;
     font-weight: bold;
@@ -49,7 +58,7 @@
 .playground {
     display: flex;
     flex-direction: row;
-    max-width: 328px;
+    max-width: 720px;
     margin: 10px auto;
     height: 87px;
     padding-top: 15px;
@@ -143,11 +152,17 @@
     margin-top: 5px;
 }
 
+#playground {
+    max-width:720px;
+    margin:0 auto;
+}
+
 #playground .Pname {
+    max-width: 720px;
     height: 60px;
     line-height: 60px;
     display: flex;
-    justify-content: row;
+    justify-content: space-between;
     padding-top: 17px;
 }
 
@@ -166,24 +181,24 @@
     line-height: 25px;
     background: #EEEEEE;
     border-radius: 3px;
-    position: absolute;
-    right: 17px;
     font-size: 13px;
     text-align: center;
     font-weight: bold;
+    margin-right:20px;
 }
 
 #playground .playgroundInfo {
-    width: 100%;
+    max-width: 720px;
     height: 288px;
     background: #EEEEEE;
 }
 
 .info1 {
+    max-width: 720px;
     height: 97px;
     border-bottom: 1px solid #E1E1E1;
     display: flex;
-    justify-content: row;
+    justify-content: space-between;
 }
 
 .goReservation {
@@ -193,8 +208,6 @@
     text-align: center;
     background: #28AAE3;
     border-radius: 2px;
-    position: absolute;
-    right: 16px;
     font-family: Noto Sans KR;
     font-style: normal;
     font-weight: bold;
@@ -236,6 +249,10 @@
     color: #131313;
 }
 
+.options {
+    text-align:center;
+}
+
 .options>p {
     font-family: Noto Sans KR;
     font-style: normal;
@@ -262,7 +279,7 @@
 }
 
 #reservation_result {
-    width: 90%;
+    max-width: 720px;
     margin: 10px auto;
     padding: 16px;
 }

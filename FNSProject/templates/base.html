@@ -102,6 +102,241 @@
 
     </script>
 
+    <style>
+
+      .commentBox{
+        padding:0;
+        width: 100%;
+      }
+
+      .commentEditBox{
+        padding:0;
+        width: 100%;
+      }
+
+      .commentBox textarea{
+        font-family: 'Nanum Gothic';
+        box-sizing:border-box;
+        font-size:15px;
+        color:#333;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width: 95%;
+        outline: none;
+        background:none;
+        margin-left: 10px;
+        height:30px;
+        resize:none;
+        overflow-y:hidden;
+      }
+
+      .commentBox textarea:focus{
+        border-bottom: 2px solid black;
+        transition:.5s;
+      }
+
+      /* 댓글수정 textarea */
+      .commentEditBox textarea{
+        font-family: 'Nanum Gothic';
+        box-sizing:border-box;
+        font-size:15px;
+        color:#333;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width: 95%;
+        outline: none;
+        background:none;
+        margin-left: 10px;
+        height:30px;
+        resize:none;
+        overflow-y:hidden;
+      }
+
+      .commentEditBox textarea:focus{
+        border-bottom: 2px solid black;
+        transition:.5s;
+      }
+      
+      .commentBtnWrapper{
+        display: flex; 
+        justify-content: flex-end; 
+        margin-bottom: 5px;
+      }
+      .commentBtn{
+        font-family: 'Nanum Gothic';
+        width:70px;
+        height:40px;
+        border:none; 
+        background-color: gray;
+        background-size:200%;
+        color:#fff;
+        outline:none;
+        cursor: pointer;
+      }
+
+      .detail{
+        display: flex;
+        flex-direction: row;
+      }
+
+      .comment{
+        padding-left: 15px;
+        width: 100%;
+        padding-right: 15px;
+        
+      }
+
+      .commentName{
+        font-weight: bold;
+        font-size: 12px;
+        font-family: 'Nanum Gothic';
+      }
+
+      .commentTime{
+        font-size: 13px;
+        font-family: 'Nanum Gothic';
+        color: gray;
+      }
+
+      .commentContent{
+
+        font-size: 14px;
+        font-family: 'Nanum Gothic';
+        white-space: pre-line;
+        width: auto;
+      }
+
+      @media screen and (max-width: 500px){
+        .commentBox textarea{
+        font-family: 'Nanum Gothic';
+        box-sizing:border-box;
+        font-size:15px;
+        color:#333;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        width: 85%;
+        outline: none;
+        background:none;
+        margin-left: 10px;
+        height:30px;
+        resize:none;
+        overflow-y:hidden;
+        }
+      }
+
+
+
+      /* 댓글 메뉴버튼 */
+      .commentDropBtn {
+        border:none; 
+        background-color: white;
+        font-size: 16px;
+        cursor: pointer;
+        
+      }
+
+        .commentDropDown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .cmDropDownContent {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            font-size: 15px;
+            min-width: 100px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            text-align: center;
+        }
+
+        .cmDropDownContent a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-item:hover {background-color: darkgray;}
+
+        .commentDropDown:hover .cmDropDownContent {
+            display: block;
+        }
+
+        .detail:hover .commentDropDown i{
+          color:gray;
+        }
+
+        .commentDropDown i{
+          color:white;
+        }
+
+        /*footer css*/
+        .footerPolicy{
+          padding-top: 15px; 
+          margin-left: 15%;
+        }
+
+        .footerText{
+          display:flex;
+          padding-left:15%; 
+          flex-direction: row;
+        }
+
+        .pcFooterLogo{
+          display: block;
+          margin-left: 50px;
+        }
+
+        .mobileFooterLogo{
+          display: none;
+        }
+        @media screen and (max-width: 500px){
+          .footerPolicy{
+            font-size: 10px !important;
+            padding-top: 15px; 
+            margin-left: 20px;
+          }
+
+          .footerText{
+            display:flex;
+            flex-direction: row;
+            padding-left: 20px;
+          }
+
+          .pcFooterLogo{
+          display: none;
+          }
+
+          .mobileFooterLogo{
+            display: block;
+            display: flex; 
+            flex-direction: row; 
+            padding: 20px;
+          }
+        }
+
+
+        /*Policy */
+        .policy{
+          width:720px;  
+          margin: 50px 0; 
+          padding: 10px;
+        }
+
+        @media screen and (max-width: 500px){
+          .policy{
+            width:100%;  
+            margin: 50px 0; 
+            padding: 10px;
+          }
+        }
+    </style>
 
 </head>
 <body>

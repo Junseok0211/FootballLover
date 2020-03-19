@@ -485,3 +485,11 @@ class FNSAuth(APIView):
         else:
             result = m.FNSUser.check_auth_number(p_num, a_num)
             return Response({'message': '인증완료', 'result': result})
+
+def servicePolicy(request):
+
+    return render(request, 'servicePolicy.html')
+
+def informationPolicy(request):
+
+    return render(request, 'informationPolicy.html')

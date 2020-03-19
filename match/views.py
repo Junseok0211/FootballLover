@@ -143,13 +143,6 @@ def personalcm_write(request):
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))    
         personalMatching_id = request.POST.get('personalMatching_id', '').strip()
         personalMatching = get_object_or_404(PersonalMatching, pk=personalMatching_id)
-        comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
-        # 객체를 한 페이지로 자르기
-        commentPaginator = Paginator(comments, 15)
-        # request에 담아주기
-        commentPage = request.GET.get('page')
-        # request된 페이지를 얻어온 뒤 return 해 준다.
-        commentList = commentPaginator.get_page(commentPage)
         content = request.POST.get('content', '').strip()
 
         if not content: 
@@ -168,6 +161,15 @@ def personalcm_write(request):
             newNotification.personalCommentText()
             newNotification.save()
             # return redirect(reverse('personal_detail', kwargs={'personal_id':personalMatching_id}))
+
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+    
 
     notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()

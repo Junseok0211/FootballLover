@@ -3,14 +3,14 @@ from .models import PlaygroundList, ReservationList
 from team.models import Team
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
+import datetime
 from account.models import FNSUser
-from datetime import datetime
 
 # Create your views here.
 def playground_list(request):
     playgrounds = PlaygroundList.objects.all().order_by('created')
     Teams = Team.objects.all().order_by('created')
-
+    
     if request.session.get('userId', None) != None:
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
@@ -37,9 +37,10 @@ def playground_list(request):
         }
         return render(request, 'reservation/playground_list.html', data)
 
+
 def playground(request, id):
     playground = get_object_or_404(PlaygroundList, id = id)
-
+    
     if request.session.get('userId', None) != None:
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
@@ -68,13 +69,25 @@ def playground(request, id):
 
 
 def goReservation(request, id):
+
+    # if not (request.session.get('userId')):
+    #     errormessage = '로그인을 해주세요.'
+    #     return render(request, 'login.html', {'errormessage':errormessage})
+
     playground = get_object_or_404(PlaygroundList, id = id)
 
-    reservationPossible = [["06"],["07"],["08"],["09"],["10"],["11"],["12"],["13"],["14"],["15"],["16"],["17"],["18"],["19"],["20"],["21"],["22"],["23"],]
+    reservationPossible = [["06"],["07"],["08"],["09"],["10"],["11"],["12"],["13"],["14"],["15"],["16"],["17"],["18"],["19"],["20"],["21"],["22"],["23"]]
+    weekArray = []
 
-    today = request.GET.get('selectedDay')
-    if not (today):
-        today = datetime.today().strftime("%Y%m%d") 
+    today = datetime.datetime.now()
+    for i in range(0, 10):
+        tomorrow = today + datetime.timedelta(days=i)
+        tomorrow_formet = tomorrow.strftime("%m%d") 
+        weekArray.append(tomorrow_formet)
+
+    selectedDay = request.GET.get('selectedDay')
+    if not (selectedDay):
+        selectedDay = datetime.datetime.now().strftime("%Y%m%d") 
 
     for idx, reservation in enumerate(reservationPossible): 
         
@@ -85,7 +98,7 @@ def goReservation(request, id):
         if reservation[0] > '17':
             price = playground.weekNightPrice
 
-        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = today ,reservationTime = reservationTime)        
+        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = selectedDay ,reservationTime = reservationTime)        
 
         existReservation = 0
         if checkReservation:
@@ -93,6 +106,7 @@ def goReservation(request, id):
 
         reservationPossible[idx].append(price)
         reservationPossible[idx].append(existReservation)
+
 
     if request.session.get('userId', None) != None:
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
@@ -112,18 +126,23 @@ def goReservation(request, id):
             'notificationList': notificationList,
             'playground' : playground,
             "reservationPossible" : reservationPossible, 
-            "today" : today,
+            "today" : today, 
+            "weekArray" : weekArray, 
+            "selectedDay" : selectedDay
         }
 
         return render(request, 'reservation/goReservation.html', data)
 
     else:
         data = {
-           'playground' : playground,
+            'playground' : playground,
             "reservationPossible" : reservationPossible, 
             "today" : today, 
+            "weekArray" : weekArray, 
+            "selectedDay" : selectedDay
         }
         return render(request, 'reservation/goReservation.html', data)
+
 
 def tryReservation(request):
     id = request.GET.get('id')
@@ -134,7 +153,7 @@ def tryReservation(request):
     reservationTimeArray = reservationTime.split(",")
     reservedDateToString = reservationDate[0:4] + "년 " + reservationDate[4:6] + "월 " + reservationDate[6:8] + "일"
     reservationLength = len(reservationTimeArray)
-    
+
     # 유저정보
     if request.session.get('userId', None) != None:
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
@@ -156,6 +175,7 @@ def tryReservation(request):
 
         if checkReservation:
             err_msg = "duplicate reservation"
+
             if request.session.get('userId', None) != None:
                 data = {
                     'fnsuser':fnsuser,
@@ -184,7 +204,7 @@ def tryReservation(request):
                 reserved_time.append(reservation[0:2])
             if idx == (len(reservationTimeArray) - 1):
                 reserved_time.append(int(reservation[0:2]) + 1)
-                
+
         if request.session.get('userId', None) != None:
             data = {
                 'fnsuser':fnsuser,
@@ -236,6 +256,7 @@ def resultReservation(request):
         if idx == (len(reservationTimeArray) - 1):
             reserved_time.append(int(reservation[0:2]) + 1)
 
+    
     if request.session.get('userId', None) != None:
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
@@ -271,3 +292,4 @@ def resultReservation(request):
 
     
     return render(request, 'reservation/resultReservation.html', data)
+
