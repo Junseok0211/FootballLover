@@ -487,9 +487,42 @@ class FNSAuth(APIView):
             return Response({'message': '인증완료', 'result': result})
 
 def servicePolicy(request):
+    if request.session.get('userId', None) != None:
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        data = {
+            'fnsuser':fnsuser,
+            'notification':notification,
+            'countNotification':countNotification,
+            'notificationList': notificationList,
+        }
 
-    return render(request, 'servicePolicy.html')
+    return render(request, 'servicePolicy.html', data)
 
 def informationPolicy(request):
-
-    return render(request, 'informationPolicy.html')
+    if request.session.get('userId', None) != None:
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        data = {
+            'fnsuser':fnsuser,
+            'notification':notification,
+            'countNotification':countNotification,
+            'notificationList': notificationList,
+        }
+    return render(request, 'informationPolicy.html', data)
