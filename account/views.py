@@ -504,8 +504,9 @@ def servicePolicy(request):
             'countNotification':countNotification,
             'notificationList': notificationList,
         }
+        return render(request, 'servicePolicy.html', data)
 
-    return render(request, 'servicePolicy.html', data)
+    return render(request, 'servicePolicy.html')
 
 def informationPolicy(request):
     if request.session.get('userId', None) != None:
@@ -525,4 +526,6 @@ def informationPolicy(request):
             'countNotification':countNotification,
             'notificationList': notificationList,
         }
-    return render(request, 'informationPolicy.html', data)
+        return render(request, 'informationPolicy.html', data)
+
+    return render(request, 'informationPolicy.html')
