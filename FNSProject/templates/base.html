@@ -365,28 +365,28 @@
     {% include 'footer.html' %}
 
     <script>
-        // $.datetimepicker.setLocale('ko');
-        // $('#time_from').datetimepicker({
-        //     allowTimes: [
-        //         '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
-        //     ],
-        //     i18n: {
-        //         ko: {
-        //             months: [
-        //                 '1월', '2월', '3월', '4월',
-        //                 '5월', '6월', '7월', '8월',
-        //                 '9월', '10월', '11월', '12월',
-        //             ],
-        //             dayOfWeek: [
-        //                 "일", "월", "화", "수",
-        //                 "목", "금", "토",
-        //             ]
-        //         }
-        //     },
-        //     timepicker: true,
+        $.datetimepicker.setLocale('ko');
+        $('#time_from').datetimepicker({
+            allowTimes: [
+                '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+            ],
+            i18n: {
+                ko: {
+                    months: [
+                        '1월', '2월', '3월', '4월',
+                        '5월', '6월', '7월', '8월',
+                        '9월', '10월', '11월', '12월',
+                    ],
+                    dayOfWeek: [
+                        "일", "월", "화", "수",
+                        "목", "금", "토",
+                    ]
+                }
+            },
+            timepicker: true,
 
-        //     format: 'Y/m/d H:i'
-        // });
+            format: 'Y/m/d H:i'
+        });
 
         var setMin = function (currentDateTime) {
             var date = String($("#time_from").val());
@@ -399,16 +399,16 @@
             });
         };
 
-        // $("#time_to").datetimepicker({
-        //     onShow: setMin,
-        //     datepicker: false,
-        //     allowTimes: [
-        //         '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00',
-        //         '23:00'
-        //     ],
-        //     format: 'H:i'
+        $("#time_to").datetimepicker({
+            onShow: setMin,
+            datepicker: false,
+            allowTimes: [
+                '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00',
+                '23:00'
+            ],
+            format: 'H:i'
 
-        // });
+        });
 
         function checkAllNotification() {
             var url = "{% url 'checkAllNotification' %}"
@@ -441,12 +441,12 @@
     </script>
 
     <script language=javascript>
-        // $('.carousel').carousel({
-        //     interval: 20
-        // })
+        $('.carousel').carousel({
+            interval: 20
+        })
     </script>
     <script language="javascript" type="text/javascript">
-        // buildCalendar();
+        buildCalendar();
     </script>
 
     <script language="javascript">
