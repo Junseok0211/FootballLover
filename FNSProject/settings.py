@@ -14,6 +14,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import json
 from django.core.exceptions import ImproperlyConfigured
+
+import pymysql
+pymysql.install_as_MySQLdb()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -94,18 +98,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FNSProject.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -160,6 +152,24 @@ AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
 AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
 # AWS_STORAGE_BUCKET_NAME = os.environ.get('s3_bucket_name')
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+# Database
+# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+DB_USER_NAME = config_secret['db']['db_user_name']
+DB_USER_PASS = config_secret['db']['db_user_pass']
+DB_HOST = config_secret['db']['db_end_point']
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'footballlover', # DB명
+        'USER': DB_USER_NAME, # 데이터베이스 계정
+        'PASSWORD': DB_USER_PASS, # 계정 비밀번호
+        'HOST': DB_HOST, # 데이테베이스 주소(IP)
+        'PORT': '3306', # 데이터베이스 포트(보통은 3306)
+    }
+}
+
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
