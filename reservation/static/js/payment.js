@@ -12,8 +12,7 @@ var go_payment = function (amount, pay_method, user_name, user_phone) {
             name: "풋볼러버 구장 예약",
             amount: amount,
             buyer_name: user_name,
-            buyer_tel: user_phone,
-            m_redirect_url: "http://127.0.0.1:8000/reservation/mobilePayment"
+            buyer_tel: user_phone
         }, function (rsp) { // callback
             if (rsp.success) {
                 resolve("SUCCESS");
