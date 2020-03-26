@@ -105,7 +105,7 @@
 
             // let amount = "{{totalPrice}}";
             let amount = "1000"; // 결제금액
-            let pay_method = $(this).data('methode'); // 결제방법
+            let pay_method = $(this).data('method'); // 결제방법
             let user_id = "moonlit0130"; // 회원 아이디
             let user_name = $("#user_name").val(); // 예약자 성함
             let user_phone = $("#user_name").val(); // 예약자 전화번호
@@ -120,34 +120,52 @@
                 $("#send_name").val(user_name);
                 $("#send_phone").val(user_phone);
                 $("#pay_method").val(pay_method);
+                alert(pay_method);
 
             }
 
-            // 모바일일 경우
+            let filter = "win16|win32|win64|mac|macintel";
+            let device = "";
 
-            var DF = document.paymentForm;
-            var program_url = "http://127.0.0.1:8000/reservation/paymentPop";
-            window.open("", "openPopEvent");
-            DF.target = "openPopEvent";
-            DF.action = program_url;
-            DF.method = "POST";
-            DF.submit();
-            DF.target = "_blank";
+            if (navigator.platform) {
+                if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
+                    device = "mobile"
+                } else {
+                    device = "pc";
+                }
+            }
+
+            // 모바일일 경우
+            if (device == "pc") {
+
+                var DF = document.paymentForm;
+                var program_url = "./paymentPop";
+                window.open("", "openPopEvent");
+                DF.target = "openPopEvent";
+                DF.action = program_url;
+                DF.method = "POST";
+                DF.submit();
+                DF.target = "_blank";
+
+            }
 
             // 웹의 경우
+            if (device == "mobile") {
 
-            // go_payment(amount, pay_method, user_name, user_phone).then(res => {
+                go_payment(amount, pay_method, user_name, user_phone).then(res => {
 
-            //     if (res == "SUCCESS") {
-            //         $("#reservationForm").submit();
-            //     }
+                    if (res == "SUCCESS") {
+                        $("#reservationForm").submit();
+                    }
 
-            //     if (res == "FAIL") {
-            //         alert("결제에 실패했습니다.");
-            //         return;
-            //     }
+                    if (res == "FAIL") {
+                        alert("결제에 실패했습니다.");
+                        return;
+                    }
 
-            // });
+                });
+
+            }
 
         });
 
