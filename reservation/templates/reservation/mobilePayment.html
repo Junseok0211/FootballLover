@@ -1,0 +1,16 @@
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        let payResult = "{{payResult}}";
+
+        if (payResult == "true") {
+
+            $(opener.location).attr("href", "javascript:sendForm();");
+            self.close();
+
+        }
+
+    });
+</script>

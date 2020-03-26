@@ -70,9 +70,9 @@ def playground(request, id):
 
 def goReservation(request, id):
 
-    # if not (request.session.get('userId')):
-    #     errormessage = '로그인을 해주세요.'
-    #     return render(request, 'login.html', {'errormessage':errormessage})
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
 
     playground = get_object_or_404(PlaygroundList, id = id)
 
@@ -145,6 +145,7 @@ def goReservation(request, id):
 
 
 def tryReservation(request):
+
     id = request.GET.get('id')
     playground = get_object_or_404(PlaygroundList, id = id)
     reservationTime = request.POST.get('reservationTime', None)
@@ -242,13 +243,15 @@ def resultReservation(request):
     reservationTime = request.POST.get('reservationTime', None)
     reservationDate = request.POST.get('reservationDate', None)
     reservationTimeArray = reservationTime.split(",")
-    reservationLength = len(reservationTimeArray)   
+    reservationLength = len(reservationTimeArray)
+    reservationName = request.POST.get('user_name', None)   
+    reservationPhone = request.POST.get('user_phone', None)   
     totalPrice = request.POST.get('totalPrice', None)
     err_msg = ""
     reserved_time = []
 
     for idx, reservation in enumerate(reservationTimeArray):
-        newReservation = ReservationList(playgroundName = playground, reservationDate = reservationDate, reservationTime = reservation, resercationUserId = "moonlit", reservationUserName = "문정환", resercationUserPhone = "01026353125")
+        newReservation = ReservationList(playgroundName = playground, reservationDate = reservationDate, reservationTime = reservation, resercationUserId = "moonlit0130", reservationUserName = reservationName, resercationUserPhone = reservationPhone)
         newReservation.save()
 
         if idx == 0:
@@ -293,3 +296,27 @@ def resultReservation(request):
     
     return render(request, 'reservation/resultReservation.html', data)
 
+def paymentPop(request):
+
+    pay_method = request.POST.get('pay_method', None)
+    totalPrice = request.POST.get('totalPrice', None)
+    user_name = request.POST.get('user_name', None)
+    user_phone = request.POST.get('user_phone', None)
+
+    data = {
+        'pay_method' : pay_method,
+        'totalPrice' : totalPrice,
+        'user_name' : user_name,
+        'user_phone' : user_phone        
+    }
+
+    return render(request, 'reservation/paymentPop.html', data)
+
+
+def mobilePayment(request):
+    payResult = request.GET.get('imp_success', None)
+    data = {
+        'payResult' : payResult
+    }
+
+    return render(request, 'reservation/mobilePayment.html', data)
