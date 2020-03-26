@@ -120,7 +120,6 @@
                 $("#send_name").val(user_name);
                 $("#send_phone").val(user_phone);
                 $("#pay_method").val(pay_method);
-                alert(pay_method);
 
             }
 
@@ -136,10 +135,10 @@
             }
 
             // 모바일일 경우
-            if (device == "pc") {
+            if (device == "mobile") {
 
                 var DF = document.paymentForm;
-                var program_url = "./paymentPop";
+                var program_url = "http://54.180.149.3:8000/reservation/paymentPop";
                 window.open("", "openPopEvent");
                 DF.target = "openPopEvent";
                 DF.action = program_url;
@@ -150,7 +149,7 @@
             }
 
             // 웹의 경우
-            if (device == "mobile") {
+            if (device == "pc") {
 
                 go_payment(amount, pay_method, user_name, user_phone).then(res => {
 
