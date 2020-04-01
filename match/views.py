@@ -66,6 +66,10 @@ def about(request):
         notificationList = paginator.get_page(page)
         return render(request, 'about.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
+def play(request):
+
+    return render(request, 'play.html')
+
 def personal(request):
     if not (request.session.get('userId')):
         personal = PersonalMatching.objects.all().order_by('-created')
@@ -77,7 +81,7 @@ def personal(request):
         personalList = paginator.get_page(page)
     
   
-        return render(request, 'personal.html', {'personal':personal, 
+        return render(request, 'personalMatching/personal.html', {'personal':personal, 
         'personalList':personalList})
 
     else:
@@ -100,7 +104,7 @@ def personal(request):
         page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
         notificationList = paginator.get_page(page)
-        return render(request, 'personal.html', {'countNotification':countNotification, 'personal':personal, 
+        return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 'personal':personal, 
         'personalList':personalList, 'errormessage':errormessage, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal_detail(request, personal_id):
@@ -132,7 +136,7 @@ def personal_detail(request, personal_id):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    return render(request, 'personal_detail.html', {'countNotification':countNotification, 'commentList':commentList,
+    return render(request, 'personalMatching/personal_detail.html', {'countNotification':countNotification, 'commentList':commentList,
     'notificationList':notificationList, 'fnsuser':fnsuser, 'comments':comments, 'personalMatching':personalMatching, 
     'is_liked': is_liked, 'total_attendance': personalMatching.total_attendance(), 'attendance':attendance})
 
@@ -181,7 +185,7 @@ def personalcm_write(request):
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
 
-    return render(request, 'personal_detail.html', {'countNotification':countNotification, 
+    return render(request, 'personalMatching/personal_detail.html', {'countNotification':countNotification, 
     'notificationList':notificationList, 'errormessage':errormessage, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def deletePC(request, personalComment_id):
@@ -207,7 +211,7 @@ def deletePC(request, personalComment_id):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    return render(request, 'personal_detail.html', {'countNotification':countNotification, 
+    return render(request, 'personalMatching/personal_detail.html', {'countNotification':countNotification, 
     'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def editPC(request, personalComment_id):
@@ -240,7 +244,7 @@ def editPC(request, personalComment_id):
     commentPage = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     commentList = commentPaginator.get_page(commentPage)
-    return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
+    return render(request, 'personalMatching/personal_detail.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
     'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personalReply_write(request):
@@ -262,7 +266,7 @@ def personalReply_write(request):
         content = request.POST.get('content', '').strip()
 
         if not content:
-            errormessage = '댓글을 입력해주세요.'
+            errormessage = '답글을 입력해주세요.'
 
         if not errormessage:
             commentReply = PersonalReply.objects.create(user=fnsuser, post= personalMatching, 
@@ -290,7 +294,7 @@ def personalReply_write(request):
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
 
-    return render(request, 'personal_detail.html', {'countNotification':countNotification, 
+    return render(request, 'personalMatching/personal_detail.html', {'countNotification':countNotification, 
     'notificationList':notificationList, 'errormessage':errormessage, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def deletePersonalReply(request, reply_id):
@@ -316,7 +320,7 @@ def deletePersonalReply(request, reply_id):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    return render(request, 'personal_detail.html', {'countNotification':countNotification, 
+    return render(request, 'personalMatching/personal_detail.html', {'countNotification':countNotification, 
     'notificationList':notificationList, 'fnsuser':fnsuser, 'commentList':commentList, 'personalMatching':personalMatching})
 
 def editPersonalReply(request, reply_id):
@@ -349,7 +353,7 @@ def editPersonalReply(request, reply_id):
     commentPage = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     commentList = commentPaginator.get_page(commentPage)
-    return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
+    return render(request, 'personalMatching/personal_detail.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
     'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal_new(request):
@@ -366,7 +370,7 @@ def personal_new(request):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    return render(request, 'personal_new.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
+    return render(request, 'personalMatching/personal_new.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
 def personal_create(request):
     personalMatching =  PersonalMatching()
@@ -418,8 +422,8 @@ def personal_editForm(request, personal_id):
         # request된 페이지를 얻어온 뒤 return 해 준다.
         personalList = paginator.get_page(page)
         error = '글을 작성한 사용자만 수정할 수 있습니다.'
-        return render(request, 'personal.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
-    return render(request, 'personal_editForm.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalMatching':personalMatching})
+        return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
+    return render(request, 'personalMatching/personal_editForm.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalMatching':personalMatching})
 
 def personal_edit(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk=personal_id)
@@ -444,7 +448,7 @@ def personal_edit(request, personal_id):
     personalMatching.content = request.POST.get('content')
     personalMatching.save()
 
-    return redirect('/personal')
+    return redirect('personalMatching/personal')
 
 def personal_delete(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk=personal_id)
@@ -468,10 +472,10 @@ def personal_delete(request, personal_id):
         # request된 페이지를 얻어온 뒤 return 해 준다.
         personalList = paginator.get_page(page)
         error = '글을 작성한 사용자만 삭제할 수 있습니다.'
-        return render(request, 'personal.html', {'countNotification':countNotification, 
+        return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 
         'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
     personalMatching.delete()
-    return redirect('/personal')
+    return redirect('personalMatching/personal')
     
 @require_POST
 def personal_attendance(request):
@@ -493,7 +497,7 @@ def personal_attendance(request):
     elif personalMatching.number <= personalMatching.total_attendance():
         error = '모집인원이 다 모아져서 참가신청이 안됩니다.'
         attendance = personalMatching.attendance.all()
-        return render(request, 'personal_detail.html', {'personalMatching':personalMatching, 
+        return render(request, 'personalMatching/personal_detail.html', {'personalMatching':personalMatching, 
         'is_liked': is_liked, 'total_attendance': personalMatching.total_attendance(), 
         'attendance':attendance, 'error':error, 'commentList':commentList})
     
@@ -511,7 +515,7 @@ def personal_attendance(request):
         newNotification.save()
         
 
-    return HttpResponseRedirect(reverse('personal_detail', kwargs={'personal_id':personalMatching.id}))
+    return HttpResponseRedirect(reverse('personalMatching/personal_detail', kwargs={'personal_id':personalMatching.id}))
 
 
 def teamMatching(request):

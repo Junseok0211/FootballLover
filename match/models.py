@@ -55,7 +55,7 @@ class PersonalComment(models.Model):
         return self.user.name
 
     def summary(self):
-        return self.content[:20]
+        return self.content[:150]
 
     def passedTime(self):
         now = datetime.datetime.now()
@@ -80,11 +80,41 @@ class PersonalComment(models.Model):
                             message = str(timeLap) + '분 전'
                         return message
                 else:
-                    return modified
+                    month = int(modified.strftime("%m"))
+                    date = int(modified.strftime("%d"))
+                    if month < 10:
+                        month = modified.strftime("%m")[1]
+                    else:
+                        month = modified.strftime("%m")
+
+                    if date < 10:
+                        date = modified.strftime("%d")[1]
+                    else:
+                        date = modified.strftime("%d")
+                    
+                    return month + '월 ' + date + '일'
             else:
-                return modified
+                    month = int(modified.strftime("%m"))
+                    date = int(modified.strftime("%d"))
+                    if month < 10:
+                        month = modified.strftime("%m")[1]
+                    else:
+                        month = modified.strftime("%m")
+
+                    if date < 10:
+                        date = modified.strftime("%d")[1]
+                    else:
+                        date = modified.strftime("%d")
+                    
+                    return month + '월 ' + date + '일'
         else:
-            return modified
+            month = int(modified.strftime("%m"))
+            if month < 10:
+                month = modified.strftime("%m")[1]
+            else:
+                month = modified.strftime("%m")
+            
+            return modified.strftime("%Y") + '년 ' + month + '월'
 
 class PersonalReply(models.Model):
     user = models.ForeignKey(FNSUser, on_delete=models.CASCADE)
@@ -98,6 +128,9 @@ class PersonalReply(models.Model):
     def __str__(self):
         return self.user.name
 
+    def summary(self):
+        return self.content[:150]
+
     def passedTime(self):
         now = datetime.datetime.now()
         modified = self.modified
@@ -121,11 +154,41 @@ class PersonalReply(models.Model):
                             message = str(timeLap) + '분 전'
                         return message
                 else:
-                    return modified
+                    month = int(modified.strftime("%m"))
+                    date = int(modified.strftime("%d"))
+                    if month < 10:
+                        month = modified.strftime("%m")[1]
+                    else:
+                        month = modified.strftime("%m")
+
+                    if date < 10:
+                        date = modified.strftime("%d")[1]
+                    else:
+                        date = modified.strftime("%d")
+                    
+                    return month + '월 ' + date + '일'
             else:
-                return modified
+                month = int(modified.strftime("%m"))
+                date = int(modified.strftime("%d"))
+                if month < 10:
+                    month = modified.strftime("%m")[1]
+                else:
+                    month = modified.strftime("%m")
+
+                if date < 10:
+                    date = modified.strftime("%d")[1]
+                else:
+                    date = modified.strftime("%d")
+                
+                return month + '월 ' + date + '일'
         else:
-            return modified
+            month = int(modified.strftime("%m"))
+            if month < 10:
+                month = modified.strftime("%m")[1]
+            else:
+                month = modified.strftime("%m")
+            
+            return modified.strftime("%Y") + '년 ' + month + '월'
         
 
 class TeamMatching(models.Model):

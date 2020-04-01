@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load hDate %}
+
+{% block contents %}
+
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+
+<!--컨텐츠 영역-->
+<div class="sec play" style="background-image: url({% static 'bg_play.png' %})">
+    <ul>
+        <li class="list">
+            <figure>
+                <img src="{% static 'menu_icon01.png' %}" height="100%" />
+            </figure>
+            <a href="#">
+                <h4 class="tit">매칭</h4>
+            </a>
+        </li>
+        <li class="list">
+            <figure>
+                <img src="{% static 'menu_icon02.png' %}" height="100%" />
+            </figure>
+            <a href="#">
+                <h4 class="tit">구장대관</h4>
+            </a>
+        </li>
+        <li class="list">
+            <figure>
+                <img src="{% static 'menu_icon03.png' %}" height="100%" />
+            </figure>
+            <a href="#">
+                <h4 class="tit">대관&매칭</h4>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--컨텐츠 영역-->
+
+{% endblock %}

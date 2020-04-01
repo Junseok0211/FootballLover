@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load hDate %}
+
+{% block contents %}
+
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+<style>
+    .sec.match .move_date {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        font-weight: bold;
+        font-size: 0.75rem;
+        color: #000;
+        border-bottom: solid 1px #eee;
+    }
+
+    .sec.match .move_date .btn {
+        padding: 0;
+        padding-left: 0.5rem;
+        color: #28AAE3;
+    }
+
+    .sec.match .move_date .date.active,
+    .sec.match .math_list .btn {
+        padding: 0.1rem 0.3rem;
+        color: #FFFFFF;
+        background-color: #28AAE3;
+        border-radius: 2px;
+    }
+
+    .sec.match .math_list .btn {
+        padding: 0;
+        margin-bottom: 0.2rem;
+        width: 3.5625rem;
+        font-size: 0.675rem !important;
+    }
+
+    .sec.match .math_list .btn.danger {
+        background-color: #D5135A;
+    }
+
+    .sec.match .math_list .btn.end {
+        color: #DADADA;
+        background-color: #8C8C8C;
+    }
+
+    .sec.match .math_list .head .list {
+        font-size: 0.6875rem;
+        border-bottom: solid 1px #8c8c8c;
+    }
+
+    .sec.match .math_list .head .btn {
+        background-color: #131313;
+    }
+
+    .sec.match .math_list .list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.65rem 0;
+        padding-left: 0.25rem;
+        text-align: center;
+        color: #8C8C8C;
+        font-size: 0.625rem;
+        border-bottom: solid 1px #E1E1E1;
+        box-sizing: border-box;
+    }
+
+    .sec.match .math_list .list .group.first {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        color: #000;
+    }
+
+    .sec.match .math_list .time {
+        margin-right: 1.5rem;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .sec.match .math_list .point,
+    .sec.match .math_list .btn {
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+</style>
+
+<!--컨텐츠 영역-->
+<div class="sec match personal" style="max-width: 720px; margin: 0 auto;">
+
+    <!-- 양쪽정렬된 탭 메뉴 -->
+    <ul class="nav-justified">
+        <li class="item active">
+            <p class="txt">개인 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">팀 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">용병 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">풋살 데이</p>
+        </li>
+    </ul>
+
+    <!-- 날짜이동 -->
+    <ul class="move_date">
+        <li class="date active">
+            <p class="txt">25</p>
+        </li>
+        <li class="date">
+            <p class="txt">26</p>
+        </li>
+        <li class="date">
+            <p class="txt">27</p>
+        </li>
+        <li class="date">
+            <p class="txt">28</p>
+        </li>
+        <li class="date">
+            <p class="txt">29</p>
+        </li>
+        <li class="date">
+            <p class="txt">30</p>
+        </li>
+        <li class="date">
+            <p class="txt">31</p>
+        </li>
+        <li class="date">
+            <button type="button" class="btn move">
+                <i class="fas fa-long-arrow-alt-right"></i>
+            </button>
+        </li>
+    </ul>
+
+    <!-- 매치 리스트 -->
+    <div class="math_list">
+        <div class="head">
+            <div class="list">
+                <div class="group first">
+                    <p>5개의 매치</p>
+                </div>
+                <div class="group">
+                    <button type="button" class="btn">글쓰기</button>
+                </div>
+            </div>
+        </div>
+        <div class="cont">
+            <div class="list">
+                <div class="group first">
+                    <p class="time">10:30</p>
+                    <div>
+                        <p class="point">남서울 대학교 풋살장</p>
+                        <p>남성 실력: 프로</p>
+                    </div>
+                </div>
+                <div class="group">
+                    <button type="button" class="btn">자세히보기</button>
+                    <p class="txt">4/6</p>
+                </div>
+            </div>
+            <div class="list">
+                <div class="group first">
+                    <p class="time">10:30</p>
+                    <div>
+                        <p class="point">남서울 대학교 풋살장</p>
+                        <p>남성 실력: 프로</p>
+                    </div>
+                </div>
+                <div class="group">
+                    <button type="button" class="btn end">마감</button>
+                    <p class="txt">4/6</p>
+                </div>
+            </div>
+            <div class="list">
+                <div class="group first">
+                    <p class="time">10:30</p>
+                    <div>
+                        <p class="point">남서울 대학교 풋살장</p>
+                        <p>남성 실력: 프로</p>
+                    </div>
+                </div>
+                <div class="group">
+                    <button type="button" class="btn danger">마감임박</button>
+                    <p class="txt">4/6</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--컨텐츠 영역-->
+
+{% endblock %}

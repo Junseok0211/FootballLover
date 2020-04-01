@@ -1,0 +1,392 @@
+  /*전체디자인*/
+  .commentDesign{
+    padding:0;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /*댓글 작성 관련*/
+  .commentBox{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .commentBox textarea{
+    font-family: 'Nanum Gothic';
+    box-sizing:border-box;
+    font-size:15px;
+    color:#333;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin-left: 10px;
+    width: 100%;
+    outline: none;
+    background:none;
+    height:30px;
+    resize:none;
+    overflow-y:hidden;
+  }
+
+  .commentBox textarea:focus{
+    border-bottom: 2px solid black;
+    transition:.5s;
+  }
+  /*댓글 작성 관련 끝 */
+
+  /* 댓글 수정 관련 */    
+  .commentEditBox{
+    display: flex;
+    flex-direction: row;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  .commentEditBox textarea{
+    font-family: 'Nanum Gothic';
+    box-sizing:border-box;
+    font-size:15px;
+    color:#333;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin-left: 10px;
+    width: 100%;
+    outline: none;
+    background:none;
+    height:30px;
+    resize:none;
+    overflow-y:hidden;
+  }
+
+  .commentEditBox textarea:focus{
+    border-bottom: 2px solid black;
+    transition:.5s;
+  }
+
+
+  .editForm{
+    display: none;
+  }
+
+  .editToggle > .editForm{
+    display: block;
+  }
+
+  .editToggle > .detail{
+    display:none;
+  }
+  /*댓글 수정 관련 끝 */
+
+  /*답글 입력 관련*/
+  .replyBox{
+    display: flex;
+    flex-direction: row;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  .replyBox textarea{
+    font-family: 'Nanum Gothic';
+    box-sizing:border-box;
+    font-size:15px;
+    color:#333;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    outline: none;
+    background:none;
+    margin-left: 10px;
+    height:30px;
+    resize:none;
+    overflow-y:hidden;
+  }
+
+  .replyBox textarea:focus{
+    border-bottom: 2px solid black;
+    transition:.5s;
+  }
+  /* 답글 입력 관련 끝 */
+
+  /* 답글 수정 관련 */
+  .replyEditBox{
+    display: flex;
+    flex-direction: row;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  .replyEditText textarea{
+    font-family: 'Nanum Gothic';
+    box-sizing:border-box;
+    font-size:15px;
+    color:#333;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    outline: none;
+    background:none;
+    margin-left: 10px;
+    height:30px;
+    resize:none;
+    overflow-y:hidden;
+  }
+
+  .replyEditText textarea:focus{
+    border-bottom: 2px solid black;
+    transition:.5s;
+  }
+
+  .replyEditToggle > .replyEditForm{
+    display:block;
+  }  
+
+  .replyEditToggle > .replyDetail{
+    display:none;
+  }   
+
+  /*답글 수정 관련 끝 */
+
+  /* 답글 상세 관련 */
+  .replyDetail{
+    display: flex;
+    flex-direction: row;
+    max-width: 720px;
+    width:100%
+  }
+  /* 답글 상세 관련 끝 */
+
+  /* 답글 버튼 관련 */    
+  /* 대댓글 창 먼저 안나오게 하기! */
+  .replyAll{
+    display:none;
+  }
+  
+  .replyEditForm{
+    display: none;
+  }
+    
+  /* 답글 눌렀을 때 */
+  .replyToggle{
+    display:block;
+  }
+
+  .allReplyCancel{
+    display:none;
+  }
+
+  .replyButton > .reply{
+    display:none;
+  }
+
+  .replyButton > .allReplyCancel{
+    display:block;
+  }
+  /* 답글 버튼 관련 끝 */    
+
+  /*등록 취소 수정 버튼 관련*/ 
+  .commentBtnWrapper{
+    display: flex; 
+    justify-content: flex-end; 
+    margin-bottom: 5px;
+  }
+  .commentBtn{
+    font-family: 'Nanum Gothic';
+    width:70px;
+    height:40px;
+    border:none; 
+    background-color: gray;
+    color:#fff;
+    outline:none;
+    cursor: pointer;
+  }
+  /*등록 취소 수정 버튼 관련 끝*/ 
+
+  /*상세 댓글 관련*/ 
+  .detail{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .comment{
+    padding-left: 10px;
+    width: 90%;
+    padding-right: 10px;
+    
+  }
+
+  .commentImg{
+    width: 5%; 
+  }
+
+  .commentText{
+    width: 95%;
+  }
+
+  .commentName{
+    font-weight: bold;
+    font-size: 12px;
+    font-family: 'Nanum Gothic';
+  }
+
+  .commentTime{
+    font-size: 13px;
+    font-family: 'Nanum Gothic';
+    color: gray;
+  }
+
+  .commentContent{
+    font-size: 14px;
+    font-family: 'Nanum Gothic';
+    white-space: pre-line;
+    width: auto;
+  }
+  /*상세 댓글 끝*/ 
+
+  /* 댓글 메뉴버튼 */
+  .commentDropBtn {
+    border:none; 
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .commentDropDown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .cmDropDownContent {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    font-size: 15px;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: center;
+  }
+
+  .cmDropDownContent a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-item:hover {background-color: darkgray;}
+
+  .commentDropDown:hover .cmDropDownContent {
+      display: block;
+  }
+
+  .commentDropDown i{
+    color:gray;
+  }
+
+  /*자세히 보기 관련 */
+  .commentDetail{
+    display: none;
+  }
+
+  .commentDetailView{
+    color: black;
+  }
+
+  .detailedText > .commentDetail{
+    display:block;
+  }
+
+  .detailedText > .summary{
+    display:none;
+  }
+  /*자세히 보기 관련 끝 */
+
+  @media screen and (max-width: 500px){
+    .commentBox textarea{
+      font-family: 'Nanum Gothic';
+      box-sizing:border-box;
+      font-size:13px;
+      color:#333;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      width: 100%;
+      outline: none;
+      background:none;
+      height:30px;
+      resize:none;
+      overflow-y:hidden;
+    }
+
+    .commentEditBox textarea{
+      font-family: 'Nanum Gothic';
+      box-sizing:border-box;
+      font-size:13px;
+      color:#333;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      width: 100%;
+      outline: none;
+      background:none;
+      height:30px;
+      resize:none;
+      overflow-y:hidden;
+    }
+
+    .replyBox textarea{
+      font-family: 'Nanum Gothic';
+      box-sizing:border-box;
+      font-size:13px;
+      color:#333;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      width: 100%;
+      outline: none;
+      background:none;
+      height:30px;
+      resize:none;
+      overflow-y:hidden;
+    }
+
+    .replyEditText textarea{
+      font-family: 'Nanum Gothic';
+      box-sizing:border-box;
+      font-size:13px;
+      color:#333;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      width: 100%;
+      outline: none;
+      background:none;
+      height:30px;
+      resize:none;
+      overflow-y:hidden;
+    }
+
+    .commentImg{
+      width: 9%; 
+    }
+
+    .commentText{
+      width: 91%;
+    }
+
+    .commentBtn{
+      font-size: 14px;
+      font-family: 'Nanum Gothic';
+      width:60px;
+      height:35px;
+      border:none; 
+      background-color: gray;
+      color:#fff;
+      outline:none;
+      cursor: pointer;
+    }
+  }
