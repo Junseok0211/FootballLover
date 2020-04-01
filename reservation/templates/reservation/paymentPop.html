@@ -1,0 +1,33 @@
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<!--결제 함수-->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<script type="text/javascript" src="https://footballlover.s3.amazonaws.com/static/js/payment.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        // let amount = "{{amount}}";
+        let amount = "1000";
+        let pay_method = "{{pay_method}}";
+        let user_name = "{{user_name}}";
+        let user_phone = "{{user_phone}}";
+
+        // 결제 시작
+        IMP.init("imp74044399");
+
+        IMP.request_pay({ // param
+            pg: "inicis",
+            pay_method: pay_method,
+            merchant_uid: "footballlover_" + new Date().getTime(),
+            name: "풋볼러버 구장 예약",
+            amount: amount,
+            buyer_name: user_name,
+            buyer_tel: user_phone,
+            m_redirect_url: "http://54.180.149.3:8000/reservation/mobilePayment"
+        });
+
+    });
+</script>

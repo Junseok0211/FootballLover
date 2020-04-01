@@ -52,16 +52,36 @@
             </div>
         </div>
 
-        <form action="{% url 'resultReservation' %}?id={{playground.id}}" method="POST">
+        <form action="{% url 'resultReservation' %}?id={{playground.id}}" method="POST" id="reservationForm" name="reservationForm">
             {% csrf_token %}
             <input type="hidden" id="playground" value="{{playground.playgroundName}}" name="playground">
             <input type="hidden" id="reservationTime" name="reservationTime" value="{{reservationTime}}">
             <input type="hidden" id="reservationDate" name="reservationDate" value="{{reservationDate}}">
             <input type="hidden" id="totalPrice" name="totalPrice" value="{{totalPrice}}">
-            <input type="hidden" value="예약">
-            <div class="payBtn">
-                결제하기
+            <div style="display:flex;justify-content: space-around;">
+                <div>
+                    <input type="text" id="user_name" name="user_name" value="" placeholder="예약자 성함" style="width:100%; border:1px solid #eaeaea;">
+                </div>
+                <div>
+                    <input type="text" id="user_phone" name="user_phone" value="" placeholder="예약자 전화번호"
+                        style="width:100%; border:1px solid #eaeaea;">
+                </div>
             </div>
+            <input type="hidden" value="예약">
+            <div class="payBtn" data-method="card">
+                카드 결제하기
+            </div>
+            <div class="payBtn" data-method="vbank" style="margin-top:10px;">
+                가상계좌 결제하기
+            </div>
+        </form>
+
+        <form style="display:none;" id="paymentForm" name="paymentForm" method="POST" action="{% url 'paymentPop' %}">
+            {% csrf_token %}
+            <input type="text" id="pay_method" name="pay_method" value="">
+            <input type="text" id="totalPrice" name="totalPrice" value="{{totalPrice}}">
+            <input type="text" id="send_name" name="user_name" value="" placeholder="예약자 성함" style="width:49%;" required>
+            <input type="text" id="send_phone" name="user_phone" value="" placeholder="예약자 전화번호" style="width:50%;" required>
         </form>
 
     </div>
@@ -71,15 +91,91 @@
 
 </div>
 
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<!--결제 함수-->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<script type="text/javascript" src="{% static 'js/payment.js' %}"></script>
+
+
 <script>
     $(document).ready(function () {
 
         $(".payBtn").click(function () {
-            $(this).parent().submit();
+
+            // let amount = "{{totalPrice}}";
+            let amount = "1000"; // 결제금액
+            let pay_method = $(this).data('method'); // 결제방법
+            let user_id = "moonlit0130"; // 회원 아이디
+            let user_name = $("#user_name").val(); // 예약자 성함
+            let user_phone = $("#user_name").val(); // 예약자 전화번호
+
+            if (!user_name || !user_phone) {
+
+                alert("예약자 성함, 전화번호는 필수입니다.");
+                return;
+
+            } else {
+
+                $("#send_name").val(user_name);
+                $("#send_phone").val(user_phone);
+                $("#pay_method").val(pay_method);
+
+            }
+
+            let filter = "win16|win32|win64|mac|macintel";
+            let device = "";
+
+            if (navigator.platform) {
+                if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
+                    device = "mobile"
+                } else {
+                    device = "pc";
+                }
+            }
+
+            // 모바일일 경우
+            if (device == "mobile") {
+
+                var DF = document.paymentForm;
+                var program_url = "http://54.180.149.3:8000/reservation/paymentPop";
+                window.open("", "openPopEvent");
+                DF.target = "openPopEvent";
+                DF.action = program_url;
+                DF.method = "POST";
+                DF.submit();
+                DF.target = "_blank";
+
+            }
+
+            // 웹의 경우
+            if (device == "pc") {
+
+                go_payment(amount, pay_method, user_name, user_phone).then(res => {
+
+                    if (res == "SUCCESS") {
+                        $("#reservationForm").submit();
+                    }
+
+                    if (res == "FAIL") {
+                        alert("결제에 실패했습니다.");
+                        return;
+                    }
+
+                });
+
+            }
+
         });
 
     });
-</script>
 
+    function sendForm() {
+
+        var form = document.reservationForm;
+        form.submit();
+
+    }
+</script>
 
 {% endblock %}
