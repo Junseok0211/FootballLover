@@ -135,9 +135,9 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 # ROOT_DIR = os.path.dirname(BASE_DIR)
 
-CONFIG_SECRET_DIR = os.path.join(BASE_DIR, 'config_secret')
-CONFIG_SETTINGS_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')
-config_secret = json.loads(open(CONFIG_SETTINGS_COMMON_FILE).read())
+# CONFIG_SECRET_DIR = os.path.join(BASE_DIR, 'config_secret')
+# CONFIG_SETTINGS_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')
+# config_secret = json.loads(open(CONFIG_SETTINGS_COMMON_FILE).read())
 
 
 
