@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', match.views.home, name = "home"),
     path('about', match.views.about, name = "about"),
+    path('play', match.views.play, name = "play"),
     path('personal', match.views.personal, name = "personal"),
     path('personal_detail/<int:personal_id>', match.views.personal_detail, name = "personal_detail"),
     path('personal_new', match.views.personal_new, name="personal_new"),

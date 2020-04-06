@@ -162,6 +162,9 @@ STATICFILES_DIRS = [
     STATIC_DIR,
     os.path.join(BASE_DIR, 'match', 'static'),
     os.path.join(BASE_DIR, 'account', 'static'),
+    os.path.join(BASE_DIR, 'reservation', 'static'),
+    os.path.join(BASE_DIR, 'reservation', 'static', 'js'),
+    os.path.join(BASE_DIR, 'reservation', 'static', 'css'),
 ]
 AWS_LOCATION = 'ap-northeast-2'
 STATIC_URL = 'https://%s/%s/static/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)

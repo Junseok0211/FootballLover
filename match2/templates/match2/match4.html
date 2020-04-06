@@ -5,9 +5,85 @@
 
 {% block contents %}
 
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+
 <!--컨텐츠 영역-->
-<div>
-    4
+<div class="sec match">
+    <!-- 양쪽정렬된 탭 메뉴 -->
+    <ul class="nav-justified">
+        <li class="item active">
+            <p class="txt">개인 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">팀 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">용병 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">풋살 데이</p>
+        </li>
+    </ul>
+
+    <!-- 개인매치 글쓰기 -->
+    <div class="math-form">
+        <div class="group">
+            <div class="">
+                <label for="person">모집인원</label>
+                <div class="select">
+                    <select id="person" class="form-control">
+                        <option disabled selected>선택</option>
+                        <option>11명</option>
+                    </select>
+                </div>
+            </div>
+            <i class="line"></i>
+            <div class="">
+                <label for="allPerson">총인원</label>
+                <div class="select">
+                    <select id="allPersonclass" class="form-control">
+                        <option disabled selected>선택</option>
+                        <option>12명</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <label for="skill">실력</label>
+            <div id="skill" class="select">
+                <select class="form-control">
+                    <option disabled selected>선택</option>
+                    <option>비기너</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <label for="cost">참가비</label>
+            <div class="select">
+                <select id="cost" class="form-control">
+                    <option disabled selected>선택</option>
+                    <option>10,000</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <label for="payment">결제방법</label>
+            <div name="payment" class="select">
+                <select class="form-control">
+                    <option disabled selected>선택</option>
+                    <option>현장결제</option>
+                </select>
+            </div>
+        </div>
+        <div class="item last">
+            <label for="message">내용</label>
+            <textarea class="form-control" id="message" placeholder="내용을 입력하세요."></textarea>
+        </div>
+    </div>
+
+    <div class="btn-wrap">
+        <button type="button" class="btn active block">조회하기</button>
+    </div>
 </div>
 <!--컨텐츠 영역-->
 

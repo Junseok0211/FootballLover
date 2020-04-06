@@ -5,10 +5,114 @@
 
 {% block contents %}
 
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+
 <!--컨텐츠 영역-->
-<div>
-    3
+<div class="sec match">
+    <!-- 양쪽정렬된 탭 메뉴 -->
+    <ul class="nav-justified">
+        <li class="item active">
+            <p class="txt">개인 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">팀 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">용병 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">풋살 데이</p>
+        </li>
+    </ul>
+
+    <div class="math-form">
+        <div class="item">
+            <label for="message">종목</label>
+            <div class="select">
+                <select class="form-control">
+                    <option disabled selected>선택</option>
+                    <option>풋살</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <label for="message">일시</label>
+            <input type="text" id="origin_playDate" placeholder="날짜선택">
+            <ul class="scroll-selected-time">
+                <li class="time active">10시</li>
+                <li class="time">11시</li>
+                <li class="time">12시</li>
+                <li class="time">13시</li>
+                <li class="time">14시</li>
+                <li class="time">15시</li>
+                <li class="time">16시</li>
+                <li class="time">17시</li>
+                <li class="time">18시</li>
+                <li class="time">19시</li>
+                <li class="time">20시</li>
+                <li class="time">21시</li>
+                <li class="time">22시</li>
+                <li class="time">23시</li>
+                <li class="time">24시</li>
+                <li class="time">01시</li>
+                <li class="time">02시</li>
+                <li class="time">03시</li>
+                <li class="time">04시</li>
+                <li class="time">05시</li>
+                <li class="time">06시</li>
+                <li class="time">07시</li>
+                <li class="time">08시</li>
+                <li class="time">09시</li>
+            </ul>
+        </div>
+        <div class="item">
+            <label for="message">장소</label>
+            <div class="select">
+                <select class="form-control">
+                    <option disabled selected>선택</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <label for="message">대관여부</label>
+            <div class="select">
+                <select class="form-control">
+                    <option disabled selected>선택</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-wrap">
+        <button type="button" class="btn active block">조회하기</button>
+    </div>
 </div>
 <!--컨텐츠 영역-->
+
+<script>
+    $.datepicker.setDefaults({
+        dateFormat: 'yy년 mm월 dd일 (DD)',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년'
+    });
+
+    $(function () {
+        //조회 날짜 선택
+        $("#origin_playDate").datepicker();
+
+        //조회 시간 선택
+        $(".scroll-selected-time .time").on("click", function () {
+            $(this).addClass("active").siblings().removeClass("active")
+        })
+
+    });
+</script>
 
 {% endblock %}

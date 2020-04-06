@@ -104,9 +104,10 @@
         $(".payBtn").click(function () {
 
             // let amount = "{{totalPrice}}";
-            let amount = "1000"; // 결제금액
+            let amount = "{{totalPrice}}"; // 결제금액
             let pay_method = $(this).data('method'); // 결제방법
             let user_id = "moonlit0130"; // 회원 아이디
+            let playground = "{{playground}}"
             let user_name = $("#user_name").val(); // 예약자 성함
             let user_phone = $("#user_name").val(); // 예약자 전화번호
 
@@ -151,7 +152,7 @@
             // 웹의 경우
             if (device == "pc") {
 
-                go_payment(amount, pay_method, user_name, user_phone).then(res => {
+                go_payment(amount, pay_method, playground, user_name, user_phone).then(res => {
 
                     if (res == "SUCCESS") {
                         $("#reservationForm").submit();

@@ -8,13 +8,14 @@
 <link rel="stylesheet" href="{% static 'css/match2.css' %}">
 
 <!--컨텐츠 영역-->
+<div style="max-width: 720px; width: 100%; margin:0 auto;">
 <div class="sec play" style="background-image: url({% static 'bg_play.png' %})">
     <ul>
         <li class="list">
             <figure>
                 <img src="{% static 'menu_icon01.png' %}" height="100%" />
             </figure>
-            <a href="#">
+            <a href="{% url 'personal' %}">
                 <h4 class="tit">매칭</h4>
             </a>
         </li>
@@ -35,6 +36,7 @@
             </a>
         </li>
     </ul>
+</div>
 </div>
 <!--컨텐츠 영역-->
 

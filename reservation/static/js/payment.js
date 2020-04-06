@@ -1,4 +1,4 @@
-var go_payment = function (amount, pay_method, user_name, user_phone) {
+var go_payment = function (amount, pay_method, playground, user_name, user_phone) {
 
     return new Promise(function (resolve, reject) {
 
@@ -9,7 +9,7 @@ var go_payment = function (amount, pay_method, user_name, user_phone) {
             pg: "inicis",
             pay_method: pay_method,
             merchant_uid: "footballlover_" + new Date().getTime(),
-            name: "풋볼러버 구장 예약",
+            name: playground + " 대관",
             amount: amount,
             buyer_name: user_name,
             buyer_tel: user_phone

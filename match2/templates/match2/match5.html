@@ -5,9 +5,95 @@
 
 {% block contents %}
 
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+
 <!--컨텐츠 영역-->
-<div>
-    5
+<div class="sec match">
+    <!-- 양쪽정렬된 탭 메뉴 -->
+    <ul class="nav-justified">
+        <li class="item active">
+            <p class="txt">개인 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">팀 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">용병 매칭</p>
+        </li>
+        <li class="item">
+            <p class="txt">풋살 데이</p>
+        </li>
+    </ul>
+
+    <!-- 개인매칭 - 일시 및 장소 -->
+    <div class="matchDetial place">
+        <div class="head">
+            <h3 class="tit">일시 및 장소</h3>
+        </div>
+        <div class="cont">
+            <ul class="detail_list">
+                <li class="item">
+                    <figure style="background-image: url({% static 'icon_calendar.png' %})"></figure>
+                    <p class="txt">2020년 2월 26일 (수)</p>
+                </li>
+                <li class="item">
+                    <figure style="background-image: url({% static 'icon_time.png' %})"></figure>
+                    <p class="txt">14:00 - 16:00</p>
+                </li>
+                <li class="item">
+                    <figure style="background-image: url({% static 'icon_place.png' %})"></figure>
+                    <p class="txt">천안축구센터(매칭후 대관)</p>
+                </li>
+                <li class="item">
+                    <figure style="background-image: url({% static 'icon_cash.png' %})"></figure>
+                    <p class="txt">10,000원 / 현장지불</p>
+                </li>
+                <li class="item person">
+                    <div class="thumb-profile">
+                        <figure></figure>
+                        <div class="group">
+                            <p class="txt point">양준석 / 호스트</p>
+                            <p class="txt">안녕하세요. 잘 부탁드립니다. 매너게임요!</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 개인매칭 - 참가자 -->
+    <div class="matchDetial people">
+        <div class="head">
+            <h3 class="tit">참가자</h3>
+        </div>
+        <div class="cont">
+            <div class="thumb-profile">
+                <figure
+                    style="background-image: url('https://www.sports-g.com/wp-content/uploads/2019/04/%ED%98%B8%EB%82%A0%EB%91%90.jpg')">
+                </figure>
+                <div class="group">
+                    <p class="txt">양준석</p>
+                </div>
+            </div>
+            <div class="thumb-profile">
+                <figure></figure>
+                <div class="group">
+                    <p class="txt">양준석</p>
+                </div>
+            </div>
+            <div class="thumb-profile">
+                <figure></figure>
+                <div class="group">
+                    <p class="txt">양준석</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-wrap">
+        <button type="button" class="btn">댓글</button>
+        <button type="button" class="btn active">참가신청</button>
+    </div>
 </div>
 <!--컨텐츠 영역-->
 
