@@ -1,0 +1,179 @@
+{% load static %}
+<style>
+  .pcNavBar{
+    background-color: #F3F3F3;
+    height: 60px;
+    
+  }
+
+  .pcNavDesign{
+    max-width: 1024px;
+    width: 100%;
+    padding:10px;
+    margin:0 auto;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .logo{
+    width: 177px;
+    vertical-align: middle;
+  }
+
+  .menu{
+    padding-top: 6px;
+    padding-right: 10px;
+    float:right;
+    color:gray;
+  }
+
+  .bell{
+    color:rgba(128, 128, 128, 0.808);
+    margin-top: 8px;
+    margin-left: 10px;
+  
+  }
+
+  .p1[data-count]:after{
+    position:absolute;
+    right:10%;
+    top:0px;
+    content: attr(data-count);
+    font-size:40%;
+    padding:.2em;
+    border-radius:50%;
+    line-height:2em;
+    color: white;
+    background:rgba(255,0,0,.85);
+    text-align:center;
+    min-width: 2em;
+    font-weight:bold;
+  }
+
+.dropBtn {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top:35px;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown:hover .dropdown-content {display: block;}
+
+.menuBar{
+    width: 20%; 
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+.category{
+    font-family: 'Noto Sans KR';
+    font-size: 0.7rem;
+    color:cornflowerblue;
+    padding: 0;
+    padding-top: 0.2rem;
+    margin: 0;
+    text-align: center;
+}
+</style>
+<nav class="pcNavBar sticky-top">
+  <div class="pcNavDesign">
+    <div style="width: 80%;">
+      <a href="{% url 'home' %}">
+        <img src="{% static 'account/logofile/wh_horizontalLogo.png' %}" class="logo">
+      </a>
+    </div>
+    <div class="menuBar">
+        {% if fnsuser %}
+        <span></span>
+        <span></span>
+        <div style="margin-top: 0px;">
+        {% if countNotification > 0 %}
+        <a href="{% url 'notification' %}">
+            <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
+            <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
+            </span>
+        </a>
+        {% else %}
+        <a href="{% url 'notification' %}">
+            <i class="bell far fa-lg fa-bell" style="z-index: 0;"></i>
+        </a>
+        {% endif %}
+        </div>
+        {% else %}
+        <span style="text-align: left;">
+            <a href="{% url 'login' %}" style="text-decoration: none; color: black; font-size: 1rem;">
+            로그인
+            </a>
+        </span>
+        <span>
+            <a href="{% url 'agreement' %}" style="text-decoration: none; color: black;">
+            회원가입
+            </a>
+        </span>
+        {% endif %}
+        <div class="dropdown">
+            <i class="menu fas fa-lg fa-bars dropBtn"></i>
+            <div class="dropdown-content">
+                <p class="category">매칭</p>
+                <a href="{% url 'personal' %}">개인매칭</a>
+                <a href="#">팀매칭</a>
+                <a href="#">용병매칭</a>
+                <a href="#">풋살데이</a>
+                <p class="category">랭킹</p>
+                <a href="#">개인랭킹</a>
+                <a href="#">팀랭킹</a>
+                <p class="category">대관 및 팀관리</p>
+                <a href="{% url 'playground_list' %}">구장대관</a>
+                <a href="#">팀관리</a>
+                {% if fnsuser %}
+                <a href="{% url 'logout' %}">로그아웃</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+  </div>
+
+</nav>
+
+  
+<!--
+<span class="fa-stack"> 
+  <i class=" bell fa fa-bell fa-stack-1x"></i> 
+  <i class="fas fa-square fa-stack-lg"></i>
+</span>
+
+   {% if notificationList %}
+    <span class="bellNum p1 fa-stack has-badge" data-count="">
+      <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="4b"></i>
+    </span>
+    {% else %}
+    <i class="bell far fa-lg fa-bell" style="z-index: 0;"></i>
+    {% endif %}
+-->

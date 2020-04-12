@@ -23,6 +23,8 @@ class Notification(models.Model):
     leagueReply = 'leagueReply'
 
     personalApply = 'personalApply'
+    personalAccept = 'personalAccept'
+    personalDeny = 'personalDeny'
 
     teamMatchingApply = 'teamMatchingApply'
     recruitingApply = 'recruitingApply'
@@ -45,6 +47,8 @@ class Notification(models.Model):
         (recruitingComment, 'recruitingComment'),
         (leagueComment, 'leagueComment'),
         (personalApply, 'personalApply'),
+        (personalAccept, 'personalAccept'),
+        (personalDeny, 'personalDeny'),
         (teamMatchingApply, 'teamMatchingApply'),
         (recruitingApply, 'recruitingApply'),
         (recruitingAccepted, 'recruitingAccepted'),
@@ -95,7 +99,7 @@ class Notification(models.Model):
         self.save()
 
     def personalCommentText(self):
-        self.text = self.creator.name + '님이 [' + self.personalMatching.title + ']글에 댓글을 남겼습니다.'
+        self.text = self.creator.name + '님이 [개인매칭]글에 댓글을 남겼습니다.'
         self.save()
 
     def teamCommentText(self):
@@ -127,7 +131,15 @@ class Notification(models.Model):
         self.save()
 
     def personalApplyText(self):
-        self.text = self.creator.name + '님이 [' + self.personalMatching.title + ']에 참가신청을 했습니다.'
+        self.text = self.creator.name + '님이 개인매칭 [' + self.personalMatching.content[:20] + ']에 참가신청을 했습니다.'
+        self.save()
+
+    def personalAcceptText(self):
+        self.text = self.creator.name + '님이 개인매칭 참가신청을 수락했습니다.'
+        self.save()
+
+    def personalDenyText(self):
+        self.text = self.creator.name + '님이 개인매칭 참가신청을 거절했습니다.'
         self.save()
 
     def teamMatchingApplyText(self):

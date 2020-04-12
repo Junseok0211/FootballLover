@@ -1,12 +1,39 @@
 {% extends 'base.html' %}
-
+{% block contents %}
 {% load static %}
 {% load hDate %}
 
-{% block contents %}
-
+<head>
 <link rel="stylesheet" href="{% static 'css/match2.css' %}">
+<!-- font awesome -->
+<script src="https://kit.fontawesome.com/8b80c27e4f.js" crossorigin="anonymous"></script>
 
+<style>
+.pc{
+    display: block;
+  }
+
+  .mobile{
+    display: none;
+  }
+
+  @media only screen and (max-device-width : 720px) {
+    .pc{
+      display: none;
+    }
+    .mobile{
+      display: block;
+    }
+}
+</style>
+</head>
+<div class="mobile">
+  {% include 'navBar.html' %}
+</div>
+
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 <!--컨텐츠 영역-->
 <div style="max-width: 720px; width: 100%; margin:0 auto;">
 <div class="sec play" style="background-image: url({% static 'bg_play.png' %})">
@@ -40,4 +67,7 @@
 </div>
 <!--컨텐츠 영역-->
 
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+  </footer>
 {% endblock %}

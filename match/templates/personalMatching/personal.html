@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load hDate %}
+{% load counting %}
 
 {% block contents %}
 
@@ -89,7 +89,57 @@
         font-weight: 500;
         font-size: 0.75rem;
     }
+
+    .dateTxt{
+        font-family: 'Noto Sans KR';
+        font-size: 0.8rem;
+        font-weight: bold;
+        padding:3px;
+        text-align: center;
+        
+    }
+    .dateRow{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+    }
+
+    
+    .pc{
+        display: block;
+      }
+    
+      .mobile{
+        display: none;
+      }
+    
+      @media only screen and (max-device-width : 720px) {
+        .pc{
+          display: none;
+        }
+        .mobile{
+          display: block;
+        }
+    }
+    
 </style>
+
+{% if error %}
+<script>
+    alert("{{error}}");
+</script>
+{% endif %}
+
+
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+</div>
+
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 
 <!--컨텐츠 영역-->
 <div class="sec match personal" style="max-width: 720px; margin: 0 auto;">
@@ -97,105 +147,271 @@
     <!-- 양쪽정렬된 탭 메뉴 -->
     <ul class="nav-justified">
         <li class="item active">
-            <p class="txt">개인 매칭</p>
+            <p class="txt">
+                <a href = "{% url 'personal' %}" style="text-decoration: none; color: #131313;">
+                    개인 매칭
+                </a>
+            </p>
         </li>
         <li class="item">
-            <p class="txt">팀 매칭</p>
+            <p class="txt">
+                <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#8c8c8c;">
+                    팀 매칭
+                </a>
+            </p>
         </li>
         <li class="item">
-            <p class="txt">용병 매칭</p>
+            <p class="txt">
+                <a href = "{% url 'recruiting' %}" style="text-decoration: none; color:#8c8c8c;">
+                    용병 매칭
+                </a>
+            </p>
         </li>
         <li class="item">
-            <p class="txt">풋살 데이</p>
+            <p class="txt">
+                <a href = "{% url 'league' %}" style="text-decoration: none; color:#8c8c8c;">
+                    풋살데이
+                </a>
+            </p>
         </li>
     </ul>
+<script type="text/javascript">
+    // 홈화면 오늘의 경기 달력 만드는 코드 
+    
+  var standard = new Date(); // 오늘 날짜//지신의 컴퓨터를 기준으로
+  //standard 에 Date객체를 넣어줌 //ex)5일  
+  if ("{{day}}"){
+     standard = new Date(standard.getFullYear(), "{{month}}", "{{day}}");
+    }
 
+  function prevWeek() {
+    standard = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    getDate = document.getElementById('getDate');
+    month = standard.getMonth();
+    date = standard.getDate();
+    document.getElementById('month').value = month;
+    document.getElementById('day').value = date;
+    getDate.submit();
+  }
+
+  function nextWeek() {
+        standard = new Date(standard.getFullYear(), standard.getMonth(), standard.getDate() + 7);
+        getDate = document.getElementById('getDate');
+        month = standard.getMonth();
+        date = standard.getDate();
+        document.getElementById('month').value = month;
+        document.getElementById('day').value = date;
+        getDate.submit();
+    //buildCalendar(); // 다음 달
+  }
+
+  function buildCalendar() {// 현재 달력
+    var nMonth = new Date(standard.getFullYear(), standard.getMonth(), 1);  // 이번 달의 첫째 날
+    var lastDate = new Date(standard.getFullYear(), standard.getMonth()+1, 0); // 이번 달의 마지막 날
+    var tblCalendar = document.getElementById("chooseDate");     // 테이블 달력을 만들 테이블
+    var tblCalendarYM = document.getElementById("calendarYM");    // yyyy년 m월 출력할 곳
+    var nowDate = standard.getDate();
+    var nowMonth = standard.getMonth();
+    //tblCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";  // yyyy년 m월 출력
+    // 기존 테이블에 뿌려진 줄, 칸 삭제
+  
+    while (tblCalendar.rows.length > 0) {
+      tblCalendar.deleteRow(tblCalendar.rows.length - 1);
+    }
+    var row = null;
+    row = tblCalendar.insertRow();
+    row.className = "dateRow";
+    var cnt = 0;
+    // 1일이 시작되는 칸을 맞추어 줌
+    /*
+    for (i=0; i<nMonth.getDay(); i++) {
+      cell = row.insertCell();
+      cnt = cnt + 1;
+    }*/
+    
+    for (i=1; i<=7; i++) { 
+        cell = row.insertCell();
+        var code = "<a type=button onclick = 'personalDay("+nowMonth+","+nowDate+");' style = text-decoration:none; color:black;>" + nowDate + "</a>"
+
+        cell.innerHTML = code;
+        cell.className ="dateTxt";
+
+        var thisDate = new Date();
+        if(i == 1){
+            cell.bgColor = "#28AAE3";
+            cell.style.color = "white";
+        }
+        if (nowDate == lastDate.getDate()){
+            nowDate = 1;
+            nowMonth += 1;
+        }
+        else{
+            nowDate += 1
+        }
+    }
+  }
+  function personalDay(month, day){
+        getDate = document.getElementById('getDate');
+        document.getElementById('month').value = month;
+        document.getElementById('day').value = day;
+        getDate.submit();
+        // url.replace('4', String(month));
+        // url.replace('12', String(day));
+        // alert(url);
+        // document.location.href = url;
+        // var message = "";
+        // $.ajax({
+        //     url: url,
+        //     dataType:'json',
+        //     type:'GET',
+        //     async:false,
+        //     data:{'month':month, 'day':day},
+        //     success:function(data){
+        //             message = "중복된 아이디가 있습니다.";
+        //             alert(message);
+                    
+                    
+        //     }
+        // });
+      
+  }
+</script>
     <!-- 날짜이동 -->
-    <ul class="move_date">
-        <li class="date active">
-            <p class="txt">25</p>
-        </li>
-        <li class="date">
-            <p class="txt">26</p>
-        </li>
-        <li class="date">
-            <p class="txt">27</p>
-        </li>
-        <li class="date">
-            <p class="txt">28</p>
-        </li>
-        <li class="date">
-            <p class="txt">29</p>
-        </li>
-        <li class="date">
-            <p class="txt">30</p>
-        </li>
-        <li class="date">
-            <p class="txt">31</p>
-        </li>
-        <li class="date">
-            <button type="button" class="btn move">
-                <i class="fas fa-long-arrow-alt-right"></i>
-            </button>
-        </li>
-    </ul>
+<form action="{% url 'personalDay' %}" type = "GET" id = "getDate">
+    <input type="hidden" name = "month" id = "month">
+    <input type="hidden" name = "day" id = "day">
+</form>
+<input type="hidden" id="Url" data-url="{% url 'personalDay' %}" />
+<div style="display: flex; flex-direction: row;">
+    <button type="button" class="btn move" style="margin-left:0; width: 10%; padding-left: 0;" onclick="prevWeek()">
+        <i class="fas fa-long-arrow-alt-left" style="color:#28AAE3"></i>
+    </button>
+    <table id="chooseDate" boarder="3" text-align="center" style="padding:4em; width: 80%;">
+        
+    </table>
+    <button type="button" class="btn move" style="width: 10%;" onclick="nextWeek()">
+        <i class="fas fa-long-arrow-alt-right" style="color:#28AAE3"></i>
+    </button>
+</div>
+
+
 
     <!-- 매치 리스트 -->
     <div class="math_list">
         <div class="head">
             <div class="list">
                 <div class="group first">
-                    <p>5개의 매치</p>
+                    <p>{{personal.count}}개의 매치</p>
                 </div>
                 <div class="group">
-                    <button type="button" class="btn">글쓰기</button>
+                    <button type="button" class="btn">
+                        <a href = "{% url 'personalNew' %}" style="text-decoration: none; color:white;">글쓰기</a>
+                    </button>
                 </div>
             </div>
         </div>
+
         <div class="cont">
-            <div class="list">
-                <div class="group first">
-                    <p class="time">10:30</p>
-                    <div>
-                        <p class="point">남서울 대학교 풋살장</p>
-                        <p>남성 실력: 프로</p>
+        {% if personalList %}
+            {% if jsonList %}
+                {% for personalMatching in jsonList %}
+                <a href="{% url 'personalDetail' personalMatching.id %}" style="text-decoration: none; color: black;">
+                    <div class="list">
+                        <div class="group first">
+                            {% autoescape on %}
+                            <p class="time">{{personalMatching.time_from|date:"H:i"}}</p>
+                            {% endautoescape %}
+                            <div>
+                                <p class="point">{{personalMatching.location}}</p>
+                                <p>실력: {{personalMatching.rank}}</p>
+                            </div>
+                        </div>
+                        <div class="group">
+                            {% if personalMatching.total_attendance == personalMatching.number %}
+                            <button type="button" class="btn end">마감</button>
+                            {% elif personalMatching.time_from|timeuntil <= '59분' %}
+                            <button type="button" class="btn end">마감</button>
+                            {% elif personalMatching.time_from|timeuntil <= '23시간' %}
+                            <button type="button" class="btn danger">마감임박</button>
+                            {% elif personalMatching.number|subtract:personalMatching.total_attendance <= 2 %}
+                            <button type="button" class="btn danger">마감임박</button>
+                            {% else %}
+                            <button type="button" class="btn">자세히보기</button>
+                            {% endif %}
+                            <p class="txt">{{personalMatching.total_attendance}}/{{personalMatching.number}}</p>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                {% for personalMatching in personalList %}
+                <a href="{% url 'personalDetail' personalMatching.id %}" style="text-decoration: none; color: black;">
+                <div class="list">
+                    <div class="group first">
+                        {% autoescape on %}
+                        <p class="time">{{personalMatching.time_from|date:"H:i"}}</p>
+                        {% endautoescape %}
+                        <div>
+                            <p class="point">{{personalMatching.location}}</p>
+                            <p>실력: {{personalMatching.rank}}</p>
+                        </div>
+                    </div>
+                    <div class="group">
+                        {% if personalMatching.total_attendance == personalMatching.number %}
+                        <button type="button" class="btn end">마감</button>
+                        {% elif personalMatching.time_from|timeuntil <= '59분' %}
+                        <button type="button" class="btn end">마감</button>
+                        {% elif personalMatching.time_from|timeuntil <= '23시간' %}
+                        <button type="button" class="btn danger">마감임박</button>
+                        {% elif personalMatching.number|subtract:personalMatching.total_attendance <= 2 %}
+                        <button type="button" class="btn danger">마감임박</button>
+                        {% else %}
+                        <button type="button" class="btn">자세히보기</button>
+                        {% endif %}
+                        <p class="txt">{{personalMatching.total_attendance}}/{{personalMatching.number}}</p>
                     </div>
                 </div>
-                <div class="group">
-                    <button type="button" class="btn">자세히보기</button>
-                    <p class="txt">4/6</p>
-                </div>
-            </div>
+                </a>
+                {% endfor %}
+            {% endif %}
+        {% else %}
             <div class="list">
-                <div class="group first">
-                    <p class="time">10:30</p>
-                    <div>
-                        <p class="point">남서울 대학교 풋살장</p>
-                        <p>남성 실력: 프로</p>
-                    </div>
-                </div>
-                <div class="group">
-                    <button type="button" class="btn end">마감</button>
-                    <p class="txt">4/6</p>
-                </div>
+                <p>매칭이 없습니다.</p>
             </div>
-            <div class="list">
-                <div class="group first">
-                    <p class="time">10:30</p>
-                    <div>
-                        <p class="point">남서울 대학교 풋살장</p>
-                        <p>남성 실력: 프로</p>
-                    </div>
-                </div>
-                <div class="group">
-                    <button type="button" class="btn danger">마감임박</button>
-                    <p class="txt">4/6</p>
-                </div>
-            </div>
+        {% endif %}
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example" class="mt-2">
+                <ul class="pagination justify-content-center">
+                {% if personalList.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{personalList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{personalList.previous_page_number}}</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item disabled"><a class="page-link" href="#">{{personalList.number}}</a></li>
+                {% if personalList.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{personalList.next_page_number}}">{{personalList.next_page_number}}</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{personalList.paginator.num_pages}}">마지막으로</a>
+                </li>
+                {% endif %}
+                </ul>
+            </nav>
+
         </div>
     </div>
 
 </div>
 <!--컨텐츠 영역-->
 
+
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+  </footer>
 {% endblock %}

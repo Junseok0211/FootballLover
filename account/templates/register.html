@@ -1,5 +1,187 @@
 {% extends 'base.html' %}
+
+
+
 {% block contents %}
+<style>
+    .errorComment{/*error comment*/
+        margin-top: 5px;
+        color:red;
+        padding-left: 10px;
+        font-size: 12px;
+        font-family: 'Nanum Gothic';
+    }
+    .register{
+        max-width: 720px;
+        width: 100%;
+        margin: 0 auto;
+        padding:10px;
+    }
+
+    .registerTitle{
+        font-family: 'Nanum Gothic';
+        font-size: 14px;
+        color: gray;
+        font-weight: bold;
+        padding-left: 5px;
+    }
+
+    .explanation{
+        font-family: 'Nanum Gothic';
+        font-size: 12px;
+        color: gray;
+        text-align: right;
+        padding-right: 2%;
+    }
+
+    .textBox{
+        border-top: 10px;
+        width: 100%;
+        font-size: 16px; 
+        line-height: 30px; 
+        font-family: 'Nanum Gothic';
+        padding-left: 10px;
+    }
+
+    .usernameBox{
+        border-top: 10px;
+        width: 65%;
+        font-size: 16px; 
+        line-height: 30px; 
+        font-family: 'Nanum Gothic';
+        padding-left: 10px;
+    }
+
+    .usernameBtn{
+        width:33%;
+        border-radius: 10px;
+        font-family: 'Nanum Gothic';
+        font-size: 14px;
+        margin: 0 0;
+
+        padding: .5em .75em; 
+        color: #999; 
+        line-height: normal; 
+        vertical-align: middle; 
+        background-color: #fdfdfd; 
+        cursor: pointer; 
+        border: 1px solid #ebebeb; 
+        border-bottom-color: #e2e2e2; 
+        border-radius: .25em; 
+        font-weight: bold;
+    }
+
+    .photoBox{
+        width: 50%;
+        font-size: 14px;
+        font-family: 'Nanum Gothic';
+    }
+
+    .registerMargin{
+        margin-bottom: 10px;
+    }
+
+    .filebox input[type="file"] { /*파일 필드 숨기기*/
+        position: absolute; 
+        width: 1px; 
+        height: 1px; 
+        padding: 0; 
+        margin: -1px; 
+        overflow: hidden; 
+        clip:rect(0,0,0,0); 
+        border: 0; 
+    } 
+        
+    .filebox label { 
+        width: 28%;
+        margin-top: 7px;
+        display: inline-block; 
+        padding: .5em .75em; 
+        color: #999; 
+        font-size: 14px; 
+        line-height: normal; 
+        vertical-align: middle; 
+        background-color: #fdfdfd; 
+        cursor: pointer; 
+        border: 1px solid #ebebeb; 
+        border-bottom-color: #e2e2e2; 
+        border-radius: .25em; 
+        font-family: 'Nanum Gothic';
+        font-weight: bold;
+        
+    } 
+        
+    /* named upload */ 
+    .filebox .upload-name { 
+        display: inline-block; 
+        padding: .5em .75em; 
+        /* label의 패딩값과 일치 */ 
+        font-size: 14px; 
+        font-family: 'Nanum Gothic'; 
+        line-height: normal; 
+        vertical-align: middle;
+        background-color: #f5f5f5; 
+        border: 1px solid #ebebeb; 
+        border-bottom-color: #e2e2e2; 
+        border-radius: .25em; 
+        -webkit-appearance: none; 
+        /* 네이티브 외형 감추기 */ 
+        -moz-appearance: none; 
+        appearance: none; 
+    }
+
+    /* imaged preview */ 
+    .filebox .upload-display { /* 이미지가 표시될 지역 */ 
+        margin-bottom: 5px; 
+        display: inline-block;
+    } 
+
+    .pc{
+    display: block;
+  }
+
+  .mobile{
+    display: none;
+  }
+
+  @media only screen and (max-device-width : 720px) {
+    .pc{
+      display: none;
+    }
+    .mobile{
+      display: block;
+    }
+}
+        
+    @media(min-width: 768px) { 
+        .filebox .upload-display { 
+            display: inline-block; 
+            margin-right: 5px; 
+            margin-bottom: 0; 
+        } 
+    } 
+    
+    /*크기 변경시 width 수정하기 */
+    .filebox .upload-thumb-wrap { /* 추가될 이미지를 감싸는 요소 */ 
+        display: inline-block; 
+        width: 54px; 
+        padding: 2px; 
+        vertical-align: middle; 
+        border: 1px solid #ddd; 
+        border-radius: 5px; 
+        background-color: #fff; 
+    } 
+    
+    .filebox .upload-display img { /* 추가될 이미지 */ 
+        display: block; 
+        max-width: 100%; 
+        width: 100% \9; 
+        height: auto; 
+    }
+
+
+
+</style>
 
 {% if res_data.error %}
 <script>
@@ -7,9 +189,128 @@ alert("{{res_data.error}}");
 </script>
 {% endif %}
 <script language="javascript">
+    //실시간 ID 체크
+    function liveIdCheck(){
+        var idCheck = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,15}$/; // 아이디 검사할 정규식
+        let username = document.getElementById("username");
+        let idErrorComment = document.getElementById("idErrorComment");
+        let what = username.value;
+        if(!(idCheck.test(what))){
+            $('#idErrorComment').css('display', 'block');
+            $('#idErrorComment').text("아이디는 영문, 숫자를 이용해 8~15자로 만들어주세요.");
+            return false;
+        } 
+        if(idCheck.test(what)){
+            $('#idErrorComment').css('display', 'none');
+            return false;
+        }
+    }
 
+    //실시간 PW 체크
+    function livePwCheck(){
+        var pwCheck = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; // 비밀번호 검사할 정규식
+        let password = document.getElementById("password");
+        let pwErrorComment = document.getElementById("pwErrorComment");
+        let what = password.value;
+        if(!(pwCheck.test(what))){
+            $('#pwErrorComment').css('display', 'block');
+            $('#pwErrorComment').text("비밀번호는 영문, 숫자, 특수문자를 이용해 8~15자로 만들어주세요.");
+            return false;
+        } 
+        if(pwCheck.test(what)){
+            $('#pwErrorComment').css('display', 'none');
+            return false;
+        }
+    }
 
-   function check(re, what, message) {
+    //실시간 PW 리체크
+    function liveRePwCheck(){
+        let password = document.getElementById("password");
+        let re_password = document.getElementById("re_password");
+        let rePwErrorComment = document.getElementById("rePwErrorComment");
+        let pw = password.value;
+        let rePw = re_password.value;
+        if(!(pw == rePw)){
+            $('#rePwErrorComment').css('display', 'block');
+            $('#rePwErrorComment').text("입력한 비밀번호와 다릅니다.");
+            return false;
+        } 
+        else {
+            $('#rePwErrorComment').css('display', 'none');
+            return false;
+        }
+    }
+
+    //실시간 Name 체크
+    function liveNameCheck(){
+        var nameCheck = /^[가-힣]{1,10}$/;
+        let name = document.getElementById("name");
+        let nameErrorComment = document.getElementById("nameErrorComment");
+        let what = name.value;
+        if(!(nameCheck.test(what))){
+            $('#nameErrorComment').css('display', 'block');
+            $('#nameErrorComment').text("이름은 한글로 작성해주세요.(10자이내)");
+            return false;
+        } 
+        if(nameCheck.test(what)){
+            $('#nameErrorComment').css('display', 'none');
+            return false;
+        }
+    }
+
+    //실시간 휴대폰번호 체크
+    function livePhoneCheck(){
+        var phoneCheck = /^[0-9]{11}$/;
+        let phone_number = document.getElementById("phone_number");
+        let phoneErrorComment = document.getElementById("phoneErrorComment");
+        let what = phone_number.value;
+        if(!(phoneCheck.test(what))){
+            $('#phoneErrorComment').css('display', 'block');
+            $('#phoneErrorComment').text("'-' 없이 11자리로 작성해주세요. ");
+            return false;
+        } 
+        if(phoneCheck.test(what)){
+            $('#phoneErrorComment').css('display', 'none');
+            return false;
+        }
+    }
+
+    //실시간 인증번호 체크
+    function liveAuthCheck(){
+        var authCheck = /^[0-9]{5}$/;
+        let auth_number = document.getElementById("auth_number");
+        let authErrorComment = document.getElementById("authErrorComment");
+        let what = auth_number.value;
+        if(!(authCheck.test(what))){
+            $('#authErrorComment').css('display', 'block');
+            $('#authErrorComment').text("숫자 5자리로 작성해주세요 ");
+            return false;
+        } 
+        else {
+            $('#authErrorComment').css('display', 'none');
+            return false;
+        }
+    }
+
+    //실시간 생년월일 체크
+    function liveBirthdayCheck(){
+        var birthdayCheck = /^[0-9]{6}$/;
+        let birthday = document.getElementById("birthday");
+        let birthdayErrorComment = document.getElementById("birthdayErrorComment");
+        let what = birthday.value;
+        if(!(birthdayCheck.test(what))){
+            $('#birthdayErrorComment').css('display', 'block');
+            $('#birthdayErrorComment').text("6자리 생년월일로 작성해주세요.");
+            return false;
+        } 
+        else {
+            $('#birthdayErrorComment').css('display', 'none');
+            return false;
+        }
+    }
+
+    //정규식 검사 메소드
+    function check(re, what, message) {
        if(re.test(what.value)) {
            return true;
        }
@@ -17,20 +318,22 @@ alert("{{res_data.error}}");
        what.value = "";
        what.focus();
        return false;
-   }
+    }
 
 
 
     function formCheck(frm){
         var pwCheck = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/; // 비밀번호 검사할 정규식
-        var idCheck = /^[a-zA-Z0-9]{8,15}$/; // 아이디가 적합한지 검사할 정규식
+        var idCheck = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,15}$/; // 아이디 검사할 정규식
         var nameCheck = /^[가-힣]{1,10}$/;
         var phoneCheck = /^[0-9]{11}$/;
         var authCheck = /^[0-9]{5}$/;
+        var birthdayCheck = /^[0-9]{6}$/;
         var username = document.getElementById("username");
         var password = document.getElementById("password");
         var re_password = document.getElementById("re_password");
         var name = document.getElementById("name");
+        var birthday = document.getElementById("birthday");
         var email = document.getElementById("email");
         var phone_number = document.getElementById("phone_number");
         var auth_number = document.getElementById("auth_number");
@@ -78,6 +381,14 @@ alert("{{res_data.error}}");
         if(!(check(nameCheck, name, "이름은 한글로 작성해주세요.(10자이내)"))){
             return false;
         }
+        if(frm.birthday.value == ""){
+            alert("생년월일을 입력해주세요");
+            frm.birthday.focus();
+            return false;
+        }
+        if(!(check(birthdayCheck, birthday, "생년월일은 숫자 6자리로 작성해주세요."))){
+            return false;
+        }
         if(frm.email.value == ""){
             alert("이메일을 입력해주세요");
             frm.email.focus();
@@ -90,6 +401,11 @@ alert("{{res_data.error}}");
         }
         if(!(check(phoneCheck, phone_number, "휴대폰번호는 '-'없이 11자리를 적어주세요"))){
             frm.phone_number.focus();
+            return false;
+        }
+        if($(".auth").text() != "(인증완료)"){
+            alert("휴대폰 번호 인증을 해주세요.")
+            frm.auth_number.focus();
             return false;
         }
         if(region.value == "시도"){
@@ -143,16 +459,34 @@ alert("{{res_data.error}}");
             frm.jeju.focus();
             return false;
         }
+
+        if(frm.seoul.value == "seoul" && 
+        frm.incheon.value == "incheon" &&
+        frm.daejeon.value == "daejeon" &&
+        frm.gwangju.value == "gwangju" &&
+        frm.daegu.value == "daegu" &&
+        frm.ulsan.value == "ulsan" &&
+        frm.busan.value == "busan" &&
+        frm.sejong.value == "sejong" &&
+        frm.gyeonggi.value == "gyeonggi" &&
+        frm.north_chungcheong.value == "north_chungcheong" &&
+        frm.south_chungcheong.value == "south_chungcheong" &&
+        frm.north_jeolla.value == "north_jeolla" &&
+        frm.south_jeolla.value == "south_jeolla" &&
+        frm.north_gyeongsang.value == "north_gyeongsang" &&
+        frm.south_gyeongsang.value == "south_gyeongsang" &&
+        frm.jeju.value == "jeju"){
+            alert("시군구를 선택해주세요.");
+            frm.basic.focus();
+            return false;
+        }
         if(frm.school.value == "school"){
             alert("학교를 선택해주세요.");
             frm.school.focus();
             return false;
         }
-        if($(".auth").text() != "(인증완료)"){
-            alert("휴대폰 번호 인증을 해주세요.")
-            frm.auth_number.focus();
-            return false;
-        }
+        
+
         var url1 = "{% url 'checkId' %}";
         var csrf = $('input[name="csrfmiddlewaretoken"]').last().val();  
         var message = "";
@@ -178,81 +512,197 @@ alert("{{res_data.error}}");
         alert("회원가입이 완료되었습니다.");
         return true;
     }
+
+    $(document).ready(function(){ 
+        //username blur시 에러메시지 사라지기
+        $('#username').on('blur', function(){
+            $('#idErrorComment').css('display', 'none');
+        });
+
+        //password blur시 에러메시지 사라지기
+        $('#password').on('blur', function(){
+            $('#pwErrorComment').css('display', 'none');
+        });
+
+        //re_password blur시 에러메시지 사라지기
+        $('#re_password').on('blur', function(){
+            $('#rePwErrorComment').css('display', 'none');
+        });
+
+        //name blur시 에러메시지 사라지기
+        $('#name').on('blur', function(){
+            $('#nameErrorComment').css('display', 'none');
+        });
+
+        //휴대폰 blur시 에러메시지 사라지기
+        $('#phone_number').on('blur', function(){
+            $('#phoneErrorComment').css('display', 'none');
+        });
+
+        //인증번호 blur시 에러메시지 사라지기
+        $('#auth_number').on('blur', function(){
+            $('#authErrorComment').css('display', 'none');
+        });
+
+        //생년월일 blur시 에러메시지 사라지기
+        $('#birthday').on('blur', function(){
+            $('#birthdayErrorComment').css('display', 'none');
+        });
+
+        // 업로드시 이름 변경
+        var fileTarget = $('.filebox .upload-hidden'); 
+        fileTarget.on('change', function(){ // 값이 변경되면 
+            if(window.FileReader){ // modern browser 
+                var filename = $(this)[0].files[0].name; } 
+            else { // old IE 
+                var filename = $(this).val().split('/').pop().split('\\').pop(); // 파일명만 추출 
+            } 
+            
+            // 추출한 파일명 삽입 
+            $(this).siblings('.upload-name').val(filename); 
+        });
+
+        //preview image 
+        var imgTarget = $('.preview-image .upload-hidden'); 
+        imgTarget.on('change', function(){ 
+            var parent = $(this).parent(); 
+            parent.children('.upload-display').remove(); 
+            if(window.FileReader){ //image 파일만 
+                if (!$(this)[0].files[0].type.match(/image\//)) return; 
+                    
+                var reader = new FileReader(); 
+                reader.onload = function(e){ 
+                    var src = e.target.result; 
+                    parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img src="'+src+'" class="upload-thumb"></div></div>'); 
+                } 
+                reader.readAsDataURL($(this)[0].files[0]); 
+            } else { 
+                $(this)[0].select(); 
+                $(this)[0].blur(); 
+                var imgSrc = document.selection.createRange().text; 
+                parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img class="upload-thumb"></div></div>'); 
+                var img = $(this).siblings('.upload-display').find('img'); 
+                img[0].style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enable='true',sizingMethod='scale',src=\""+imgSrc+"\")"; 
+            } 
+        });
+     });
+
+
 </script>
+{% if informationPolicy != "true" or servicePolicy != "true" %}
+<script type="text/javascript">
+    location.href = "{% url 'agreement' %}";
+</script>
+{% endif %}
+
+
+<div class="mobile">
+  {% include 'navBar.html' %}
+</div>
+
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
+
 <div class="register">
-<div class="container">
-    <div class="row mt-5">
-        <div class="col-12 text-center bg-info" style="border-radius: 10px;">
-            <h1 style="font-family: 'Do Hyeon'; color:white; padding:10px;">회원가입</h1>
-        </div>
-    </div>
-  <div class="row mt-3">
-    <div class="col-12">
-      {{ error }}
-    </div>
-  </div>
-  <div class="row mt-3">
-    <div class="col-12">
-      <form name = "register" method="POST" action="{% url 'register' %}" enctype="multipart/form-data" 
-      autocomplete="off" onsubmit="return formCheck(this);">
+  <div class="">
+    <div class="">
+        <h4 style="color:gray; font-weight:bold;">회원정보</h3>
+        <hr>
+        <form name = "register" method="POST" action="{% url 'register' %}" enctype="multipart/form-data" 
+        autocomplete="off" onsubmit="return formCheck(this);">
         {% csrf_token %}
-        <div class="form-group row">
-            <label for="userimg" class="col-md-2 col-sm-12">프로필 사진</label>
-            <input type="file" accept="image/*"  class="col-lg-10 col-sm-12 form-control" id="userimg" name="userimg" />
+        <input type="hidden" value="{{servicePolicy}}" name="servicePolicy"/>
+        <input type="hidden" value="{{informationPolicy}}" name="informationPolicy"/>
+        <span class="registerTitle float-left">프로필사진</span>
+        <br>
+        <div class="registerMargin filebox preview-image">
+            <input class="upload-name photoBox" value="파일선택" disabled="disabled">
+            <label for = "userimg">업로드</label>
+            <input class="upload-hidden" type="file" accept="image/*" id="userimg" name="userimg" />
         </div>
-        <div class="form-group row">
-          <label for="username" class="col-md-2 col-12">아이디</label>
-            <div class="col-md-10 col-12">
-                <div class="row">
-                    <input type="text" class="form-control col-8" id="username" placeholder="아이디는 영문, 숫자를 이용해 8~15자로 만들어주세요." name="username" autocomplete="off"/> 
-                    <button id="checkId" type="button" class="btn btn-outline-dark justify-content-end  col-4">중복확인</button>
-                </div>
+        <div class="registerMargin">
+            <span class="registerTitle float-left">아이디</span>
+            <span class="explanation float-right">영문, 숫자, 8-15자</span>
+            <br>
+            <div class="id">
+                <input class="usernameBox" type="text" id="username" placeholder=" 아이디" 
+                onkeyup="liveIdCheck();" name="username" autocomplete="off" maxlength="15"/> 
+                <button class="usernameBtn" id="checkId" type="button">중복확인</button>
+                <h id="idErrorComment" class="errorComment"></h>
             </div>
         </div>
-        <div class="form-group row">
-          <label for="password" class="col-md-2 col-sm-12">비밀번호</label>
-          <input type="password" class="form-control col-md-10 col-12" id="password" 
-          placeholder="비밀번호는 영문, 숫자, 특수문자를 이용해 8~15자로 만들어주세요." name="password" autocomplete="off"/>
+        <div style="margin-bottom: 10px;">
+          <span class="registerTitle float-left">비밀번호</span>
+          <span class="explanation float-right">영문, 숫자, 특수문자, 8-15자</span>
+          <br>
+          <input class= "textBox" type="password" id="password" placeholder=" 비밀번호" onkeyup="livePwCheck();"
+          name="password" autocomplete="off" maxlength="15"/>
+          <h id="pwErrorComment" class="errorComment"></h>
         </div>
-        <div class="form-group row">
-          <label for="re_password" class="col-md-2 col-sm-12">비밀번호 확인</label>
-          <input type="password"  class="form-control col-md-10 col-12" id="re_password" placeholder="비밀번호 확인" name="re_password" autocomplete="off"/>
+        <div style="margin-bottom: 10px;">
+            <span class="registerTitle float-left">비밀번호 확인</span>
+            <span class="explanation float-right">영문, 숫자, 특수문자, 8-15자</span>
+            <br>
+            <input class = "textBox" type="password" id="re_password" placeholder=" 비밀번호 확인" 
+            onkeyup="liveRePwCheck();" name="re_password" autocomplete="off" maxlength="15"/>
+            <h id="rePwErrorComment" class="errorComment"></h>
         </div>
-        <div class="form-group row">
-            <label for="name" class="col-md-2 col-12">이름</label>
-            <input type="text"  class="form-control col-md-10 col-12" id="name" placeholder="이름은 한글로 작성해주세요.(10자이내)" name="name" autocomplete="off"/>
+        <div class="registerMargin">
+            <span class="registerTitle float-left">이름</span>
+            <span class="explanation float-right">한글, 10자 이내</span>
+            <br>
+            <input class="textBox" type="text"  id="name" placeholder=" 이름" name="name" autocomplete="off"
+            onkeyup="liveNameCheck();" maxlength="10"/>
+            <h id="nameErrorComment" class="errorComment"></h>
         </div>
-        <div class="form-group row">
-            <label for="email" class="col-md-2 col-12">사용자 이메일</label>
-            <input type="email"  class="form-control col-md-10 col-12" id="email" placeholder="사용자 이메일" name="email" autocomplete="off"/>
+        <div class="registerMargin">
+            <span class="registerTitle float-left">생년월일</span>
+            <span class="explanation float-right">예)991225</span>
+            <br>
+            <input class="textBox" type="text"  id="birthday" placeholder=" 생년월일" name="birthday" autocomplete="off"
+            onkeyup="liveBirthdayCheck();" maxlength="6"/>
+            <h id="birthdayErrorComment" class="errorComment"></h>
         </div>
-        <div class="form-group row">
-            <label for="phone_number" class="col-md-2 col-12">휴대폰 번호</label>
-            <div class="col-md-10 col-12">
-                <div class="row">
-                    <input type="text" class="form-control col-8" id="phone_number" placeholder="'-'를 빼고 입력해주세요." 
-                    name="phone_number" maxlength="11" autocomplete="off"/>
-                    <button id="sendSMS" type="button" class="btn btn-outline-dark justify-content-end col-4">인증번호 발송</button>
-                </div>
-            </div>  
+        <div class="registerMargin">
+            <span class="registerTitle float-left">이메일</span>
+            <span class="explanation float-right">이메일 형식</span>
+            <br>
+            <input class="textBox" type="email" id="email" placeholder=" 사용자 이메일" name="email" autocomplete="off"/>
         </div>
-        <div class="form-group row">
-            <label for="auth_number" class="col-md-2 col-12">인증번호<span style="font-family: 'Jua'; font-size:20px;" class="auth"></span></label>
-            <div class="col-md-10 col-12">
-                <div class="row">
-                    <input type="text" class="form-control col-8" id="auth_number" placeholder="5자리 숫자를 입력해주세요" 
-                    name="auth_number" maxlength="5" autocomplete="off"/>
-                    <button id="checkSMS" type="button" class="btn btn-outline-dark justify-content-end col-4">인증</button>
-                </div>
-            </div>
+        <div class="registerMargin">
+            <span class="registerTitle float-left">휴대폰 번호</span>
+            <span class="explanation float-right">'-'' 빼고 입력</span>
+            <br>
+            <input class="usernameBox" type="text" id="phone_number" placeholder=" 휴대폰 번호" onkeyup="livePhoneCheck();"
+            name="phone_number" maxlength="11" autocomplete="off"/>
+            <button class="usernameBtn" id="sendSMS" type="button">인증번호 발송</button>
+            <h id="phoneErrorComment" class="errorComment"></h>
         </div>
-        <div class="form-group row">
-            <label for="region" class="col-md-2 col-12">활동지역</label>
-            <div class="d-flex col-md-10 col-12 pl-0">
-            <select id="region" class="form-control col-md-3 col-6" name = "region"
+        <div class="registerMargin">
+            <span class="registerTitle float-left">인증번호<span class="registerTitle auth"></span></span>
+            <span class="explanation float-right">숫자, 5자리</span>
+            <br>
+            <input class="usernameBox" type="text" id="auth_number" placeholder=" 인증번호" onkeyup="liveAuthCheck();"
+            name="auth_number" maxlength="5" autocomplete="off"/>
+            <button class="usernameBtn" id="checkSMS" type="button">인증</button>
+            <h id="authErrorComment" class="errorComment"></h>
+        </div>
+        <div class="registerMargin">
+            <span class="registerTitle float-left">활동지역</span><br>
+
+            <div class="d-flex">
+            <select id="region" class="form-control" name = "region" style="width:50%;"
             onChange="showSub(this.options[this.selectedIndex].value);">
                 <option selected disabled hidden value="시도">시도</option>
                 <option value="서울특별시">서울특별시</option>
+                <option value="인천광역시">인천광역시</option>
+                <option value="대전광역시">대전광역시</option>
+                <option value="광주광역시">광주광역시</option>
+                <option value="대구광역시">대구광역시</option>
+                <option value="부산광역시">부산광역시</option>
+                <option value="울산광역시">울산광역시</option>
+                <option value="세종특별자치시">세종특별자치시</option>
                 <option value="경기도">경기도</option>
                 <option value="충청북도">충청북도</option>
                 <option value="충청남도">충청남도</option>
@@ -262,18 +712,129 @@ alert("{{res_data.error}}");
                 <option value="경상남도">경상남도</option>
                 <option value="제주특별자치도">제주특별자치도</option>
             </select>
-            <select id="basic" class="form-control col-md-3 col-6" name = "basic" style="display: ;">
+            <select id="basic" class="form-control" name = "basic" style="width:50%;">
                 <option selected disabled hidden value="시군구">시군구</option>
             </select>
 
-            <select id="seoul" class="form-control col-md-3 col-6" name = "seoul" style="display: none;">
+            <select id="seoul" class="form-control" name = "seoul" style="display: none; width:50%;">
                 <option selected disabled hidden value="seoul">시군구</option>
-                <option value="서울강남">서울강남</option>
-                <option value="경기북부">서울강북</option>
+                <option value="강남구">강남구</option>
+                <option value="강동구">강동구</option>
+                <option value="강북구">강북구</option>
+                <option value="강서구">강서구</option>
+                <option value="관악구">관악구</option>
+                <option value="광진구">광진구</option>
+                <option value="구로구">구로구</option>
+                <option value="금천구">금천구</option>
+                <option value="노원구">노원구</option>
+                <option value="도봉구">도봉구</option>
+                <option value="동대문구">동대문구</option>
+                <option value="동작구">동작구</option>
+                <option value="마포구">마포구</option>
+                <option value="서대문구">서대문구</option>
+                <option value="서초구">서초구</option>
+                <option value="성동구">성동구</option>
+                <option value="성북구">성북구</option>
+                <option value="송파구">송파구</option>
+                <option value="양천구">양천구</option>
+                <option value="영등포구">영등포구</option>
+                <option value="용산구">용산구</option>
+                <option value="은평구">은평구</option>
+                <option value="종로구">종로구</option>
+                <option value="중구">중구</option>
+                <option value="중랑구">중랑구</option>
             </select>
-            <select id="gyeonggi" class="form-control col-md-3 col-6" name = "gyeonggi"  style="display: none;">
+            <select id="incheon" class="form-control" name = "incheon" style="display: none; width:50%;">
+                <option selected disabled hidden value="incheon">시군구</option>
+                <option value="중구">중구</option>
+                <option value="동구">동구</option>
+                <option value="미추홀구">미추홀구</option>
+                <option value="연수구">연수구</option>
+                <option value="남동구">남동구</option>
+                <option value="부평구">부평구</option>
+                <option value="계양구">계양구</option>
+                <option value="서구">서구</option>
+                <option value="강화군">강화군</option>
+                <option value="옹진군">옹진군</option>
+            </select>
+            <select id="daejeon" class="form-control" name = "daejeon" style="display: none; width:50%;">
+                <option selected disabled hidden value="daejeon">시군구</option>
+                <option value="동구">동구</option>
+                <option value="중구">중구</option>
+                <option value="서구">서구</option>
+                <option value="유성구">유성구</option>
+                <option value="대덕구">대덕구</option>
+            </select>
+            <select id="gwangju" class="form-control" name = "gwangju" style="display: none; width:50%;">
+                <option selected disabled hidden value="gwangju">시군구</option>
+                <option value="동구">동구</option>
+                <option value="서구">서구</option>
+                <option value="남구">남구</option>
+                <option value="북구">북구</option>
+                <option value="광산구">광산구</option>
+            </select>
+            <select id="daegu"" class="form-control" name = "daegu" style="display: none; width:50%;">
+                <option selected disabled hidden value="daegu">시군구</option>
+                <option value="북구">북구</option>
+                <option value="동구">동구</option>
+                <option value="서구">서구</option>
+                <option value="남구">남구</option>
+                <option value="중구">중구</option>
+                <option value="수성구">수성구</option>
+                <option value="달서구">달서구</option>
+                <option value="달성군">달성군</option>
+            </select>
+            <select id="busan"" class="form-control" name = "busan" style="display: none; width:50%;">
+                <option selected disabled hidden value="busan">시군구</option>
+                <option value="북구">북구</option>
+                <option value="동구">동구</option>
+                <option value="서구">서구</option>
+                <option value="남구">남구</option>
+                <option value="중구">중구</option>
+                <option value="영도구">영도구</option>
+                <option value="부산진구">부산진구</option>
+                <option value="동래구">동래구</option>
+                <option value="해운대구">해운대구</option>
+                <option value="사하구">사하구</option>
+                <option value="금정구">금정구</option>
+                <option value="강서구">강서구</option>
+                <option value="연제구">연제구</option>
+                <option value="수영구">수영구</option>
+                <option value="사상구">사상구</option>
+                <option value="기장군">기장군</option>
+            </select>
+            <select id="ulsan"" class="form-control" name = "ulsan" style="display: none; width:50%;">
+                <option selected disabled hidden value="ulsan">시군구</option>
+                <option value="북구">북구</option>
+                <option value="동구">동구</option>
+                <option value="남구">남구</option>
+                <option value="중구">중구</option>
+                <option value="울주군">울주군</option>
+            </select>
+            <select id="sejong"" class="form-control" name = "sejong" style="display: none; width:50%;">
+                <option selected disabled hidden value="sejong">시군구</option>
+                <option value="조치원읍">조치원읍</option>
+                <option value="연기면">연기면</option>
+                <option value="연동면">연동면</option>
+                <option value="부강면">부강면</option>
+                <option value="금남면">금남면</option>
+                <option value="장군면">장군면</option>
+                <option value="연서면">연서면</option>
+                <option value="전의면">전의면</option>
+                <option value="전동면">전동면</option>
+                <option value="소정면">소정면</option>
+                <option value="한솔동">한솔동</option>
+                <option value="새롬동">새롬동</option>
+                <option value="도담동">도담동</option>
+                <option value="아름동">아름동</option>
+                <option value="종촌동">종촌동</option>
+                <option value="고운동">고운동</option>
+                <option value="보람동">보람동</option>
+                <option value="대평동">대평동</option>
+                <option value="소담동">소담동</option>
+            </select>
+            <select id="gyeonggi" class="form-control" name = "gyeonggi"  style="display: none; width:50%;">
                 <option selected disabled hidden value="gyeonggi">시군구</option>
-                <option value="인천광역시">인천광역시</option>
                 <option value="수원시">수원시</option>
                 <option value="성남시">성남시</option>
                 <option value="의정부시">의정부시</option>
@@ -306,7 +867,7 @@ alert("{{res_data.error}}");
                 <option value="가평군">가평군</option>
                 <option value="양평군">양평군</option>
             </select>
-            <select id="north_chungcheong" class="form-control col-md-3 col-6" name = "north_chungcheong"  style="display: none;">
+            <select id="north_chungcheong" class="form-control" name = "north_chungcheong"  style="display: none; width:50%;">
                 <option selected disabled hidden value="north_chungcheong">시군구</label>
                 <option value="청주시">청주시</option>
                 <option value="충주시">충주시</option>
@@ -320,10 +881,8 @@ alert("{{res_data.error}}");
                 <option value="음성군">음성군</option>
                 <option value="단양군">단양군</option>
             </select>
-            <select id="south_chungcheong" class="form-control col-md-3 col-6" name = "south_chungcheong"  style="display: none;">
+            <select id="south_chungcheong" class="form-control" name = "south_chungcheong"  style="width:50%; display: none;">
                 <option selected disabled hidden value="south_chungcheong">시군구</label>
-                <option value="대전광역시">대전광역시</option>
-                <option value="세종특별자치시">세종특별자치시</option>
                 <option value="천안시">천안시</option>
                 <option value="공주시">공주시</option>
                 <option value="보령시">보령시</option>
@@ -340,7 +899,7 @@ alert("{{res_data.error}}");
                 <option value="예산군">예산군</option>
                 <option value="태안군">태안군</option>
             </select>
-            <select id="north_jeolla" class="form-control col-md-3 col-6" name = "north_jeolla"  style="display: none;">
+            <select id="north_jeolla" class="form-control" name = "north_jeolla"  style="width:50%; display: none;">
                 <option selected disabled hidden value="north_jeolla">시군구</label>
                 <option value="전주시">전주시</option>
                 <option value="군산시">군산시</option>
@@ -357,9 +916,8 @@ alert("{{res_data.error}}");
                 <option value="고창군">고창군</option>
                 <option value="부안군">부안군</option>
             </select>
-            <select id="south_jeolla" class="form-control col-md-3 col-6" name = "south_jeolla"  style="display: none;">
+            <select id="south_jeolla" class="form-control" name = "south_jeolla"  style="width:50%; display: none;">
                 <option selected disabled hidden value="south_jeolla">시군구</label>
-                <option value="광주광역시">광주광역시</option>
                 <option value="목포시">목포시</option>
                 <option value="여수시">여수시</option>
                 <option value="순천시">순천시</option>
@@ -383,10 +941,8 @@ alert("{{res_data.error}}");
                 <option value="진도군">진도군</option>
                 <option value="신안군">신안군</option>
             </select>
-            <select id="north_gyeongsang" class="form-control col-md-3 col-6" name = "north_gyeongsang"  style="display: none;">
+            <select id="north_gyeongsang" class="form-control" name = "north_gyeongsang"  style="width:50%; display: none;">
                 <option selected disabled hidden value="north_gyeongsang">시군구</label>
-                <option value="울산광역시">울산광역시</option>
-                <option value="대구광역시">대구광역시</option>
                 <option value="포항시">포항시</option>
                 <option value="경주시">경주시</option>
                 <option value="김천시">김천시</option>
@@ -411,9 +967,8 @@ alert("{{res_data.error}}");
                 <option value="울진군">울진군</option>
                 <option value="울릉군">울릉군</option>
             </select>
-            <select id="south_gyeongsang" class="form-control col-md-3 col-6" name = "south_gyeongsang"  style="display: none;">
+            <select id="south_gyeongsang" class="form-control" name = "south_gyeongsang"  style="width:50%; display: none;">
                 <option selected disabled hidden value="south_gyeongsang">시군구</label>
-                    <option value="부산특별시">부산특별시</option>
                     <option value="창원시">창원시</option>
                     <option value="진주시">진주시</option>
                     <option value="통영시">통영시</option>
@@ -433,16 +988,17 @@ alert("{{res_data.error}}");
                     <option value="거창군">거창군</option>
                     <option value="합천군">합천군</option>
             </select>
-            <select id="jeju" class="form-control col-md-3 col-6" name = "jeju"  style="display: none;">
+            <select id="jeju" class="form-control" name = "jeju"  style="width:50%; display: none;">
                 <option selected disabled hidden value="jeju">시군구</label>
                 <option value="서귀포시">서귀포시</option>
                 <option value="제주시">제주시</option>
             </select>
             </div>  
         </div>
-        <div class="form-group row">
-            <label for="school" class="col-md-2 col-12">학교</label>
-            <select id="school" class="form-control col-12 col-md-4" name = "school" >
+        <div class="registerMargin">
+            <span class="registerTitle float-left">학교</span>
+            <br>
+            <select id="school" class="form-control" name = "school" style="width:100%;">
                 <option selected disabled hidden value="school">학교</label>
                 <option value="남서울대학교">남서울대학교</option>
                 <option value="백석대학교">백석대학교</option>
@@ -466,7 +1022,10 @@ alert("{{res_data.error}}");
     </div>
     </div>
 </div>
-</div>
+
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+</footer>
 <script>
     function sendSMS(){
         f = document.signup;

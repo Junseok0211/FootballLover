@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<script language="javascript">
+    function formCheck(frm){
+        var today = new Date()
+        var year = today.getFullYear();
+        var month = today.getMonth() +1;
+        var date = today.getDate();
+        var hour = today.getHours();
+        var matchDay = frm.time_from.value;
+        var matchYear = matchDay.substring(0,4);
+        var matchMonth = matchDay.substring(5,7);
+        var matchDate = matchDay.substring(8,10);
+        var matchHour = matchDay.substring(11,13);
+           if(frm.title.value == ""){
+               alert("제목을 입력해주세요");
+               frm.title.focus();
+               return false;
+           }
+           if(frm.sport.value == "스포츠를 선택하세요."){
+               alert("스포츠를 선택해주세요");
+               frm.sport.focus();
+               return false;
+           }
+           if(frm.location.value == "장소를 선택하세요."){
+               alert("장소를 선택해주세요");
+               frm.location.focus();
+               return false;
+           }
+           if(frm.time_from.value == ""){
+               alert("시작시간을 입력해주세요");
+               frm.time_from.focus();
+               return false;
+           }
+           if(Number(matchYear) < year){
+                    alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                    frm.time_from.focus();
+                    return false;
+                }
+                else{
+                    if(Number(matchMonth) < month){
+                        alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                        frm.time_from.focus();
+                        return false;
+                    }
+                    else{ 
+                        if(Number(matchDate) < date){
+                            alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                            frm.time_from.focus();
+                            return false;
+                        }
+                        else if(Number(matchDate) == date){
+                            if(Number(matchHour) <= hour){
+                                alert("matchhour :" + matchHour + "hour :" + hour);
+                                alert("현재시간보다 이전 시간을 선택하실 수 없습니다.")
+                                frm.time_from.focus();
+                                return false;
+                            }
+                        } 
+                   }
+                }
+           if (frm.time_to.value == ""){
+               alert("종료시간을 입력해주세요");
+               frm.time_to.focus();
+               return false;
+           }
+           if(frm.rank.value == "상대팀의 원하시는 실력을 선택하세요."){
+               alert("상대팀 실력을 선택해주세요.");
+               frm.rank.focus();
+               return false;
+           }
+           if(frm.content.value == ""){
+               alert("내용을 입력해주세요.");
+               frm.content.focus();
+               return false;
+           }
+    }
+   </script>
+
+{% if errormessage %}
+<script type="text/javascript">
+alert('{{errormessage}}');
+location.href = "{% url 'team' %}";
+</script>
+{% endif %}
+
+
+{% load staticfiles %}
+<div class="teamMatching">
+  <div class="container">
+    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
+      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
+      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:rgb(226, 211, 4);">팀매칭</span>
+    </div>
+    <div class="row align-items-center">
+      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-size: 20px; font-weight: bold;">축구 혹은 풋살을 같이 할 상대팀을 구합니다.</p>  
+    </div>
+  </div>
+</div>
+
+<div class="between">
+  <div class="container">
+    <div class="row">
+      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
+      <span class="col-md-6 col-12 text-center">풋볼러버 > 팀매칭 > 글쓰기</span>
+    </div>
+  </div>
+</div>
+<hr>
+
+<div class="container">
+<div style="border:1px solid lightgray; border-radius: 10px; padding: 30px;">
+    <form action="{% url 'teamMatching_create' %}" method="POST" onsubmit="return formCheck(this);">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="title">제목</label>
+            <div class="col-lg-10 col-sm-12">
+            <input class="form-control" id="title" type="text" name = "title" placeholder="제목을 입력하세요" >
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="sport">스포츠</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="form-control" id="sport" name="sport">
+                <option selected disabled hidden>스포츠를 선택하세요.</option>
+                <option value="Futsal">풋살</option>
+                <option value="Football">축구</option>
+                <option value="Basketball">농구</option>
+            </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="location">장소</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="form-control" id="location" name="location">
+                <option selected disabled hidden>장소를 선택하세요.</option>
+                <option value="남서울대 다목적구장">남서울대 다목적구장</option>
+                <option value="남서울대 축구장">남서울대 축구장</option>
+                <option value="천안축구센터">천안축구센터</option>
+                <option value="단국대 축구장">단국대 축구장</option>
+                <option value="단국대 풋살구장">단국대 풋살구장</option>
+            </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_from">시작시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_from" name = "time_from" class="form-control" type="text" readonly autocomplete="off">
+            </div>
+            <label class="col-lg-2 col-sm-12 col-form-label" for="time_to">종료시간</label>
+            <div class="col-lg-3 col-sm-12">
+            <input id="time_to" name = "time_to" type="text" class="form-control" readonly autocomplete="off">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="rank">실력</label>
+            <div class="col-lg-10 col-sm-12">
+            <select class="custom-select" id="rank" name="rank">
+                <option selected disabled hidden>상대팀의 원하시는 실력을 선택하세요.</option>
+                <option value="상">상</option>
+                <option value="중상">중상</option>
+                <option value="중">중</option>
+                <option value="중하">중하</option>
+                <option value="하">하</option>
+            </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-lg-2 col-sm-12 col-form-label" for="content">내용</label>
+            <div class="col-lg-10 col-sm-12">
+            <textarea class="form-control" id="content" name="content" rows="5" placeholder="내용을 입력하세요"></textarea>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row-reverse bd-highlight">
+            <div class="p-1 bd-highlight">
+                <button type="button" class="btn btn-secondary"><a class="text-decoration-none text-white" href="{% url 'teamMatching' %}">돌아가기</a></button>
+            </div>
+            <div class="p-1 bd-highlight">
+                    <button type="reset" class="btn btn-secondary">초기화</button>
+            </div>
+            <div class="p-1 bd-highlight">
+                    <button type="submit" class="btn btn-secondary">글쓰기</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+<script>
+                    
+    $.datetimepicker.setLocale('ko');
+    $('#time_from').datetimepicker({
+        allowTimes:[
+                '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'
+                , '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
+        ],
+        i18n:{
+        ko:{
+        months:[
+            '1월','2월','3월','4월',
+            '5월','6월','7월','8월',
+            '9월','10월','11월','12월',
+        ],
+        dayOfWeek:[
+            "일", "월", "화", "수", 
+            "목", "금", "토",
+        ]
+        }
+        },
+        timepicker:true,
+        
+        format:'Y/m/d H:i'
+    });
+    
+    var setMin = function( currentDateTime){
+        var date = String($("#time_from").val());
+        var hour = date.substring(11,13);
+        var realhour = parseInt(hour) + 1;
+        var min = date.substring(14,16);
+        var time = String(realhour) +':'+ min;
+            this.setOptions({
+                minTime:time
+            });
+    };
+
+    $("#time_to").datetimepicker({
+        onShow:setMin,
+        datepicker:false,
+        allowTimes:[
+            '10:00', '11:00', '12:00', '13:00', '14:00'
+            , '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'
+        ],
+        format: 'H:i'
+    
+        });
+</script>
+{% endblock %}

@@ -1,13 +1,115 @@
 {% extends 'base.html' %}
 {% block contents %}
-{% load staticfiles %}
+{% load static %}
 
 {% if errormessage %}
 <script>
 alert("{{errormessage}}");
 </script>
 {% endif %}
+<style>
+  .information{
+    padding: 1rem;
+    background-image: linear-gradient(72deg, #1e3c72, #2a5298);
+  }
+
+  .futsalDay{
+    max-width: 720px;
+    width: 100%;
+    margin:0 auto;
+    padding: 0.5rem;
+    background-color:#EAECF0; 
+    border-radius: 0;
+  }
+
+  .titleText{/*제목글자*/
+    font-family: 'Noto Sans KR';
+    font-weight: bold;
+    font-size: 1.5rem;
+    border-bottom: 3px solid gray;
+  }
+
+  .futsalDayEvent{/*풋살데이 한 줄 형*/
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0px;
+    padding:5px;
+    border-bottom: 1px solid gray;
+    margin-bottom: 0.5rem;
+  }
+
+  .day{/*풋살데이 날짜*/
+    font-family: 'Noto Sans KR';
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  .time{/*풋살데이 시간*/
+    font-family: 'Noto Sans KR';
+    font-size: 0.7rem;
+  }
+
+  .location{/*풋살데이 날짜*/
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+    vertical-align: middle;
+    white-space: pre-line;
+    word-break: keep-all;
+    text-align: center;
+  }
+
+  .applyBtn{/*풋살데이 참가신청*/
+    background-color: #F5921B;
+    color: white;
+    font-family: 'Noto Sans KR';
+    font-weight: bold;
+    border: none;
+    margin-top: 0.5rem;
+    float: right;
+  }
+
+  .goDetail{/*자세히 보기 */
+    font-family: 'Noto Sans KR';
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .eventPhoto{
+    max-width: 1024px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .pc{
+    display: block;
+  }
+
+  .mobile{
+    display: none;
+  }
+
+  @media only screen and (max-device-width : 720px) {
+    .pc{
+      display: none;
+    }
+    .mobile{
+      display: block;
+    }
+}
+</style>
+<div class="mobile">
+  {% include 'navBar.html' %}
+</div>
+
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
+
+
+
+  
 <!-- 사진 -->
+<div class="">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
       <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -34,165 +136,52 @@ alert("{{errormessage}}");
       <span class="sr-only">Next</span>
     </a>
   </div>  
+</div>
 <!-- 사진 끝 -->
 
 <!-- 풋볼러버 소식 & 정보 -->
-<div class="information p-0 p-md-5">
-  <div class="title container mb-3">
-    <div class="d-flex justify-content-center">
-      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-2 mt-2" width="40px" height="40px">
-      <h1 class="text-align-center mt-2" style="text-align: center; font-family: 'Do Hyeon'; color:blanchedalmond;">풋볼러버 소식</h1>
-    </div>
-    <p class="text-center" style="font-family: 'Noto Sans KR'; color:white;">풋볼러버에서 진행중인 다양한 소식과 정보를 안내합니다.</p>
+<div class="information">
+  <div class="futsalDay">
+    <p class="titleText">다가오는 풋살데이</p>
+    {% if league %}
+      {% for futsalDay in league %}
+        {% if forloop.counter < 3 %}
+        <div class="futsalDayEvent">
+          <div class="date" style="width: 30%;">
+            {% autoescape on %}
+            <span class="day">{{ futsalDay.time_from|date:"m월 d일" }}</span><br>
+            <span class="time">{{ futsalDay.time_from|date:"H:i"}} - {{ futsalDay.time_to|date:"H:i" }}</span>
+            {% endautoescape %}
+          </div>
+          <div  style="width: 45%;">
+            <p class="location">{{futsalDay.location}}</p>
+          </div>
+          <div  style="width: 25%;">
+            <button class="applyBtn">
+              <a href="{% url 'league_detail' futsalDay.id %}" style="text-decoration: none; color:white;">
+                참가하기
+              </a>
+            </button>
+          </div>
+        </div>
+        {% elif forloop.counter == 3 %}
+        <div class="futsalDayEvent" style="display: flex; flex-direction: row-reverse;">
+          <a style="text-decoration: none; color:black;" href="{% url 'league' %}">
+            <span class="goDetail">
+              다가오는 풋살데이 <b>자세히 보기</b>
+            </span>
+            <i class="fas fa-search"></i>
+          </a>
+        </div> 
+        {% endif %}
+      {% endfor %}
+    {% else %}
+    <div style="text-align: left;">
+      <span style="font-size: 1rem; font-family: 'Noto Sans KR'; font-weight: bold;">다가오는 풋살데이가 없습니다.</span>
+    </div> 
+    {% endif %}
+
   </div>
-    <div class="row mt-4 mx-1">
-      <div class="col-md-6 col-12" style="height: 50%;">
-        <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-3 d-flex flex-column position-static mt-0">
-            <div style="border-bottom: rgb(0, 0, 0) 1px solid;" class="row mb-2">
-              <div class="col-md-3 col-12">
-                <strong class="d-inline-block mb-2" style="color:white; font-size: 28px; background-color: coral; padding:5px;">공지사항</strong>
-              </div>
-              <div class="col-md-9 col-12">
-                <strong class="d-inline-block mb-2 text-info float-left" style="font-size: 30px; padding:5px;">남서울 풋살데이</strong>
-              </div>
-            </div>
-            <h4 class="mb-2 font-weight-bold row">
-              <span class="col">제목 | {{league.title}}</span>
-            </h4>
-            <h4 class="row">
-              <span class="col"><strong>장소 |</strong>
-                <span style="font-size: 18px;">{{league.location}}</span>
-              </span>
-            </h4>
-            <h4 class="row">
-                <span class="col"><strong>시간 |</strong>
-                  {% autoescape on %}
-                  <span style="color:red; font-size: 18px;">
-                  {{league.time_from|date:"m월d일 H:00"}} -
-                  {{league.time_to|date:"H:00"}}
-                </span>
-                {% endautoescape %}
-                </span>
-              </h4>
-            <p class="card-text pt-3" style="border-top:black 1px solid;">{{league.summary}}
-              {% if league %}
-              <a href="{% url 'league_detail' league.id %}" class="text-decoration-none stretched-link">...자세히 보기</a>
-              {% else %}
-              <a href="#" class="text-decoration-none stretched-link">...자세히 보기</a>
-              {% endif %}
-            </p>
-          </div>
-        </div>
-      </div>
-      <!-- col-6 끝 -->
-      <!-- col-6 시작 -->
-      <div class="col-md-6 col-12 " style="height: 50%;">
-        <!-- <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col d-flex flex-column position-static mt-0">
-            <div class="d-none d-md-block p-0">
-              <iframe width="100%" height="330" src="https://www.youtube.com/embed/AD-KWfufsFQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="d-block d-md-none p-0">
-              <iframe width="100%" height="160" src="https://www.youtube.com/embed/mBGVwBWDD98" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          </div>
-        </div> -->
-          <!-- <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-3 d-flex flex-column position-static mt-0">
-              <div style="border-bottom: rgb(0, 0, 0) 1px solid;" class="row mb-2">
-                <div class="col-md-3 col-12">
-                  <strong class="d-inline-block mb-2" style="color:white; font-size: 30px; background-color: coral; padding:5px;">공지사항</strong>
-                </div>
-                <div class="col-md-9 col-12">
-                  <strong class="d-inline-block mb-2 text-info float-left" style="font-size: 30px; padding:5px;">하이라이트</strong>
-                </div>
-              </div>
-              <h4 class="mb-2 font-weight-bold row">
-                  <span class="col">제목 | 풋살데이 하이라이트</span>
-                </h4>
-                <h4 class="row">
-                  <span class="col"><strong>장소 |</strong>
-                    <span style="font-size: 18px;">{{league.location}}</span>
-                  </span>
-                </h4>
-                <h4 class="row">
-                    <span class="col"><strong>시간 |</strong>
-                      {% autoescape on %}
-                      <span style="color:red; font-size: 18px;">
-                      {{league.time_from|date:"m월d일 H:00"}} -
-                      {{league.time_to|date:"H:00"}}
-                    </span>
-                    {% endautoescape %}
-                    </span>
-                  </h4>
-              <p class="card-text pt-3" style="border-top:black 1px solid;">동영상 준비 중입니다.
-                {% if league %}
-                <a href="{% url 'league_detail' league.id %}" class="text-decoration-none stretched-link">...자세히 보기</a>
-                {% else %}
-                <a href="#" class="text-decoration-none stretched-link">...자세히 보기</a>
-                {% endif %}
-              </p>
-            </div>
-          </div> -->
-          <div class="futsalDay row no-gutters border rounded overflow-hidden mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-3 d-flex flex-column position-static mt-0">
-              <div style="border-bottom: rgb(0, 0, 0) 1px solid;" class="row mb-2">
-                <div class="col-md-3 col-12">
-                  <strong class="d-inline-block mb-2" style="color:white; font-size: 28px; background-color: coral; padding:5px;">공지사항</strong>
-                </div>
-                <div class="col-md-9 col-12">
-                  <strong class="d-inline-block mb-2 text-info float-left" style="font-size: 30px; padding:5px;">개인매칭</strong>
-                </div>
-              </div>
-              <h4 class="mb-2 font-weight-bold row">
-                <span class="col">제목 | 
-                  {% if personal_notice %}
-                    {{personal_notice.title}}
-                  {% else %}
-                    개인매칭 글이 없습니다.
-                  {% endif %}
-                </span>
-              </h4>
-              <h4 class="row">
-                <span class="col"><strong>장소 |</strong>
-                  <span style="font-size: 18px;">
-                    {% if personal_notice %}
-                    {{personal_notice.location}}
-                    {% else %}
-                    글이 없습니다.
-                    {% endif %}
-                  </span>
-                </span>
-              </h4>
-              <h4 class="row">
-                  <span class="col"><strong>시간 |</strong>
-                    {% autoescape on %}
-                    <span style="color:red; font-size: 18px;">
-                    {% if personal_notice %}
-                    {{personal_notice.time_from|date:"m월d일 H:00"}} -
-                    {{personal_notice.time_to|date:"H:00"}}
-                    {% else %}
-                    글이 없습니다.
-                    {% endif %}
-                  </span>
-                  {% endautoescape %}
-                  </span>
-                </h4>
-              <p class="card-text pt-3" style="border-top:black 1px solid;">
-                {% if personal_notice %}
-                {{personal_notice.summary}}
-                <a href="{% url 'personal_detail' personal_notice.id %}" class="text-decoration-none stretched-link">...자세히 보기</a>
-                {% else %}
-                글이 없습니다.
-                {% endif %}
-              </p>
-            </div>
-          </div>
-        </div>
-        <!-- col-6 끝 -->
-        <!-- row 끝 -->
-    </div>
 </div>
 <!-- 풋볼러버 소식 & 정보 끝-->
 
@@ -201,25 +190,24 @@ alert("{{errormessage}}");
   <div class="container">
   <div class="title">
     <div class="d-flex justify-content-center">
-        <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mt-2 mr-1" width="40px" height="40px">
-      <h1 class="text-align-center mt-2 d-none d-md-block" style="text-align: center; font-family: 'Do Hyeon'; color:white;">풋볼러버 오늘의 경기</h1>
-      <h1 class="text-align-center mt-2 d-block d-md-none" style="text-align: center; font-family: 'Do Hyeon'; color:white;">오늘의 경기</h1>
+      <img src="{% static 'account/logofile/onlyLogo.png' %}" alt="logo" class="src mt-2 mr-1" width="40px" height="40px">
+      <h1 class="text-align-center mt-2 titleText" style="color:white; border:none; padding-top: 0.3rem;">오늘의 경기</h1>
     </div>
-    <p class="text-center" style="font-family: 'Noto Sans KR'; color:white;">풋볼러버에서 진행중인 다양한 소식과 정보를 안내합니다.</p>
+    <p class="text-center" style="font-family: 'Noto Sans KR'; color:white; font-size: 0.8rem;">풋볼러버에서 진행중인 다양한 소식과 정보를 안내합니다.</p>
   </div>
   <div class="row">
-  <article class="mt-4 col-12 col-md-5 mr-0">
+  <article class="mt-1 col-12 col-md-5 mr-0">
       <table id="calendar" boarder="3" text-align="center" style="padding:4em;">
           <tr>
               <td>
                 <!-- <label onclick="prevCalendar()"><</label> -->
               </td>
-              <td colspan="5" text-align="center" id="calendarYM" style="font-family: 'Do Hyeon';">yyyy년 m월</td>
+              <td colspan="5" text-align="center" id="calendarYM" style="font-family: 'Do Hyeon'; font-size: 1.5rem;">yyyy년 m월</td>
               <td>
                 <!-- <label onclick="nextCalendar()">></label> -->
               </td>
              </tr>
-             <tr style="border-bottom: 1px solid #23262E;">
+             <tr style="border-bottom: 1px solid #23262E; border-top: 1px solid #23262E;">
               <td text-align="center">일</td>
               <td text-align="center">월</td>
               <td text-align="center">화</td>
@@ -228,8 +216,6 @@ alert("{{errormessage}}");
               <td text-align="center">금</td>
               <td text-align="center">토</td>
             </tr>
-          
-          
          </table>
   </article>
   <aside class="col-md-7 col-12 mt-4 ml-0 mr-0" style="margin-left:0; margin-right:0; padding:0;">
@@ -256,7 +242,7 @@ alert("{{errormessage}}");
                 {% endautoescape %}
                 <td class="col-6 col-md-2"><strong>{{personal.user.name}}</strong></td>
                 <td class="col-6 col-md-3">
-                  <a href="{% url 'personal_detail' personal.id %}" class="text-decoration-none text-muted">자세히 보기</a>
+                  <a href="{% url 'personalDetail' personal.id %}" class="text-decoration-none text-muted">자세히 보기</a>
                 </td>
               </tr>
               
@@ -358,4 +344,8 @@ alert("{{errormessage}}");
 </div>
 </div>
 </div>
+
+<footer class="mobile">
+  {% include 'stickyFooter.html' %}
+</footer>
 {% endblock %}

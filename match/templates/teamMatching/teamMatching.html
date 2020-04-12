@@ -1,121 +1,250 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% load counting %}
+
 {% block contents %}
 
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+<style>
+    .sec.match .move_date {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        font-weight: bold;
+        font-size: 0.75rem;
+        color: #000;
+        border-bottom: solid 1px #eee;
+    }
 
+    .sec.match .move_date .btn {
+        padding: 0;
+        padding-left: 0.5rem;
+        color: #28AAE3;
+    }
 
-{% if errormessage %}
-<script type="text/javascript">
-alert('로그인을 해주세요.');
-location.href = "{% url 'login' %}";
-</script>
-{% endif %}
+    .sec.match .move_date .date.active,
+    .sec.match .math_list .btn {
+        padding: 0.1rem 0.3rem;
+        color: #FFFFFF;
+        background-color: #28AAE3;
+        border-radius: 2px;
+    }
 
-{% load staticfiles %}
-<div class="teamMatching">
-  <div class="container">
-    <div class="row align-items-center justify-content-center mt-5" style="height:100%;">
-      <img src="{% static 'onlyLogo.png' %}" alt="logo" class="src mr-4" width="45px" style="vertical-align: middle;">
-      <span class="align-middle mt-2 text-stroke" style="font-family: 'Do Hyeon'; font-size: 45px; color:rgb(226, 211, 4);">팀매칭</span>
-    </div>
-    <div class="row align-items-center">
-      <p class="text-center col-12 float-center" style="font-family: 'Noto Sans KR'; color:black; font-size: 20px; font-weight: bold;">축구 혹은 풋살을 같이 할 상대팀을 구합니다.</p>  
-    </div>
-  </div>
-</div>
+    .sec.match .math_list .btn {
+        padding: 0;
+        margin-bottom: 0.2rem;
+        width: 3.5625rem;
+        font-size: 0.675rem !important;
+    }
 
-<div class="between">
-  <div class="container">
-    <div class="row">
-      <span class="col-md-6 col-12 text-center">Play Football Make Peace</span>
-      <span class="col-md-6 col-12 text-center">풋볼러버 > 팀매칭</span>
-    </div>
-  </div>
-</div>
-<hr>
+    .sec.match .math_list .btn.danger {
+        background-color: #D5135A;
+    }
 
-<div class="container">
-<div style="margin-bottom: 10px;">
-    <a href="{% url 'teamMatching_new' %}">
-        <button type="button" class="btn btn-info btn-lg btn-block">글쓰기</button>
-    </a>
-</div>
+    .sec.match .math_list .btn.end {
+        color: #DADADA;
+        background-color: #8C8C8C;
+    }
 
+    .sec.match .math_list .head .list {
+        font-size: 0.6875rem;
+        border-bottom: solid 1px #8c8c8c;
+    }
 
-<div class="row mb-1">
-  {% if teamList %}
-    {% for team in teamList %}
-    <div class="col-md-6 col-12">
-        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-3 d-flex flex-column position-static mt-0">
-            <div style="border-bottom: rgb(8, 139, 8) 1px solid;" class="row mb-2">
-              <div class="col-md-4 col-6">
-                <strong class="d-inline-block mb-2 text-success" style="font-size: 30px;">팀매칭</strong>
-              </div>
-              <div class="col-md-8 col-6">
-              {% autoescape on %}
-              <span class="text-muted row" style="font-size: 14px;">
-                {{team.location}}
-              </span>
-              <span class="text-muted row" style="font-size: 14px;">
-                {{team.time_from|date:"m월d일 H:00"}} -
-                {{team.time_to|date:"H:00"}}
-              </span>
+    .sec.match .math_list .head .btn {
+        background-color: #131313;
+    }
+
+    .sec.match .math_list .list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.65rem 0;
+        padding-left: 0.25rem;
+        text-align: center;
+        color: #8C8C8C;
+        font-size: 0.625rem;
+        border-bottom: solid 1px #E1E1E1;
+        box-sizing: border-box;
+    }
+
+    .sec.match .math_list .list .group.first {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        color: #000;
+    }
+
+    .sec.match .math_list .time {
+        margin-right: 1.5rem;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .sec.match .math_list .point,
+    .sec.match .math_list .btn {
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+
+    .underline {
+        
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #131313;
+    }
+</style>
+
+<!--컨텐츠 영역-->
+<div class="sec match personal" style="max-width: 720px; margin: 0 auto;">
+
+    <!-- 양쪽정렬된 탭 메뉴 -->
+    <ul class="nav-justified">
+        <li class="item">
+            <p class="txt">
+                <a href = "{% url 'personal' %}" style="text-decoration: none; color: #8c8c8c;">
+                    개인 매칭
+                </a>
+            </p>
+        </li>
+        <li class="item">
+            <p class="txt active">
+                <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#131313;">
+                    팀 매칭
+                </a>
+                <span class="underline"></span>
+            </p>
+        </li>
+        <li class="item">
+            <p class="txt">
+                <a href = "{% url 'recruiting' %}" style="text-decoration: none; color:#8c8c8c;">
+                    용병 매칭
+                </a>
+            </p>
+        </li>
+        <li class="item">
+            <p class="txt">
+                <a href = "{% url 'league' %}" style="text-decoration: none; color:#8c8c8c;">
+                    풋살데이
+                </a>
+            </p>
+        </li>
+    </ul>
+
+    <!-- 날짜이동 -->
+    <ul class="move_date">
+        <li class="date active">
+            <p class="txt">25</p>
+        </li>
+        <li class="date">
+            <p class="txt">26</p>
+        </li>
+        <li class="date">
+            <p class="txt">27</p>
+        </li>
+        <li class="date">
+            <p class="txt">28</p>
+        </li>
+        <li class="date">
+            <p class="txt">29</p>
+        </li>
+        <li class="date">
+            <p class="txt">30</p>
+        </li>
+        <li class="date">
+            <p class="txt">31</p>
+        </li>
+        <li class="date">
+            <button type="button" class="btn move">
+                <i class="fas fa-long-arrow-alt-right"></i>
+            </button>
+        </li>
+    </ul>
+
+    <!-- 매치 리스트 -->
+    <div class="math_list">
+        <div class="head">
+            <div class="list">
+                <div class="group first">
+                    <p>{{teamMatching.count}}개의 매치</p>
+                </div>
+                <div class="group">
+                    <button type="button" class="btn">
+                        <a href = "{% url 'teamMatchingNew' %}" style="text-decoration: none; color:white;">글쓰기</a>
+                    </button>
+                </div>
             </div>
         </div>
-            {% endautoescape %}
-            <h4 class="mb-2 font-weight-bold">
-              <span class="font-weight-bold">[{{team.myteam.name}}]</span>
-              {{team.title}}
-            </h4>
-            <p class="card-text mb-auto">{{team.summary}}
-            <a href="{% url 'teamMatching_detail' team.id %}" class="stretched-link">...자세히 보기</a>
-          </p>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-    {% else %}
-    <div class="col-12">
-        <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-3 d-flex flex-column position-static mt-0">
-            <div style="border-bottom: black 1px solid;" class="row mb-2">
-              <div class="col-4">
-                <strong class="d-inline-block mb-2 text-success" style="font-size: 30px;">팀매칭</strong>
-              </div>
+
+        <div class="cont">
+            {% if teamList %}
+            {% for teamMatching in teamList %}
+            <a href="{% url 'teamMatching_detail' teamMatching.id %}" style="text-decoration: none; color:black;">
+            <div class="list">
+                <div class="group first">
+                    {% autoescape on %}
+                    <p class="time">{{teamMatching.time_from|date:"H:i"}}</p>
+                    {% endautoescape %}
+                    <div>
+                        <p class="point">{{teamMatching.location}}</p>
+                        <p>{{teamMatching.user.teamname.name}}</p>
+                    </div>
+                </div>
+                <div class="group">
+                    {% if teamMatching.vs_team %}
+                    <button type="button" class="btn end">마감</button>
+                    {% elif teamMatching.time_from|timeuntil <= '30분' %}
+                    <button type="button" class="btn end">마감</button>
+                    {% elif teamMatching.time_from|timeuntil <= '1일' %}
+                    <button type="button" class="btn danger">마감임박</button>
+                    {% else %}
+                    <button type="button" class="btn">자세히보기</button>
+                    {% endif %}
+                    <p class="txt">{{teamMatching.rank}}</p>
+                </div>
             </div>
-            <h4 class="mb-2 font-weight-bold">
-              <span class="font-weight-bold">아직 팀매칭 글이 없습니다.</span>
-            </h4>
-            <p class="card-text mb-auto">팀 매치글을 작성해 보세요..</p>
-          </div>
+            </a>
+            {% endfor %}
+            {% else %}
+            <div class="list">
+                <p>매칭이 없습니다.</p>
+            </div>
+            {% endif %}
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example" class="mt-2">
+                <ul class="pagination justify-content-center">
+                {% if teamList.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{teamList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{teamList.previous_page_number}}</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item disabled"><a class="page-link" href="#">{{teamList.number}}</a></li>
+                {% if teamList.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{teamList.next_page_number}}">{{teamList.next_page_number}}</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{teamList.paginator.num_pages}}">마지막으로</a>
+                </li>
+                {% endif %}
+                </ul>
+            </nav>
+
         </div>
     </div>
-    {% endif %}
+
 </div>
-<hr>
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-    {% if teamList.has_previous %}
-    <li class="page-item">
-      <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="?page={{teamList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{teamList.previous_page_number}}</a>
-    </li>
-    {% endif %}
-    
-    <li class="page-item disabled"><a class="page-link" href="#">{{teamList.number}}</a></li>
-    {% if teamList.has_next %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{teamList.next_page_number}}">{{teamList.next_page_number}}</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="?page={{teamList.paginator.num_pages}}">마지막으로</a>
-    </li>
-    {% endif %}
-  </ul>
-</nav>
-</div>    
+<!--컨텐츠 영역-->
 
 {% endblock %}

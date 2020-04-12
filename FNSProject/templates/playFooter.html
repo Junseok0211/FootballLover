@@ -1,0 +1,70 @@
+{% load static %}
+<style>
+  .stickyFooter{
+    background-color: #F3F3F3;
+    height: 60px;
+    
+  }
+
+  .stickyDesign{
+    max-width: 720px;
+    width: 100%;
+    padding:10px;
+    margin:0 auto;
+    display: flex;
+    flex-direction: row;
+  }
+
+    .text{
+        display:absolute;
+        bottom:30px;
+        z-index: 100;
+        font-size: 8px;
+        font-family: 'Nanum Gothic';
+        padding:0px;
+        margin:0px;
+        color:#28AAE3;
+        text-align: center;
+    }
+  .fa{
+      transform: none !important;
+  }
+</style>
+<nav class="stickyFooter fixed-bottom">
+  <div class="stickyDesign">
+    <div style="width: 20%;" class="d-flex justify-content-center flex-column">
+        <a href="{% url 'play' %}" style="text-decoration: none; text-align: center;">
+            <img src="{% static 'icon/blueSoccerBall.png' %}" alt="" width="30px">
+        </a>
+        <span class="text">플레이</span>
+        
+    </div>
+    <div style="width: 20%;" class="d-flex justify-content-center">
+      <a href="{% url 'home' %}">
+        <img src="{% static 'icon/ranking2.png' %}" width="35px" alt="">
+      </a>
+    </div>
+    <div style="width: 20%;" class="d-flex justify-content-center">
+      <a href="{% url 'home' %}">
+        <i class="fas fa-2x fa-home" style="color:black;"></i>
+      </a>
+    </div>
+    <div style="width: 20%;" class="d-flex justify-content-center">
+        <a href="{% url 'menu' %}">
+            <i class="fas fa-2x fa-play-circle" style="color:black;"></i>  
+        </a>
+    </div>
+    <div style="width: 20%;" class="d-flex justify-content-center">
+      {% if fnsuser %}
+        <a href="{% url 'myPage' fnsuser.id %}">
+      {% else %}
+        <a href="{% url 'login' %}">
+      {% endif %}
+          <img src="{% static 'icon/playground.png' %}" width="20px">
+        </a>
+    </div>
+  </div>
+
+</nav>
+
+  

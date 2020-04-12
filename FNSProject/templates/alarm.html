@@ -18,7 +18,7 @@
             {% if alarm.userCheck %}
               <!-- 알람 종류 -->
               {% if alarm.notification_type == "prComment" %}
-              <a href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
               
               {% elif alarm.notification_type == "teamComment" %}
               <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
@@ -30,7 +30,7 @@
               <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "personalApply" %}
-              <a href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamMatchingApply" %}
               <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
@@ -54,7 +54,7 @@
               <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "personalReply" %}
-              <a href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamReply" %}
               <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
@@ -92,7 +92,7 @@
             {% else %}
               <!-- 알람종류 -->
               {% if alarm.notification_type == "prComment" %}
-              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
               
               {% elif alarm.notification_type == "teamComment" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
@@ -104,7 +104,7 @@
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "personalApply" %}
-              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamMatchingApply" %}
               <div class="alarm" style="width:200px; text-overflow: ellipsis; max-width: 300px;">
@@ -129,7 +129,7 @@
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "personalReply" %}
-              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personal_detail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamReply" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>

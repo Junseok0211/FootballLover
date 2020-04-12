@@ -1,61 +1,145 @@
 {% load static %}
-<footer class="footer" style="padding:0px;">
-  <p class="footerPolicy">
-    <span>
-      <a href="{% url 'servicePolicy' %}" style="text-decoration: none; color: white;">
-        이용약관
-      </a>
-    </span> |
-    <span>
-      <a href="{% url 'informationPolicy' %}" style="text-decoration: none; color: white;">
-        개인정보처리방침
-      </a>
-    </span>
-  </p>
-  <hr color="gray">
+<style>
+  /*footer css*/
+  .footer{
+    background-color: #23262E;
+    color: gray;
+    font-family: 'Noto Sans KR';
+    font-size: 14px;
+    
+    padding-top: 0.5rem;
+  }
+
+  .footerDesign{
+    max-width: 1024px;
+    width: 100%;
+    margin:0 auto;
+  }
+  .footerText p{
+    margin: 0.3rem 0;
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+  }
+    
+  .footerPolicy {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid gray;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+  }
+
+  .sns{
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid gray;
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+  }
+
+  .footerText {
+    padding: 0.8rem 1rem;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .pcFooterLogo {
+      display: block;
+      margin-left: 50px;
+  }
+
+  @media screen and (max-width: 720px) {
+      .footerPolicy {
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid gray;
+        font-size: 0.7rem;
+      }
+
+      .footer{
+        background-color: #23262E;
+        color: gray;
+        font-family: 'Noto Sans KR';
+        font-size: 14px;
+        margin-bottom: 60px;
+        padding-top: 0.5rem;
+      }
+
+      .footerText {
+          display: flex;
+          flex-direction: row;
+      }
+      .sns{
+        font-size: 0.7rem;
+      }
+      .footerText p{
+        font-size: 0.7rem;
+      }
+
+      .pcFooterLogo {
+          display: none;
+      }
+  }
+</style>
+<footer class="footer">
+  <div class="footerDesign">
+    <p class="footerPolicy">
+      <span style="margin-right: 1rem;">
+        <a href="{% url 'servicePolicy' %}" style="text-decoration: none; color: white;">
+          이용약관
+        </a>
+      </span> |
+      <span style="margin-left: 1rem;">
+        <a href="{% url 'informationPolicy' %}" style="text-decoration: none; color: white;">
+          개인정보처리방침
+        </a>
+      </span>
+    </p>
+    <div class="sns">
+      <div style="display: inline-block; margin-right: 1.5rem;">
+        <a href="https://www.facebook.com/koreanfootballlover/" style="text-decoration: none; color:white;">
+          <i class="fab fa-facebook-square fa-lg" style="margin-right: 5px;"></i>
+          <span>페이스북</span>
+        </a> 
+      </div> 
+      <div style="display: inline-block; margin-right: 1.5rem;">
+        <a href="https://www.instagram.com/fblover_official/" style="text-decoration: none; color:white;">
+          <i class="fab fa-instagram fa-lg" style="margin-right: 5px;"></i>
+          <span>인스타그램</span>
+        </a>
+      </div>
+      <div style="display: inline-block; margin-right: 1.5rem;">
+        <a href="https://www.youtube.com/c/footballloverofficial" style="text-decoration: none; color:white;">
+          <i class="fab fa-youtube fa-lg"></i>
+          <span>유튜브</span>
+        </a>
+      </div>
+      <div style="display: inline-block;">
+        <a href="https://blog.naver.com/fbloverofficial" style="text-decoration: none; color:white;">
+          {% load static %}
+          <img src="{% static 'icon/naver.png' %}" width="15px" style="padding-bottom: 3px;">
+          <span>블로그</span>
+        </a>
+      </div>
+    </div>
+      
     <div class="footerText">
       <div>
-        <p><b>본 홈페이지는 풋볼러버에 의해서 개발 및 관리하고 있습니다.</b></p>
+        <p style="color: white;">본 홈페이지는 풋볼러버에 의해서 개발 및 관리하고 있습니다.</p>
         <p>문의 | fbloverofficial@gmail.com | Tel. 070-7913-0113</p>
         <p>상호명 | 풋볼러버 Football Lover | 사업자번호 | 419-25-00866 | 대표 : 양준석 </p>
-        <p>통신판매번호 | 2020-충남천안-510</p>
+        <p>통신판매업신고 | 2020-충남천안-510</p>
         <p>[우:31020] 충청남도 천안시 서북구 성환읍 대학로 91 창업동아리관 4층 4204호(남서울대학교)</p>
-        <p>
+        <p style="color:white;">
           <b>
             사이트내에서 결제되는 서비스에 대하여 환불 민원 이슈 등은 풋볼러버에서 처리하며
-            모든 책임은 풋볼러버에 있습니다. <br>민원 담당자 연락처: 양준석 | Tel. O7O-7913-0113
+            모든 책임은 풋볼러버에 있습니다.
           </b>
         </p>
       </div>
       <div class = "pcFooterLogo">
         <img src="{% static 'VerticalLogo_white.png' %}" alt="logo" width="150px">
-        <div style="text-align: center; margin-top: 20px;">
-          <a href="https://www.facebook.com/koreanfootballlover/" style="text-decoration: none; color:white;">
-            <i class="fab fa-facebook-square fa-2x" style="margin-right: 5px;"></i>
-          </a>  
-          <a href="https://www.instagram.com/fblover_official/" style="text-decoration: none; color:white;">
-            <i class="fab fa-instagram fa-2x" style="margin-right: 5px;"></i>
-          </a>
-          <a href="https://www.youtube.com/c/footballloverofficial" style="text-decoration: none; color:white;">
-            <i class="fab fa-youtube fa-2x"></i>
-          </a>
-        </div>
       </div>
     </div>
-    <div class = "mobileFooterLogo">
-      <img src="{% static 'VerticalLogo_white.png' %}" alt="logo" width="100px">
-      <div style="text-align: center; margin-left:30px; margin-top: 10px;">
-        <a href="https://www.facebook.com/koreanfootballlover/" style="text-decoration: none; color:white;">
-          <i class="fab fa-facebook-square fa-2x" style="margin-right: 5px;"></i>
-        </a>  
-        <a href="https://www.instagram.com/fblover_official/" style="text-decoration: none; color:white;">
-          <i class="fab fa-instagram fa-2x" style="margin-right: 5px;"></i>
-        </a>
-        <a href="https://www.youtube.com/c/footballloverofficial" style="text-decoration: none; color:white;">
-          <i class="fab fa-youtube fa-2x"></i>
-        </a>
-      </div>
-    </div>
-      
+  </div>
     
-  </footer>
+</footer>

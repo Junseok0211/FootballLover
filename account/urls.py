@@ -26,4 +26,6 @@ urlpatterns = [
     path('checkPhone_number', views.checkPhone_number, name = "checkPhone_number"),
     path('servicePolicy', views.servicePolicy, name = "servicePolicy"),
     path('informationPolicy', views.informationPolicy, name = "informationPolicy"),
+    path('agreement', views.agreement, name = "agreement"),
+    path('menu', views.menu, name = "menu"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>풋볼러버 메뉴</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/blog/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Jquery CDN -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+        integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+        integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/8b80c27e4f.js" crossorigin="anonymous"></script>
+
+    <!-- google font Do Hyeon Nanum Gothic Black Han Sans -->
+    <!-- font-family: 'Black Han Sans', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
+    font-family: 'Do Hyeon', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Gothic A1', sans-serif;
+    font-family: 'Sunflower', sans-serif;
+    font-family: 'Nanum Gothic Coding', monospace;
+    font-family: 'Nanum Pen Script', cursive;
+    font-family: 'Nanum Brush Script', cursive;
+    font-family: 'Song Myung', serif;
+    font-family: 'Noto Serif KR', serif;
+    font-family: 'Jua', sans-serif;
+    font-family: 'Dokdo', cursive;
+    font-family: 'Cute Font', cursive;
+    font-family: 'Stylish', sans-serif;
+    font-family: 'Poor Story', cursive;
+    font-family: 'Hi Melody', cursive;
+    font-family: 'Gaegu', cursive;
+    font-family: 'Gamja Flower', cursive;
+    font-family: 'Kirang Haerang', cursive;
+    font-family: 'East Sea Dokdo', cursive;
+    font-family: 'Black And White Picture', sans-serif;
+    font-family: 'Single Day', cursive;
+    font-family: 'Yeon Sung', cursive; -->
+    <link href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap"
+        rel="stylesheet">
+
+    <!-- base.css -->
+    <link rel="stylesheet" type="text/css" href="{% static 'account/css/base.css' %}" />
+
+    <!-- js파일 -->
+    <script src="{% static 'js/home.js' %}" type="text/javascript"></script>
+    <script src="{% static 'account/js/register.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/notification.js' %}" type="text/javascript"></script>
+
+    <style>
+        .menuDesign{
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            padding-top: 0px;
+        }
+        .profile{
+            display:flex;
+            flex-direction: row;
+            margin:0px;
+            margin-top: 5px;
+            padding:0px;
+
+        }
+        .titleText{
+            font-size: 16px;
+            font-family: 'Nanum Gothic';
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+            margin-top:0px;
+            margin-bottom: 0px;
+            padding:0px;
+        }
+
+        .subText{/*설명글*/
+            font-size: 12px;
+            font-family: 'Nanum Gothic';
+            text-decoration: none;
+            margin:0px;
+            padding:0px;
+            color:cornflowerblue;
+            font-weight: bold;
+        }
+        p{
+            margin:0px;
+            padding:0px;
+        }
+        span{
+            margin:0px;
+            padding:0px;
+        }
+
+        .login{
+            margin-top: 10px;
+        }
+
+        .cardMenu{
+            display: flex;
+            flex-direction: row;
+        }
+
+        body{
+            /*background-image: linear-gradient(90deg, #E0EAFC, #CFDEF3);*/
+            background-color: rgb(209, 232, 240);
+        }
+
+
+    .navBar{
+        background-color: #F3F3F3;
+        height: 45px;
+        
+    }
+    
+    .navDesign{
+        max-width: 720px;
+        width: 100%;
+        padding:10px;
+        margin:0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .category{
+        font-family: 'Noto Sans KR';
+        font-weight: bold;
+        font-size: 0.7rem;
+        border-bottom: 1px solid gray;
+        padding:0.4rem;
+        padding-bottom: 0.1rem;
+        padding-left: 0.7rem;
+        margin-bottom: 0.3rem;
+
+    }
+
+    .pc{
+    display: block;
+  }
+
+  .mobile{
+    display: none;
+  }
+
+  @media only screen and (max-device-width : 720px) {
+    .pc{
+      display: none;
+    }
+    .mobile{
+      display: block;
+    }
+}
+    </style>
+    <script>
+        $(document).ready(function(){
+            $('#goBack').click(function(){
+                window.history.back();
+            });
+        })
+    </script>
+</head>
+<body>
+<!--navBar -->
+<nav class="navBar sticky-top">
+    <div class="navDesign">
+        <div>
+        {% if countNotification > 0 %}
+        <a href="{% url 'notification' %}" style="color: gray;">
+            <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
+            <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
+            </span>
+        </a>
+        {% else %}
+        <a type="button" id = "goBack" onclick="goBack();" style="color: gray; margin-top: 0.3rem;">
+            <i class="fas fa-lg fa-chevron-left"></i>
+        </a>
+        {% endif %}
+        </div>
+        <div>
+        <span style="font-family: 'Noto Sans KR'; font-weight: bold;">메뉴</span>
+        </div>
+        <div>
+        </div>
+    
+    </div>
+</nav>
+<!--navBar 끝-->
+
+    <div class="menuDesign">
+        {% if fnsuser %}
+        <a href="{% url 'myPage' fnsuser.id %}" style="text-decoration: none; color:black;">
+            <div class="profile">
+                <div style="width: 20%; align-items: center;">
+                    <img style= "border-radius: 70px; margin-top: 5px; vertical-align: middle;" width="35px" height="35px" src="{{ fnsuser.userimg.url }}">
+                </div>
+                <div style="width: 80%; align-items: flex-start;">
+                    <p class="titleText"><b>{{fnsuser.name}}</b></p>
+                    <span class="subText">내 프로필 가기</span>
+                </div>
+            </div>
+        </a>
+        <hr style="margin: 5px 0px;">
+        {% if fnsuser.teamname.name %}
+        <a href="{% url 'detail' fnsuser.teamname.id %}" style="text-decoration: none; color:black;">
+            <div class="profile">
+                <div style="width: 20%; align-items: center;">
+                    <img style= "border-radius: 70px; margin-top: 5px; vertical-align: middle;" 
+                    width="35px" height="35px" src="{{ fnsuser.teamname.teamimg.url }}">
+                </div>
+                <div style="width: 80%; align-items: flex-start;">
+                    <p class="titleText"><b>{{fnsuser.teamname.name}}</b></p>
+                    <span class="subText">팀 프로필 가기</span>
+                </div>
+            </div>
+        </a>
+        {% else %}
+        <a href="{% url 'team' %}" style="text-decoration: none; color:black;">
+            <div class="login">
+                <i class="fas fa-clipboard-list" style="margin-left: 10px;"></i>
+                <span class="titleText" style="padding:10px">팀 가입하기</span>
+            </div>
+        </a>
+        {% endif %}
+        {% else %}
+        <a href="{% url 'login' %}" style="text-decoration: none; color:black;">
+            <div class="login">
+                <i class="fas fa-street-view" style="margin-left: 10px;"></i>
+                <span class="titleText" style="padding:10px">로그인</span>
+            </div>
+        </a>
+        <hr style="margin: 5px 0px;">
+        <a href="{% url 'agreement' %}" style="text-decoration: none; color:black;">
+            <div class="login">
+                <i class="fas fa-tasks" style="margin-left: 10px;"></i>
+                <span class="titleText" style="padding:10px">회원가입</span>
+            </div>
+        </a>
+        {% endif %}
+        <hr style="margin: 5px 0px;">
+    <p class="category">매칭</p> 
+    <div class="cardMenu">
+        <div class="card border-dark mb-1 mr-1 ml-1" style="width: 50%;">
+            <a href="{% url 'personal' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-user-check"></i>
+                    <span class="card-title">개인매칭</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="card border-dark mb-1 mr-1" style="width: 50%;">
+            <a href="{% url 'teamMatching' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-users"></i>
+                    <span class="card-title">팀매칭</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="cardMenu">
+        <div class="card border-dark mb-1 mr-1 ml-1" style="width: 50%;">
+            <a href="{% url 'recruiting' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-user-clock"></i>
+                    <span class="card-title">용병매칭</span>
+                </div>
+            </a>
+        </div>
+        <div class="card border-dark mb-1 mr-1" style="width: 50%;">
+            <a href="{% url 'league' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-running"></i>
+                    <span class="card-title">풋살데이</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <p class="category">순위</p> 
+    <div class="cardMenu">
+        <div class="card border-dark mb-1 mr-1 ml-1" style="width: 50%;">
+            <a href="{% url 'individualRank' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="card-title">개인순위</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="card border-dark mb-1 mr-1" style="width: 50%;">
+            <a href="{% url 'teamRank' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-users-cog"></i>
+                    <span class="card-title">팀순위</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <p class="category">구장 및 팀관리</p> 
+    <div class="cardMenu">
+        <div class="card border-dark mb-1 mr-1 ml-1" style="width: 50%;">
+            <a href="{% url 'playground_list' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <img src="{% static 'icon/playground.png' %}" width="20px">
+                    <span class="card-title">구장대관</span>
+                </div>
+            </a>
+        </div>
+        <div class="card border-dark mb-1 mr-1" style="width: 50%;">
+            <a href="{% url 'team' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span class="card-title">팀목록</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <p class="category">경기</p> 
+    <div class="cardMenu">
+        <div class="card border-dark mb-1 mr-1 ml-1" style="width: 50%;">
+            <a href="{% url 'play' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="far fa-calendar"></i>
+                    <span class="card-title">경기일정</span>
+                </div>
+            </a>
+        </div>
+        <div class="card border-dark mb-1 mr-1" style="width: 50%;">
+            <a href="{% url 'play' %}" style="text-decoration: none;">
+                <div class="card-body text-dark">
+                    <i class="fas fa-poll"></i>
+                    <span class="card-title">경기결과</span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <hr style="margin: 5px 0px;">
+    <a href="{% url 'about' %}" style="text-decoration: none; color:black;">
+        <div class="login">
+            <img src="{% static 'account/logofile/onlyLogo.png' %}" alt="" width="20px" style="margin-left: 10px;">
+            <span class="titleText" style="padding:10px">풋볼러버 소개</span>
+        </div>
+    </a>
+    <hr style="margin: 5px 0px;">
+    <a href="{% url 'about' %}" style="text-decoration: none; color:black;">
+        <div class="login">
+            <i class="fas fa-question" style="margin-left: 10px;"></i>
+            <span class="titleText" style="padding:10px">문의하기</span>
+        </div>
+    </a>
+    <hr style="margin: 5px 0px;">
+    {% if fnsuser %}
+    <a href="{% url 'logout' %}" style="text-decoration: none; color:black;">
+        <div class="login">
+            <i class="fas fa-sign-out-alt" style="margin-left: 10px;"></i>
+            <span class="titleText" style="padding:10px">로그아웃</span>
+        </div>
+    </a>
+    <hr style="margin: 5px 0px;">
+    {% endif %}
+    </div>
+<footer class="mobile" style="margin-top: 60px;">
+    {% include 'playFooter.html' %}
+</footer>
+</body>
+</html>
+

@@ -15,6 +15,7 @@ from . import models as m
 from django.core.paginator import Paginator
 from .models import FNSUser
 import requests
+import logging
 # Create your views here.
 
 def login(request):
@@ -116,7 +117,14 @@ def test3(request):
 
 def register(request):
     if request.method == "GET":
-        return render(request, 'register.html')
+        servicePolicy = request.GET.get('servicePolicy', None)
+        informationPolicy = request.GET.get('informationPolicy', None)
+        data = {
+            'servicePolicy' : servicePolicy,
+            'informationPolicy' : informationPolicy
+        }
+        return render(request, 'register.html', data)
+
     elif request.method == "POST":
         if(request.FILES['userimg'] is not None):
             userimg = request.FILES['userimg']
@@ -126,7 +134,11 @@ def register(request):
         re_password = request.POST.get('re_password', None)
         name = request.POST.get('name', None)
         region = request.POST.get('region', None)
+        birthday = request.POST.get('birthday', None)
+        servicePolicy = request.POST.get('servicePolicy', None)
+        informationPolicy = request.POST.get('informationPolicy', None)
         city = "error"
+        
 
         if request.POST.get('seoul') is not None:
             city = request.POST.get('seoul')
@@ -149,11 +161,32 @@ def register(request):
         elif request.POST.get('north_gyeongsang') is not None:
             city = request.POST.get('north_gyeongsang')
 
-        elif request.POST.get('south_gyeongsang') is not 'south_gyeongsang':
+        elif request.POST.get('south_gyeongsang') is not None:
             city = request.POST.get('south_gyeongsang')
 
-        elif request.POST.get('jeju') is not 'jeju':
+        elif request.POST.get('jeju') is not None:
             city = request.POST.get('jeju')
+
+        elif request.POST.get('incheon') is not None:
+            city = request.POST.get('incheon')
+
+        elif request.POST.get('daejeon') is not None:
+            city = request.POST.get('daejeon')
+        
+        elif request.POST.get('gwangju') is not None:
+            city = request.POST.get('gwangju')
+
+        elif request.POST.get('daegu') is not None:
+            city = request.POST.get('daegu')
+
+        elif request.POST.get('ulsan') is not None:
+            city = request.POST.get('ulsan')
+
+        elif request.POST.get('busan') is not None:
+            city = request.POST.get('busan')
+
+        elif request.POST.get('sejong') is not None:
+            city = request.POST.get('sejong')
         
         school = request.POST.get('school', None)
         phone_number = request.POST.get('phone_number', None)
@@ -174,9 +207,10 @@ def register(request):
             res_data['region'] = region
             res_data['city'] = city
             res_data['school'] = school
+            res_data['birthday'] = birthday
             res_data['phone_number'] = phone_number
             res_data['auth_number'] = auth_number
-
+            return render(request, 'register.html', {'res_data':res_data})
         else:
             if FNSUser.objects.filter(username = username):
                 res_data['error'] = '중복된 아이디가 있습니다.'    
@@ -190,6 +224,11 @@ def register(request):
             fnsuser.password = make_password(password)
             fnsuser.name = name
             fnsuser.region = region
+            fnsuser.birthday = birthday
+            if servicePolicy is 'true':
+                fnsuser.servicePolicy = True
+            if informationPolicy is 'true':
+                fnsuser.informationPolicy = True
             fnsuser.city = city
             fnsuser.school = school
             fnsuser.sms = True
@@ -529,3 +568,29 @@ def informationPolicy(request):
         return render(request, 'informationPolicy.html', data)
 
     return render(request, 'informationPolicy.html')
+
+def agreement(request):
+    return render(request, 'agreement.html')
+
+
+def menu(request):
+    if request.session.get('userId', None) != None:
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        data = {
+            'fnsuser':fnsuser,
+            'notification':notification,
+            'countNotification':countNotification,
+            'notificationList': notificationList,
+        }
+        return render(request, 'menu.html', data)
+        
+    return render(request, 'menu.html')

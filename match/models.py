@@ -6,8 +6,6 @@ from team.models import Team
 # Create your models here.
 class PersonalMatching(models.Model):
     user = models.ForeignKey(FNSUser, on_delete = models.CASCADE, default = 1)
-
-    title = models.CharField(max_length=80, null=False)
     content = models.TextField(null = False)
 
     time_from = models.DateTimeField(null = True, blank = True)
@@ -15,22 +13,36 @@ class PersonalMatching(models.Model):
 
     sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
     location = models.CharField(max_length=50, null=False)
+    #모집인원
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)
 
     created = models.DateTimeField(auto_now_add= True, null = True, blank = True)
     updated = models.DateTimeField(auto_now = True, null = True, blank = True)
     
+    #참가확정 선수
+    attendedPlayer = models.ManyToManyField(FNSUser, related_name= 'attendedPersonal', blank=True, default=None)
 
-    attendance = models.ManyToManyField(FNSUser, related_name= 'attendance', blank=True, default=0)
+    # 참가신청 선수
+    appliedPlayer = models.ManyToManyField(FNSUser, related_name= 'appliedPersonal', blank=True, default=None)
+
+    # 참가비
+    joinFee = models.IntegerField(verbose_name="참가비", null=True, blank=True)
+    # 대관방법
+    wayToBook = models.CharField(verbose_name="대관방법", max_length=20, null=True, blank =True)
+    # 지불방법
+    wayToPay = models.CharField(verbose_name="지불방법", max_length=20, null=True, blank = True)
+
+    def summary(self):
+        return self.content[:20]
 
     def __str__(self):
-        return self.title
+        return self.content[:10]
     # def __str__(self):
     #     return '%s - %s' % (self.user.name, self.title)
 
     def total_attendance(self):
-        return self.attendance.count()
+        return self.attendedPlayer.count()
 
     def total_comment(self):
         number = int(self.post.count()) + int(self.postReply.count())
@@ -39,8 +51,7 @@ class PersonalMatching(models.Model):
     def time(self):
         return self.time_from + '~' + self.time_to
 
-    def summary(self):
-        return self.content[:100]
+
 
 class PersonalComment(models.Model):
     user = models.ForeignKey(FNSUser, on_delete=models.CASCADE)

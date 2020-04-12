@@ -22,6 +22,8 @@ class FNSUser(TimeStampedModel):
     # password = models.CharField(max_length=15, validators=[MinLengthValidator(8)],
     name = models.CharField(max_length=10,
                             verbose_name='이름')
+    birthday = models.IntegerField(default=000000, null=True, blank=True,
+                            verbose_name='생년월일')
     region = models.CharField(max_length = 10,
                             verbose_name='활동지역도')
     city = models.CharField(max_length = 10,
@@ -40,6 +42,9 @@ class FNSUser(TimeStampedModel):
     sessionId = models.CharField(null=True, default=None, max_length=100)
     phone_number = models.CharField(verbose_name='휴대폰 번호', unique = True, max_length=11)
     auth_number = models.IntegerField(verbose_name='인증 번호', blank=True, null=True)
+
+    servicePolicy = models.BooleanField(verbose_name="이용약관 동의", default=True)
+    informationPolicy = models.BooleanField(verbose_name="개인정보처리방침 동의", default=True)
 
     def __str__(self):
         return str(self.name)

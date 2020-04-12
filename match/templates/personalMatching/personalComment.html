@@ -1,0 +1,130 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Football Lover</title>
+
+    <!--bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <!-- Jquery CDN -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+
+
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+        integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+        integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/8b80c27e4f.js" crossorigin="anonymous"></script>
+
+    <!-- google font Do Hyeon Nanum Gothic Black Han Sans -->
+    <!-- font-family: 'Black Han Sans', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
+    font-family: 'Do Hyeon', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Gothic A1', sans-serif;
+    font-family: 'Sunflower', sans-serif;
+    font-family: 'Nanum Gothic Coding', monospace;
+    font-family: 'Nanum Pen Script', cursive;
+    font-family: 'Nanum Brush Script', cursive;
+    font-family: 'Song Myung', serif;
+    font-family: 'Noto Serif KR', serif;
+    font-family: 'Jua', sans-serif;
+    font-family: 'Dokdo', cursive;
+    font-family: 'Cute Font', cursive;
+    font-family: 'Stylish', sans-serif;
+    font-family: 'Poor Story', cursive;
+    font-family: 'Hi Melody', cursive;
+    font-family: 'Gaegu', cursive;
+    font-family: 'Gamja Flower', cursive;
+    font-family: 'Kirang Haerang', cursive;
+    font-family: 'East Sea Dokdo', cursive;
+    font-family: 'Black And White Picture', sans-serif;
+    font-family: 'Single Day', cursive;
+    font-family: 'Yeon Sung', cursive; -->
+    <link href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'match/css/comment.css' %}" />
+
+    <style>
+        .navBar{
+            background-color: #F3F3F3;
+            height: 45px;
+            
+        }
+        
+        .navDesign{
+            max-width: 720px;
+            width: 100%;
+            padding:10px;
+            margin:0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        </style>
+
+
+</head>
+
+<body>
+
+
+      <nav class="navBar sticky-top">
+        <div class="navDesign">
+          <div>
+            {% if countNotification > 0 %}
+            <a href="{% url 'notification' %}" style="color: gray;">
+              <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
+                <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
+              </span>
+            </a>
+            {% else %}
+            <a href="{% url 'personalDetail' personalMatching.id %}" style="color: gray; margin-top: 0.3rem;">
+                <i class="fas fa-lg fa-chevron-left"></i>
+            </a>
+            {% endif %}
+          </div>
+          <div>
+            <span style="font-family: 'Noto Sans KR'; font-weight: bold;">댓글</span>
+          </div>
+          <div>
+          </div>
+      
+        </div>
+      
+      </nav>
+
+
+    <!-- aboveFooter -->
+    {% include 'comment.html' %}
+
+
+
+
+
+</body>
+
+</html>

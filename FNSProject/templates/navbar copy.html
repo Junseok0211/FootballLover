@@ -1,0 +1,161 @@
+{% load static %}
+<head>
+  /*head 백업*/
+  
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/blog/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Jquery CDN -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+        integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+        integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/8b80c27e4f.js" crossorigin="anonymous"></script>
+
+    <!-- google font Do Hyeon Nanum Gothic Black Han Sans -->
+    <!-- font-family: 'Black Han Sans', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
+    font-family: 'Do Hyeon', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Nanum Myeongjo', serif;
+    font-family: 'Gothic A1', sans-serif;
+    font-family: 'Sunflower', sans-serif;
+    font-family: 'Nanum Gothic Coding', monospace;
+    font-family: 'Nanum Pen Script', cursive;
+    font-family: 'Nanum Brush Script', cursive;
+    font-family: 'Song Myung', serif;
+    font-family: 'Noto Serif KR', serif;
+    font-family: 'Jua', sans-serif;
+    font-family: 'Dokdo', cursive;
+    font-family: 'Cute Font', cursive;
+    font-family: 'Stylish', sans-serif;
+    font-family: 'Poor Story', cursive;
+    font-family: 'Hi Melody', cursive;
+    font-family: 'Gaegu', cursive;
+    font-family: 'Gamja Flower', cursive;
+    font-family: 'Kirang Haerang', cursive;
+    font-family: 'East Sea Dokdo', cursive;
+    font-family: 'Black And White Picture', sans-serif;
+    font-family: 'Single Day', cursive;
+    font-family: 'Yeon Sung', cursive; -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top mx-0 px-0 pl-md-3">
+  
+    <a href="{% url 'home' %}"><img src="{% static 'HorizontalLogo.png' %}" alt="logo" 
+    class="src mr-5" height="50px" width="160px" class="mr-4"></a>
+  
+    <div class="text-muted mr-md-5 d-block d-md-none">
+      <!-- 만약 로그인이 됐다면 알람 나타내기 -->
+      {% if request.session.name %}
+      {% include 'alarm.html' %}
+      {% endif %}
+    </div>
+    <!-- 메뉴버튼 -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0 p-2">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'playground_list' %}">구장대관<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'play' %}">플레이</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'teamMatching' %}" tabindex="-1" aria-disabled="true">팀매칭</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'recruiting' %}" tabindex="-1" aria-disabled="true">용병모집</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'league' %}" tabindex="-1" aria-disabled="true">밀어내기</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'team' %}" tabindex="-1" aria-disabled="true">팀 목록</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'individualRank' %}" tabindex="-1" aria-disabled="true">순위</a>
+        </li>
+        <li class="nav-item down d-none d-md-block">
+          <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">기타</a>
+          <div class="down-content">
+            <a class="nav-link" href="{% url 'decidedMatch' %}" tabindex="-1" aria-disabled="true">일정보기</a>
+            <a class="nav-link" href="{% url 'result' %}" tabindex="-1" aria-disabled="true">결과보기</a>
+            <a class="nav-link" href="{% url 'cs' %}" tabindex="-1" aria-disabled="true">문의하기</a>
+          </div>
+        </li>
+        
+        <li class="nav-item dropup d-block d-md-none">
+          <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">기타</a>
+          <div class="dropup-content">
+            <a class="nav-link" href="{% url 'decidedMatch' %}" tabindex="-1" aria-disabled="true">일정보기</a>
+            <a class="nav-link" href="{% url 'result' %}" tabindex="-1" aria-disabled="true">결과보기</a>
+            <a class="nav-link" href="{% url 'cs' %}" tabindex="-1" aria-disabled="true">문의하기</a>
+          </div>
+        </li>
+        {% if request.session.name %}
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'logout' %}" tabindex="-1" aria-disabled="true">로그아웃</a>
+          </li>
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'myPage' fnsuser.id %}" tabindex="-1" aria-disabled="true">마이페이지</a>
+          </li>
+        {% else %}
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'login' %}" tabindex="-1" aria-disabled="true">로그인</a>
+          </li>
+          <li class="nav-item d-block d-md-none">
+            <a class="nav-link" href="{% url 'agreement' %}" tabindex="-1" aria-disabled="true">회원가입</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  
+    <div class="text-muted mr-md-5 d-none d-md-block">
+      <!-- 로그인 시 -->
+      {% if request.session.name %}
+        <a href="{% url 'logout' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그아웃</a> |
+        <a href="{% url 'myPage' fnsuser.id %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">마이페이지</a>
+      {% include 'alarm.html' %}
+  
+      <!-- 로그인 안되면 -->
+      {% else %}
+        <a href="{% url 'login' %}" class="text-decoration-none text-muted mr-md-3" tabindex="-1" aria-disabled="true">로그인</a> |
+        <a href="{% url 'agreement' %}" class="text-decoration-none text-muted mr-md-5 ml-md-3" tabindex="-1" aria-disabled="true">회원가입</a>
+      {% endif %}
+    </div>  
+    <div id="ex1" class="row justify-content-end">
+      <i class="fa fa-envelope fa-5x fa-border icon-grey badge pr-0 mr-0"></i>
+    </div>
+    
+  </nav>
+  

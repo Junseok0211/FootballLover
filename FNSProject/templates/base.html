@@ -7,10 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <title>Football Lover</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/blog/">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!--bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <!-- Jquery CDN -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -22,14 +23,9 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <!-- Bootstrap core CSS -->
-    <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-    <link rel="stylesheet" href="/css/jquery-ui.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+
 
     <!-- XDSoft DateTimePicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
@@ -66,10 +62,10 @@
     font-family: 'Black And White Picture', sans-serif;
     font-family: 'Single Day', cursive;
     font-family: 'Yeon Sung', cursive; -->
-    <link
-        href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap"
+    <link href="https://fonts.googleapis.com/css?family=Black+And+White+Picture|Black+Han+Sans|Cute+Font|Do+Hyeon|Dokdo|East+Sea+Dokdo|Gaegu|Gamja+Flower|Gothic+A1|Hi+Melody|Jua|Kirang+Haerang|Nanum+Brush+Script|Nanum+Gothic|Nanum+Gothic+Coding|Nanum+Myeongjo|Nanum+Pen+Script|Noto+Sans+KR|Noto+Serif+KR|Poor+Story|Single+Day|Song+Myung|Stylish|Sunflower:300|Yeon+Sung&display=swap"
         rel="stylesheet">
 
+    <link rel="stylesheet" type="text/css" href="{% static 'match/css/comment.css' %}" />
     <!-- base.css -->
     <link rel="stylesheet" type="text/css" href="{% static 'account/css/base.css' %}" />
 
@@ -285,51 +281,7 @@
             color: white;
         }
 
-        /*footer css*/
-        .footerPolicy {
-            padding-top: 15px;
-            margin-left: 15%;
-        }
 
-        .footerText {
-            display: flex;
-            padding-left: 15%;
-            flex-direction: row;
-        }
-
-        .pcFooterLogo {
-            display: block;
-            margin-left: 50px;
-        }
-
-        .mobileFooterLogo {
-            display: none;
-        }
-
-        @media screen and (max-width: 500px) {
-            .footerPolicy {
-                font-size: 10px !important;
-                padding-top: 15px;
-                margin-left: 20px;
-            }
-
-            .footerText {
-                display: flex;
-                flex-direction: row;
-                padding-left: 20px;
-            }
-
-            .pcFooterLogo {
-                display: none;
-            }
-
-            .mobileFooterLogo {
-                display: block;
-                display: flex;
-                flex-direction: row;
-                padding: 20px;
-            }
-        }
 
 
         /*Policy */
@@ -353,16 +305,15 @@
 <body>
 
 
-    <!-- nav 바 시작 -->
-    {% include 'navbar.html' %}
-    <!-- nav 바 끝 -->
 
     {% block contents %}
     {% endblock %}
     <!-- aboveFooter -->
-    {% include 'above_footer.html' %}
+    
     <!-- 풋터 -->
     {% include 'footer.html' %}
+
+    <!--Sticky 풋터-->
 
     <script>
         $.datetimepicker.setLocale('ko');

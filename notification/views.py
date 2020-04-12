@@ -5,6 +5,7 @@ from rest_framework import serializers
 from account.models import FNSUser
 from match.models import PersonalMatching
 from .models import Notification
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -35,6 +36,30 @@ def checkNotification(request, notification_id):
     notification.save()
 
     return HttpResponse()
+
+def notification(request):
+    if request.session.get('userId', None) != None:
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:50]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 10)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        data = {
+            'fnsuser':fnsuser,
+            'notification':notification,
+            'countNotification':countNotification,
+            'notificationList': notificationList,
+        }
+        return render(request, 'notification.html', data)
+
+    else:
+        errormessage = '로그인을 해주세요.'
+    return render(request, 'login.html', {'errormessage':errormessage})
 
 # class Notification(APIView):
 
