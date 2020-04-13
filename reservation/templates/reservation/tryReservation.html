@@ -5,7 +5,34 @@
 {% block contents %}
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+<style>
+.pc{
+    display: block;
+    }
 
+    .mobile{
+        display: none;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+    }
+
+</style>
+
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+  </div>
+  
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 <div id="reservation_result">
 
     {% if err_msg == "duplicate reservation" %}
@@ -90,7 +117,9 @@
 
 
 </div>
-
+<footer class="mobile">
+    {% include 'stickyFooter.html' %}
+</footer>
 <!-- jQuery -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
 <!--결제 함수-->

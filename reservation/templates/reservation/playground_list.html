@@ -3,6 +3,34 @@
 {% load static %}
 
 {% block contents %}
+<style>
+.pc{
+    display: block;
+    }
+
+    .mobile{
+        display: none;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+    }
+
+</style>
+
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+  </div>
+  
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="{% static 'css/reservation.css' %}">
 
@@ -56,5 +84,7 @@
     {% endfor %}
 
 </div>
-
+<footer class="mobile">
+    {% include 'stickyFooter.html' %}
+</footer>
 {% endblock %}

@@ -106,9 +106,34 @@
         font-weight: bold;
         font-size: 18px;
     }
+
+    .pc{
+        display: block;
+    }
+
+    .mobile{
+        display: none;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+    }
+
 </style>
 
 
+<div class="mobile">
+    {% include 'navBar.html' %}
+  </div>
+  
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 <div class="common_area" style="max-width:720px; margin:100px auto;">
 
     <div class="checkBtn">
@@ -133,5 +158,7 @@
 
 
 </div>
-
+<footer class="mobile">
+    {% include 'stickyFooter.html' %}
+</footer>
 {% endblock %}

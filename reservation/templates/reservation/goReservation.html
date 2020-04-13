@@ -30,8 +30,34 @@
         color: #FFFFFF;
         font-weight: bold;
     }
+
+    .pc{
+    display: block;
+    }
+
+    .mobile{
+        display: none;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+    }
+
 </style>
 
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+  </div>
+  
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 <div class="common_area">
 
     <div class="date_nav">
@@ -91,7 +117,9 @@
     </form>
 
 </div>
-
+<footer class="mobile">
+    {% include 'stickyFooter.html' %}
+</footer>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
     crossorigin="anonymous"></script>
 <script>

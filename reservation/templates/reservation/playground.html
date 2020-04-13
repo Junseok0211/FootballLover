@@ -5,7 +5,34 @@
 {% block contents %}
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+<style>
+.pc{
+    display: block;
+    }
 
+    .mobile{
+        display: none;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+    }
+
+</style>
+
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+  </div>
+  
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
 <div id="playground">
     <div>
         <img src="https://footballlover.s3.ap-northeast-2.amazonaws.com/media/{{playground.playgorundPhoto}}" alt="" style="width:100%;">
@@ -105,4 +132,7 @@
 
     </div>
 </div>
+<footer class="mobile">
+    {% include 'stickyFooter.html' %}
+</footer>
 {% endblock %}
