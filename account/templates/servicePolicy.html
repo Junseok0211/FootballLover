@@ -3,6 +3,13 @@
 {% block contents %}
 {% load static %}
 <style>
+    /*Policy */
+    .policy {
+        width: 720px;
+        margin: 50px 0;
+        padding: 10px;
+    }
+
     .pc{
     display: block;
     }
@@ -11,12 +18,17 @@
         display: none;
     }
 
-    @media only screen and (max-device-width : 720px) {
+    @media all and (max-device-width : 720px) {
         .pc{
         display: none;
         }
         .mobile{
         display: block;
+        }
+        .policy {
+            width: 100%;
+            margin: 50px 0;
+            padding: 10px;
         }
     }
 </style>

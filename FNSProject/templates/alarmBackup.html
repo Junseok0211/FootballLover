@@ -1,62 +1,9 @@
 {% load static %}
-<style>
-     /* Dropdown Button */
-     .dropbtn {
-        cursor: pointer;
-    }
-    
-    
-    /* The container <div> - needed to position the dropdown content */
-    .alarmDropdown {
-        position: relative;
-        display: inline-block;
-        float: right;
-        
-    }
-    
-    /* Dropdown Content (Hidden by Default) */
-    .alarmDropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f1f1f1;
-        min-width: 350px;
-        max-width: 350px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        right:0;
-    }
-    
-    /* Links inside the dropdown */
-    .alarmDropdown-content a {
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        font-size: 12px;
-    }
-    
-    /* Change color of dropdown links on hover */
-    .alarmDropdown-content a:hover {background-color: #ddd}
-    
-    .alarm{
-        background-color: rgb(191, 214, 252);
-        text-overflow: ellipsis;
-    }
+<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
 
-</style>
-<script language="javascript">
-  /* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-
-</script>
-
-<div class="alarmDropdown" onmouseover="alarm();" onmouseleave = "alarmOut();">
-        <i id="dropdownMenuButton" 
-        class="bell far fa-2x fa-bell dropbtn" style="z-index: 0; 
-        color: gray; border-radius: 70px; width: 35px; height: 35px;
-        text-align: center;"></i>
-        
-        <div id="alarmContent" class="alarmDropdown-content">
+<div class="dropdown" style="display: inline-block;">
+        <button onclick="myFunction()" class="dropbtn bg-light badge1 dropdown-toggle mr-md-4 mr-0 pt-0" data-badge="{{countNotification}}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+        <div id="myDropdown" class="alarmDropdown-content dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
           <div class="pl-3" style="border-bottom: black 1px solid;">
             <span style="font-size: 15px; font-weight: bold; color: cornflowerblue;" class="mr-3">알림</span>
             <button class="p-2 m-1 btn" onclick="return checkAllNotification()" style="background-color:lightgrey; font-size: 12px; font-weight: bold; color: black;">모두 읽은 상태로 표시</button>

@@ -2,17 +2,21 @@
 <style>
   .navBar{
     background-color: #F3F3F3;
-    height: 50px;
-    
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
   }
 
   .navDesign{
     max-width: 720px;
     width: 100%;
     padding:10px;
+    padding-top: 15px;
     margin:0 auto;
     display: flex;
-    flex-direction: row;
+    justify-content: space-between;
   }
 
   .logo{
@@ -50,10 +54,155 @@
     font-weight:bold;
   }
 
+  /*메뉴 Nav*/
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 15;
+    top: 0;
+    right: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 50px;
+  }
+
+.sidenav a {
+  padding-left: 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 600px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+/*alarmNav*/
+.alarmSideNav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background-color: #f1f1f1;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 50px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.alarmSideNav a {
+  padding: 10px;
+  text-decoration: none;
+  font-size: 1rem;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.alarmSideNav a:hover {
+  color: black;
+  background-color: #ddd;
+}
+
+.alarmSideNav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 600px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+  .profile{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    margin:0px;
+    margin-top: 5px;
+    padding:0px;
+
+  }
+  .sideTitleText{
+    font-size: 1rem;
+    font-family: 'Nanum Gothic';
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    margin-top:0px;
+    margin-bottom: 0px;
+    padding:0px;
+  }
+
+  .navSubText{/*설명글*/
+    font-size: 12px;
+    font-family: 'Nanum Gothic';
+    text-decoration: none;
+    margin:0px;
+    padding:0px;
+    color:cornflowerblue;
+    font-weight: bold;
+  }
+
+
+
+
+  .login{
+    margin-top: 10px;
+  }
+
+  .cardMenu{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .cardTitle{
+    font-family: 'Noto Sans KR';
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: black;
+  }
+
+  .category{
+    font-family: 'Noto Sans KR';
+    font-weight: bold;
+    font-size: 100px;
+
+  }
+    .alarm{
+        background-color: rgb(191, 214, 252);
+        text-overflow: ellipsis;
+    }
+
 </style>
-<nav class="navBar sticky-top">
+<!-- 메뉴 바 -->
+<nav class="navBar">
   <div class="navDesign">
-    <div style="width: 20%;">
+    <div>
       {% if countNotification > 0 %}
       <a href="{% url 'notification' %}">
         <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
@@ -61,26 +210,440 @@
         </span>
       </a>
       {% else %}
-      <a href="{% url 'notification' %}">
+      <a href="#" onclick="openAlarm();">
         <i class="bell far fa-lg fa-bell" style="z-index: 0;"></i>
       </a>
       {% endif %}
     </div>
-    <div style="width: 60%;" class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center">
       <a href="{% url 'home' %}">
         <img src="{% static 'account/logofile/oneLineLogo.png' %}" class="logo">
       </a>
     </div>
-    <div style="width: 20%;">
-      <a href="{% url 'menu' %}">
+    <div>
+      <a href="#" onclick="openNav()">
         <i class="menu fas fa-lg fa-bars"></i>
       </a>
     </div>
-
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      {% if fnsuser %}
+      <a href="{% url 'myPage' fnsuser.id %}" style="text-decoration: none; color:white;">
+          <div class="profile">
+            <div style="width: 20%;">
+              <img style= "display: inline-block; border-radius: 70px; margin: 0px; vertical-align: middle;" width="35px" height="35px" src="{{ fnsuser.userimg.url }}">
+            </div>
+            <div style="width: 80%;">
+              <span class="sideTitleText" style="margin-top:5px; padding:0;"><b>{{fnsuser.name}}</b></span>
+              <span class="navSubText" style="margin:0; padding:0;">내 프로필 가기</span>
+            </div>
+          </div>
+      </a>
+      <hr style="margin: 2px 0px;" color="white">
+      {% if fnsuser.teamname.name %}
+      <a href="{% url 'detail' fnsuser.teamname.id %}" style="text-decoration: none; color:white;">
+          <div class="profile">
+              <div style="width: 20%; align-items: center;">
+                  <img style= "border-radius: 70px; margin-top: 5px; vertical-align: middle;" 
+                  width="35px" height="35px" src="{{ fnsuser.teamname.teamimg.url }}">
+              </div>
+              <div style="width: 80%; align-items: flex-start;">
+                  <span class="sideTitleText"><b>{{fnsuser.teamname.name}}</b></span>
+                  <span class="navSubText">팀 프로필 가기</span>
+              </div>
+          </div>
+      </a>
+      {% else %}
+      <a href="{% url 'team' %}" style="text-decoration: none; color:white;">
+          <div class="login">
+              <i class="fas fa-clipboard-list" style="margin-left: 10px;"></i>
+              <span class="sideTitleText" style="padding:10px">팀 가입하기</span>
+          </div>
+      </a>
+      {% endif %}
+      {% else %}
+      <a href="{% url 'login' %}" style="text-decoration: none; color:white; margin:0;">
+          <div class="login">
+              <i class="fas fa-street-view"></i>
+              <span class="sideTitleText">로그인</span>
+          </div>
+      </a>
+      <hr style="margin: 2px 0px;" color="white">
+      <a href="{% url 'agreement' %}" style="text-decoration: none; color:white; margin:0;">
+          <div class="login">
+              <i class="fas fa-tasks"></i>
+              <span class="sideTitleText">회원가입</span>
+          </div>
+      </a>
+      {% endif %}
+      <hr style="margin: 2px 0px;" color="white">
+      <span style="padding-left: 32px; font-size: 1rem; color:rgb(070,163,210); font-family: 'Noto Sans KR';
+      font-weight: bold;">매칭</span><br>
+      <div class="cardMenu">
+          <div class="card border-dark" 
+          style="width: 50%; padding: 0; background-color: white; margin: 4px;">
+            <a href="{% url 'personal' %}" style="text-decoration: none; padding:0;">
+              <div class="text-dark" style="padding:5px;">
+                <i class="fas fa-user-check"></i>
+                <span class="cardTitle">개인매칭</span>
+              </div>
+            </a>
+          </div>
+          
+          <div class="card border-dark" style="width: 50%; margin: 4px;">
+              <a href="{% url 'teamMatching' %}" style="text-decoration: none; padding:0;">
+                  <div class="text-dark" style="padding:5px;">
+                      <i class="fas fa-users"></i>
+                      <span class="cardTitle">팀매칭</span>
+                  </div>
+              </a>
+          </div>
+      </div>
+      <div class="cardMenu">
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+              <a href="{% url 'recruiting' %}" style="text-decoration: none; padding:0;">
+                  <div class="card-body text-dark" style="padding:5px;">
+                      <i class="fas fa-user-clock"></i>
+                      <span class="cardTitle">용병매칭</span>
+                  </div>
+              </a>
+          </div>
+          <div class="card border-dark" style="width: 50%; margin: 4px;">
+              <a href="{% url 'league' %}" style="text-decoration: none; padding:0;">
+                  <div class="card-body text-dark" style="padding:5px;">
+                      <i class="fas fa-running"></i>
+                      <span class="cardTitle">풋살데이</span>
+                  </div>
+              </a>
+          </div>
+      </div>
+      <span style="padding-left: 32px; font-size: 1rem; color:rgb(070,163,210); font-family: 'Noto Sans KR';
+      font-weight: bold;">랭킹</span><br>
+      <div class="cardMenu">
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+          <a href="{% url 'individualRank' %}" style="text-decoration: none; padding:0;">
+            <div class="card-body text-dark" style="padding:5px;">
+                <i class="fas fa-chart-line"></i>
+                <span class="cardTitle">개인순위</span>
+            </div>
+          </a>
+        </div>
+          
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+            <a href="{% url 'teamRank' %}" style="text-decoration: none; padding:0;">
+                <div class="card-body text-dark" style="padding:5px;">
+                    <i class="fas fa-users-cog"></i>
+                    <span class="cardTitle">팀순위</span>
+                </div>
+            </a>
+        </div>
+      </div>
+      <span style="padding-left: 32px; font-size: 1rem; color:rgb(070,163,210); font-family: 'Noto Sans KR';
+      font-weight: bold;">구장 및 팀관리</span><br>
+      <div class="cardMenu">
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+          <a href="{% url 'playground_list' %}" style="text-decoration: none; padding:0;">
+              <div class="card-body text-dark" style="padding:5px;">
+                  <img src="{% static 'icon/playground.png' %}" width="20px">
+                  <span class="cardTitle">구장대관</span>
+              </div>
+          </a>
+        </div>
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+          <a href="{% url 'team' %}" style="text-decoration: none; padding:0;">
+              <div class="card-body text-dark" style="padding:5px;">
+                  <i class="fas fa-clipboard-list"></i>
+                  <span class="cardTitle">팀목록</span>
+              </div>
+          </a>
+        </div>
+      </div>
+      <span style="padding-left: 32px; font-size: 1rem; color:rgb(070,163,210); font-family: 'Noto Sans KR';
+      font-weight: bold;">경기</span><br>
+      <div class="cardMenu">
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+              <a href="{% url 'play' %}" style="text-decoration: none; padding:0;">
+                  <div class="card-body text-dark" style="padding:5px;">
+                      <i class="far fa-calendar"></i>
+                      <span class="cardTitle">경기일정</span>
+                  </div>
+              </a>
+          </div>
+        <div class="card border-dark" style="width: 50%; margin: 4px;">
+          <a href="{% url 'play' %}" style="text-decoration: none; padding:0;">
+              <div class="card-body text-dark" style="padding:5px;">
+                  <i class="fas fa-poll"></i>
+                  <span class="cardTitle">경기결과</span>
+              </div>
+          </a>
+        </div>
+      </div>
+      <a href="{% url 'about' %}" style="text-decoration: none; color:black; padding-top: 0px; margin-top: 0px;">
+          <div class="login">
+              <img src="{% static 'account/logofile/onlyLogo.png' %}" alt="" width="20px" style="margin-left: 10px;">
+              <span class="sideTitleText" style="padding:10px">풋볼러버 소개</span>
+          </div>
+      </a>
+      <hr style="margin: 2px 0px;" color="white">
+      <a href="{% url 'about' %}" style="text-decoration: none; color:black;">
+          <div class="login">
+              <i class="fas fa-question" style="margin-left: 10px; color:white;"></i>
+              <span class="sideTitleText" style="padding:10px">문의하기</span>
+          </div>
+      </a>
+      <hr style="margin: 2px 0px;" color="white">
+      {% if fnsuser %}
+      <a href="{% url 'logout' %}" style="text-decoration: none; color:black;">
+          <div class="login">
+              <i class="fas fa-sign-out-alt" style="margin-left: 10px; color: white;"></i>
+              <span class="sideTitleText" style="padding:10px;">로그아웃</span>
+          </div>
+      </a>
+      {% endif %}
+    </div>
   </div>
 
 </nav>
+<!-- 메뉴 바 끝 -->
 
+<div id="alarmSideNav" class="alarmSideNav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeAlarm()">&times;</a>
+  <!-- alarm 시작-->
+  <!-- <div id="alarmContent" class="alarmDropdown-content"> -->
+  <div>
+    <div class="pl-3" style="border-bottom: black 1px solid; padding-bottom: 10px;">
+      <span style="font-size: 15px; font-weight: bold; color: cornflowerblue;" class="mr-3">알림</span>
+      <button class="p-2 m-1 btn" onclick="return checkAllNotification()" style="background-color:lightgrey; font-size: 12px; font-weight: bold; color: black;">모두 읽은 상태로 표시</button>
+    </div>
+    {% if not notificationList  %}
+      <p class = "dropdown-item">알람이 없습니다.</p>
+    {% else %}
+    {% for alarm in notificationList %}
+    <!-- 알람creator가 자신이면 안보이게. -->
+    {% if alarm.creator != fnsuser %}
+      <!-- 확인을 했다면. -->
+      {% if alarm.userCheck %}
+        <!-- 알람 종류 -->
+        {% if alarm.notification_type == "prComment" %}
+        <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "teamComment" %}
+        <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+      
+        {% elif alarm.notification_type == "recruitingComment" %}
+        <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+      
+        {% elif alarm.notification_type == "leagueComment" %}
+        <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "personalApply" %}
+        <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamMatchingApply" %}
+        <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "recruitingApply" %}
+        <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "recruitingAccepted" %}
+        <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "leaguePersonalApply" %}
+        <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "leagueTeamApply" %}
+        <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "joinTeam" %}
+        <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamAccepted" %}
+        <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "personalReply" %}
+        <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamReply" %}
+        <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "recruitingReply" %}
+        <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "leagueReply" %}
+        <a href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "recruitingDenied" %}
+        <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamApplicationDenied" %}
+        <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "suggestTeamMatching" %}
+        <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "acceptSuggestion" %}
+        <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "resultInput" %}
+        <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "resultEdit" %}
+        <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "resultConfirm" %}
+        <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+       
+        {% endif %}
+
+      <!-- 확인을 안했다면 -->
+      {% else %}
+        <!-- 알람종류 -->
+        {% if alarm.notification_type == "prComment" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "teamComment" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+      
+        {% elif alarm.notification_type == "recruitingComment" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+      
+        {% elif alarm.notification_type == "leagueComment" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "personalApply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamMatchingApply" %}
+        <div class="alarm" style="width:200px; text-overflow: ellipsis; max-width: 300px;">
+        <a class="alarm" style="text-overflow: ellipsis;" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}"><span style="width:200px; text-overflow: ellipsis; max-width: 200px;">{{alarm.text}}</span></a>
+        </div>
+        {% elif alarm.notification_type == "recruitingApply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "recruitingAccepted" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "leaguePersonalApply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "leagueTeamApply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "joinTeam" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamAccepted" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "personalReply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamReply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "recruitingReply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "leagueReply" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'league_detail' alarm.league.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "recruitingDenied" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "teamApplicationDenied" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "suggestTeamMatching" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "acceptSuggestion" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+        
+        {% elif alarm.notification_type == "resultInput" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "resultEdit" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+        {% elif alarm.notification_type == "resultConfirm" %}
+        <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
+
+        {% endif %}
+        <!-- 알람종류 끝 -->
+      {% endif %}
+      <!-- 확인 여부 끝 -->
+    {% endif %}
+    <!-- creator 자기인지 여부 끝 -->
+  {% endfor %}
+  <!-- for문 끝 -->
+{% endif %}
+<!-- notification 있는지 여부 끝 -->
+<!-- 페이지네이션 시작 -->
+<div style="border-top:black 1px solid;" class="pt-2">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center d-flex" style="display:inline-block;">
+      {% if notificationList.has_previous %}
+      <li class="page-item" style="display:inline;">
+        <a class="page-link" style ="display:inline-block;" href="?page=1" style ="display:inline-block;" tabindex="-1" aria-disabled="true">처음으로</a>
+      </li>
+      <li class="page-item" style ="display:inline-block;">
+        <a class="page-link" style ="display:inline-block;" href="?page={{notificationList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{notificationList.previous_page_number}}</a>
+      </li>
+      {% endif %}
+      <li class="page-item disabled" style ="display:inline-block;"><a class="page-link" style ="display:inline-block;" href="#">{{notificationList.number}}</a></li>
+      {% if notificationList.has_next %}
+      <a class="page-link" style ="display:inline-block;" href="?page={{notificationList.next_page_number}}">{{notificationList.next_page_number}}</a>
+      <a class="page-link" style ="display:inline-block;" style="display:inline;" href="?page={{notificationList.paginator.num_pages}}">마지막으로</a>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+<!-- 페이지네이션 끝 -->
+</div>
+<!-- dropdown content 끝 -->
+
+</div>
+  <!-- alarm 끝 -->
+
+
+
+<script type="text/javascript">
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "80%";
+  }
+  
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+
+  window.onclick = function (event) {
+    if(document.getElementById("mySidenav").style.width == "80%"){
+      if (event.target.matches('.menu')) {
+
+      }else{
+        document.getElementById("mySidenav").style.width = "0";
+      }
+    };
+  }
+
+  function openAlarm() {
+    document.getElementById("alarmSideNav").style.width = "80%";
+  }
+  
+  function closeAlarm() {
+    document.getElementById("alarmSideNav").style.width = "0";
+  }
+
+  window.onclick = function (event) {
+    if(document.getElementById("alarmSideNav").style.width == "80%"){
+      if (event.target.matches('.bell')) {
+
+      }else{
+        document.getElementById("alarmSideNav").style.width = "0";
+      }
+    };
+  }
+  </script>
   
 <!--
 <span class="fa-stack"> 

@@ -3,6 +3,10 @@
   .stickyFooter{
     background-color: #F3F3F3;
     height: 60px;
+    position:fixed;
+    width: 100%;
+    bottom:0;
+    z-index:1;
     
     
   }
@@ -16,7 +20,7 @@
     flex-direction: row;
   }
 </style>
-<nav class="stickyFooter fixed-bottom">
+<nav class="stickyFooter">
   <div class="stickyDesign">
     <div style="width: 20%;" class="d-flex justify-content-center">
       <a href="{% url 'play' %}" style="text-decoration: none; color: black;">

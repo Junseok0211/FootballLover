@@ -5,3 +5,6 @@ register = template.Library()
 
 def subtract(value,arg):
     return int(value) - int(arg)
+
+def range(value):
+    return range(0, value);

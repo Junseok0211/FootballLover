@@ -1,9 +1,13 @@
 {% load static %}
 <style>
   .pcNavBar{
-    background-color: #F3F3F3;
-    height: 60px;
-    
+    background-color: white;
+    height: 80px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid lightgray;
   }
 
   .pcNavDesign{
@@ -13,6 +17,7 @@
     margin:0 auto;
     display: flex;
     flex-direction: row;
+    padding-right: 0px;
   }
 
   .logo{
@@ -63,9 +68,10 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  top:35px;
+  top:40px;
   right: 0;
-  background-color: #f9f9f9;
+  background-color: white;
+  border: 1px solid lightgray;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -85,10 +91,12 @@
 .menuBar{
     width: 20%; 
     display: flex;
-    justify-content: space-between;
+    flex-direction: row-reverse;
     font-family: 'Noto Sans KR';
     font-size: 1rem;
-    margin-top: 8px;
+    margin-top: 6px;
+    margin-right: 0px;
+    padding-right: 0px;
 }
 
 .category{
@@ -100,68 +108,261 @@
     margin: 0;
     text-align: center;
 }
+
+.navMenu{ /*navBar menu*/
+  font-family: 'Noto Sans KR';
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding-top: 10px;
+  margin-right: 25px;
+}
+
+.rightMenu{/*로그인 회원가입*/
+  font-family: 'Noto Sans KR';
+  font-size: 1.1rem;
+  padding-top: 7px;
+}
+
+.secondNav{
+  background-color: white;
+  height: 50px;
+  position: relative;
+  width: 100%;
+  top: 80px;
+  z-index: 1;
+  border-bottom: 1px solid lightgray;
+}
+
+.matchingMenu{
+  display:block;
+  max-width: 1024px;
+  width: 100%;
+  margin:0 auto;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.secondMenu{/*상세메뉴*/
+  font-family: 'Noto Sans KR';
+  font-size: 1rem;
+  font-weight: bold;
+  margin-right: 3rem;
+}
+
+.rankingMenu{
+  max-width: 1024px;
+  width: 100%;
+  margin:0 auto;
+  padding-top: 10px;
+  padding-left: 10px;
+  display:none;
+}
+
+.matching{
+  cursor:pointer;
+  color:#35C5F0;
+}
+
+.ranking{
+  cursor:pointer;
+}
+
+.reservationMenu{
+  max-width: 1024px;
+  width: 100%;
+  margin:0 auto;
+  padding-top: 10px;
+  padding-left: 10px;
+  display:none;
+}
+
+.reservation{
+  cursor:pointer;
+}
+
+.teamManagementMenu{
+  max-width: 1024px;
+  width: 100%;
+  margin:0 auto;
+  padding-top: 10px;
+  padding-left: 10px;
+  display:none;
+}
+
+.teamManagement{
+  cursor:pointer;
+}
+
+.sticky{
+  position:fixed;
+  top: 80px;
+  margin-top: 0;
+}
+
 </style>
-<nav class="pcNavBar sticky-top">
+
+<nav class="pcNavBar" id="pcNavBar">
   <div class="pcNavDesign">
-    <div style="width: 80%;">
+    <div style="width: 25%;">
       <a href="{% url 'home' %}">
-        <img src="{% static 'account/logofile/wh_horizontalLogo.png' %}" class="logo">
+        <img src="{% static 'account/logofile/koreanLogo.png' %}" class="logo">
       </a>
+    </div>
+    <div style="width: 50%; display: flex; flex-direction: row;">
+      <div class="navMenu">
+        <a>
+          <span class="matching" onmouseover="matching();">
+            풋살매칭
+          </span>
+        </a>
+      </div>
+      <div class="navMenu">
+        <span onmouseover="ranking();" class="ranking">풋살랭킹</span>
+      </div>
+      <div class="navMenu">
+        <span onmouseover="reservation();" class="reservation">구장대관</span>
+      </div>
+      <div class="navMenu">
+        <span onmouseover="teamManagement();" class="teamManagement">팀관리</span>
+      </div>
     </div>
     <div class="menuBar">
         {% if fnsuser %}
-        <span></span>
-        <span></span>
+        <div style="margin-top: 8px;" class="dropdown" onmouseover="dropdown();" 
+        onmouseout = "dropdownOut();">
+          <img src="{{fnsuser.userimg.url}}" width="35px" height="35px" id="userImg"
+          style="border-radius: 70px; margin-left: 22px;">
+          <i class="fa fa-caret-down" id="userBtn"></i>
+          <div class="dropdown-content">
+            <a href="{% url 'myPage' fnsuser.id %}">마이페이지</a>
+            <a href="{% url 'team' %}">팀페이지</a>
+            {% if fnsuser %}
+            <a href="{% url 'logout' %}">로그아웃</a>
+            {% endif %}
+          </div>
+        </div>
+        <i onmouseover="cart();" onmouseout = "cartOut();" class="fas fa-2x fa-shopping-cart"
+        style="z-index: 0; color: gray; border-radius: 70px; width: 40px; height: 40px; padding-right: 5px; padding-top: 3px;
+        text-align: center; margin-top: 6px; margin-left: 20px;" id="cart"></i>
+
         <div style="margin-top: 0px;">
         {% if countNotification > 0 %}
         <a href="{% url 'notification' %}">
             <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
-            <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
+            <i class="p3 far fa-2x fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
             </span>
         </a>
         {% else %}
-        <a href="{% url 'notification' %}">
-            <i class="bell far fa-lg fa-bell" style="z-index: 0;"></i>
-        </a>
+
+
+        {% include 'alarm.html' %}
+
+
         {% endif %}
         </div>
+        
         {% else %}
-        <span style="text-align: left;">
-            <a href="{% url 'login' %}" style="text-decoration: none; color: black; font-size: 1rem;">
-            로그인
+        <div class="rightMenu">
+            <a href="{% url 'login' %}" style="text-decoration: none; color: gray; padding-right: 5px;">
+              로그인
             </a>
-        </span>
-        <span>
-            <a href="{% url 'agreement' %}" style="text-decoration: none; color: black;">
-            회원가입
+            <a href="{% url 'agreement' %}" style="text-decoration: none; color: gray;">
+              회원가입
             </a>
-        </span>
+            
+          </div>
         {% endif %}
-        <div class="dropdown">
-            <i class="menu fas fa-lg fa-bars dropBtn"></i>
-            <div class="dropdown-content">
-                <p class="category">매칭</p>
-                <a href="{% url 'personal' %}">개인매칭</a>
-                <a href="#">팀매칭</a>
-                <a href="#">용병매칭</a>
-                <a href="#">풋살데이</a>
-                <p class="category">랭킹</p>
-                <a href="#">개인랭킹</a>
-                <a href="#">팀랭킹</a>
-                <p class="category">대관 및 팀관리</p>
-                <a href="{% url 'playground_list' %}">구장대관</a>
-                <a href="#">팀관리</a>
-                {% if fnsuser %}
-                <a href="{% url 'logout' %}">로그아웃</a>
-                {% endif %}
-            </div>
-        </div>
+
     </div>
 
   </div>
 
 </nav>
+<div class="secondNav" id="secondNav">
+  <div class="matchingMenu"  onmouseleave="mouseLeave();">
+    <span class="secondMenu">
+      <a href="{% url 'home' %}" style="text-decoration:none; color:black;" class="home"
+      onmouseover="home();">
+      HOME
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="{% url 'personal' %}" style="text-decoration:none; color:black;" class="personal"
+      onmouseover="personal();">
+      개인매칭
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="{% url 'teamMatching' %}" style="text-decoration:none; color:black;" class="team"
+      onmouseover="team();">
+      팀매칭
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="{% url 'recruiting' %}" style="text-decoration:none; color:black;" class="recruiting"
+      onmouseover="recruiting();">
+      용병매칭
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="{% url 'league' %}" style="text-decoration:none; color:black;" class="league"
+      onmouseover="league();">
+      풋살데이
+      </a>
+    </span>
+  </div>
 
+  <div class="rankingMenu" onmouseleave="mouseLeave();">
+    <span class="secondMenu">
+      <a href="{% url 'individualRank' %}" style="text-decoration:none; color:black;" class="individualRanking"
+      onmouseover="individualRanking();">
+      개인랭킹
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="{% url 'teamRank' %}" style="text-decoration:none; color:black;" class="teamRanking"
+      onmouseover="teamRanking();">
+      팀랭킹
+      </a>
+    </span>
+  </div>
+
+  <div class="reservationMenu" onmouseleave="mouseLeave();">
+    <span class="secondMenu">
+      <a href="{% url 'playground_list' %}" style="text-decoration:none; color:black;" class="goReservation"
+      onmouseover="goReservation();">
+      대관하기
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="#" style="text-decoration:none; color:black;" class="teamRanking"
+      onmouseover="teamRanking();">
+      구장제휴
+      </a>
+    </span>
+  </div>
+
+  <div class="teamManagementMenu" onmouseleave="mouseLeave();">
+    <span class="secondMenu">
+      <a href="{% url 'team' %}" style="text-decoration:none; color:black;" class="teamList""
+      onmouseover="teamList();">
+      팀목록
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="#" style="text-decoration:none; color:black;" class="teamRanking"
+      onmouseover="teamRanking();">
+      최근경기
+      </a>
+    </span>
+    <span class="secondMenu">
+      <a href="#" style="text-decoration:none; color:black;" class="teamRanking"
+      onmouseover="teamRanking();">
+      경기결과
+      </a>
+    </span>
+  </div>
+</div>
   
 <!--
 <span class="fa-stack"> 
@@ -177,3 +378,186 @@
     <i class="bell far fa-lg fa-bell" style="z-index: 0;"></i>
     {% endif %}
 -->
+
+<script type="text/javascript">
+  function matching(){
+    $('.matchingMenu').css('display', 'block');
+    $('.secondNav').css('position', 'fixed');
+    $('.rankingMenu').css('display', 'none');
+    $('.reservationMenu').css('display', 'none');
+    $('.teamManagementMenu').css('display', 'none');
+    $('.matching').css('color', '#35C5F0');
+    $('.ranking').css('color', 'black');
+    $('.reservation').css('color', 'black');
+    $('.teamManagement').css('color', 'black');
+  }
+
+  function ranking(){
+    $('.secondNav').css('position', 'fixed');
+    $('.matchingMenu').css('display', 'none');
+    $('.rankingMenu').css('display', 'block');
+    $('.reservationMenu').css('display', 'none');
+    $('.teamManagementMenu').css('display', 'none');
+    $('.ranking').css('color', '#35C5F0');
+    $('.matching').css('color', 'black');
+    $('.reservation').css('color', 'black');
+    $('.teamManagement').css('color', 'black');
+  }
+
+  function reservation(){
+    $('.secondNav').css('position', 'fixed');
+    $('.matchingMenu').css('display', 'none');
+    $('.rankingMenu').css('display', 'none');
+    $('.reservationMenu').css('display', 'block');
+    $('.teamManagementMenu').css('display', 'none');
+    $('.matching').css('color', 'black');
+    $('.ranking').css('color', 'black');
+    $('.reservation').css('color', '#35C5F0');
+    $('.teamManagement').css('color', 'black');
+  }
+
+  function teamManagement(){
+    $('.secondNav').css('position', 'fixed');
+    $('.matchingMenu').css('display', 'none');
+    $('.rankingMenu').css('display', 'none');
+    $('.reservationMenu').css('display', 'none');
+    $('.teamManagementMenu').css('display', 'block');
+    $('.matching').css('color', 'black');
+    $('.ranking').css('color', 'black');
+    $('.reservation').css('color', 'black');
+    $('.teamManagement').css('color', '#35C5F0');
+  }
+
+  function home(){
+    $('.home').css('color', '#35C5F0');
+    $('.personal').css('color', 'black');
+    $('.team').css('color', 'black');
+    $('.recruiting').css('color', 'black');
+    $('.league').css('color', 'black');
+  }
+
+  function personal(){
+    $('.home').css('color', 'black');
+    $('.personal').css('color', '#35C5F0');
+    $('.team').css('color', 'black');
+    $('.recruiting').css('color', 'black');
+    $('.league').css('color', 'black');
+  }
+
+  function team(){
+    $('.home').css('color', 'black');
+    $('.personal').css('color', 'black');
+    $('.team').css('color', '#35C5F0');
+    $('.recruiting').css('color', 'black');
+    $('.league').css('color', 'black');
+  }
+
+  function recruiting(){
+    $('.home').css('color', 'black');
+    $('.personal').css('color', 'black');
+    $('.team').css('color', 'black');
+    $('.recruiting').css('color', '#35C5F0');
+    $('.league').css('color', 'black');
+  }
+
+  function league(){
+    $('.home').css('color', 'black');
+    $('.personal').css('color', 'black');
+    $('.team').css('color', 'black');
+    $('.recruiting').css('color', 'black');
+    $('.league').css('color', '#35C5F0');
+  }
+
+  function matchingOut(){
+    $('.home').css('color', 'black');
+    $('.personal').css('color', 'black');
+    $('.team').css('color', 'black');
+    $('.recruiting').css('color', 'black');
+    $('.league').css('color', 'black');
+  }
+
+  function individualRanking(){
+    $('.individualRanking').css('color', '#35C5F0');
+    $('.teamRanking').css('color', 'black');
+  }
+
+  function teamRanking(){
+    $('.individualRanking').css('color', 'black');
+    $('.teamRanking').css('color', '#35C5F0');
+  }
+
+  function rankingOut(){
+    $('.individualRanking').css('color', 'black');
+    $('.teamRanking').css('color', 'black');
+    $('.matchingMenu').css('display', 'block');
+    $('.rankingMenu').css('display', 'none');
+    $('.matching').css('color', '#35C5F0');
+    $('.ranking').css('color', 'black');
+  }
+
+  function goReservation(){
+    $('.goReservation').css('color', '#35C5F0');
+  }
+
+  function mouseLeave(){
+    $('.secondNav').css('position', 'relative');
+    $('.matchingMenu').css('display', 'block');
+    $('.rankingMenu').css('display', 'none');
+    $('.reservationMenu').css('display', 'none');
+    $('.teamManagementMenu').css('display', 'none');
+    
+    $('.matching').css('color', '#35C5F0');
+    $('.ranking').css('color', 'black');
+    $('.reservation').css('color', 'black');
+    $('.teamManagement').css('color', 'black');
+
+    $('.individualRanking').css('color', 'black');
+    $('.teamRanking').css('color', 'black');
+    $('.recruiting').css('color', 'black');
+    $('.league').css('color', 'black');
+    $('.individualRanking').css('color', 'black');
+    $('.teamRanking').css('color', 'black');
+    $('.goReservation').css('color', 'black');
+
+  }
+
+  function dropdown(){
+    $('#userImg').css('border', '3px solid #35C5F0');
+    $('#userBtn').css('color', '#35C5F0');
+  }
+
+  function dropdownOut(){
+    $('#userImg').css('border', 'none');
+    $('#userBtn').css('color', 'black');
+  }
+
+  function alarm(){
+    $('.bell').css('background-color', '#35C5F0');
+    $('.bell').css('color', 'white');
+    $('#alarmContent').css('display', 'block');
+  }
+
+  function alarmOut(){
+    $('.bell').css('background-color', 'white');
+    $('.bell').css('color', 'gray');
+    $('#alarmContent').css('display', 'none');
+  }
+
+  function cart(){
+    $('#cart').css('background-color', '#35C5F0');
+    $('#cart').css('color', 'white');
+  }
+
+  function cartOut(){
+    $('#cart').css('background-color', 'white');
+    $('#cart').css('color', 'gray');
+  }
+
+  $(document).ready(function () {
+    $("#wrap").mouseover(function () {
+        $("#wrap p").css("background", "#a1ffa4");
+    });
+  });
+
+
+</script>
