@@ -104,7 +104,8 @@ def personal(request):
         personalList = paginator.get_page(page)
 
         data = {
-            'personalList': personalList
+            'personalList': personalList,
+            'personal':personal
         }
         return render(request, 'personalMatching/personal.html', data)
     else:

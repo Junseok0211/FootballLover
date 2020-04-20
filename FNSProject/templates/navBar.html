@@ -178,6 +178,7 @@
   .cardMenu{
     display: flex;
     flex-direction: row;
+    padding-left: 30px;
   }
 
   .cardTitle{
@@ -416,7 +417,7 @@
       <button class="p-2 m-1 btn" onclick="return checkAllNotification()" style="background-color:lightgrey; font-size: 12px; font-weight: bold; color: black;">모두 읽은 상태로 표시</button>
     </div>
     {% if not notificationList  %}
-      <p class = "dropdown-item">알람이 없습니다.</p>
+      <p class ="dropdown-item" style="margin-top: 1rem;">알람이 없습니다.</p>
     {% else %}
     {% for alarm in notificationList %}
     <!-- 알람creator가 자신이면 안보이게. -->
@@ -576,9 +577,7 @@
     <!-- creator 자기인지 여부 끝 -->
   {% endfor %}
   <!-- for문 끝 -->
-{% endif %}
-<!-- notification 있는지 여부 끝 -->
-<!-- 페이지네이션 시작 -->
+  <!-- 페이지네이션 시작 -->
 <div style="border-top:black 1px solid;" class="pt-2">
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center d-flex" style="display:inline-block;">
@@ -599,6 +598,9 @@
   </nav>
 </div>
 <!-- 페이지네이션 끝 -->
+{% endif %}
+<!-- notification 있는지 여부 끝 -->
+
 </div>
 <!-- dropdown content 끝 -->
 
@@ -609,7 +611,7 @@
 
 <script type="text/javascript">
   function openNav() {
-    document.getElementById("mySidenav").style.width = "80%";
+    document.getElementById("mySidenav").style.width = "100%";
   }
   
   function closeNav() {
@@ -617,7 +619,7 @@
   }
 
   window.onclick = function (event) {
-    if(document.getElementById("mySidenav").style.width == "80%"){
+    if(document.getElementById("mySidenav").style.width == "100%"){
       if (event.target.matches('.menu')) {
 
       }else{
@@ -627,7 +629,7 @@
   }
 
   function openAlarm() {
-    document.getElementById("alarmSideNav").style.width = "80%";
+    document.getElementById("alarmSideNav").style.width = "100%";
   }
   
   function closeAlarm() {
@@ -635,7 +637,7 @@
   }
 
   window.onclick = function (event) {
-    if(document.getElementById("alarmSideNav").style.width == "80%"){
+    if(document.getElementById("alarmSideNav").style.width == "100%"){
       if (event.target.matches('.bell')) {
 
       }else{
