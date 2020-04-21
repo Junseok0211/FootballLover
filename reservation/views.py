@@ -82,7 +82,7 @@ def goReservation(request, id):
     today = datetime.datetime.now()
     for i in range(0, 10):
         tomorrow = today + datetime.timedelta(days=i)
-        tomorrow_formet = tomorrow.strftime("%m%d") 
+        tomorrow_formet = tomorrow.strftime("%Y%m%d") 
         weekArray.append(tomorrow_formet)
 
     selectedDay = request.GET.get('selectedDay')
@@ -98,7 +98,7 @@ def goReservation(request, id):
         if reservation[0] > '17':
             price = playground.weekNightPrice
 
-        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = selectedDay ,reservationTime = reservationTime)        
+        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = selectedDay ,reservationTime = reservationTime)      
 
         existReservation = 0
         if checkReservation:
@@ -238,6 +238,24 @@ def tryReservation(request):
 
 
 def resultReservation(request):
+    if request.session.get('userId', None) != None:
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page) 
+    else:
+        errormessage = '로그인을 해주세요.'
+        data = {
+            'errormessage':errormessage
+        }   
+        return redirect('account/login')
+
     id = request.GET.get('id')
     playground = get_object_or_404(PlaygroundList, id = id)
     reservationTime = request.POST.get('reservationTime', None)
@@ -251,7 +269,7 @@ def resultReservation(request):
     reserved_time = []
 
     for idx, reservation in enumerate(reservationTimeArray):
-        newReservation = ReservationList(playgroundName = playground, reservationDate = reservationDate, reservationTime = reservation, resercationUserId = "moonlit0130", reservationUserName = reservationName, resercationUserPhone = reservationPhone)
+        newReservation = ReservationList(user = fnsuser, playgroundName = playground, reservationDate = reservationDate, reservationTime = reservation, resercationUserId = "moonlit0130", reservationUserName = reservationName, resercationUserPhone = reservationPhone)
         newReservation.save()
 
         if idx == 0:
@@ -260,39 +278,20 @@ def resultReservation(request):
             reserved_time.append(int(reservation[0:2]) + 1)
 
     
-    if request.session.get('userId', None) != None:
-        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
-        countNotification = notification.filter(userCheck = False).count()
-        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
-        # 객체를 한 페이지로 자르기
-        paginator = Paginator(notification, 5)
-        # request에 담아주기
-        page = request.GET.get('page')
-        # request된 페이지를 얻어온 뒤 return 해 준다.
-        notificationList = paginator.get_page(page)
-        data = {
-            'fnsuser':fnsuser,
-            'notification':notification,
-            'countNotification':countNotification,
-            'notificationList': notificationList,
-            'err_msg' : err_msg, 
-            'id' : id, 
-            "reserved_time" : reserved_time, 
-            "reservationLength" : reservationLength, 
-            "playground" : playground, 
-            "totalPrice" : totalPrice
-        }   
-    else:
-        data = {
-            'err_msg' : err_msg, 
-            'id' : id, 
-            "reserved_time" : reserved_time, 
-            "reservationLength" : reservationLength, 
-            "playground" : playground, 
-            "totalPrice" : totalPrice
-        }   
 
+    
+    data = {
+        'fnsuser':fnsuser,
+        'notification':notification,
+        'countNotification':countNotification,
+        'notificationList': notificationList,
+        'err_msg' : err_msg, 
+        'id' : id, 
+        "reserved_time" : reserved_time, 
+        "reservationLength" : reservationLength, 
+        "playground" : playground, 
+        "totalPrice" : totalPrice
+    }  
     
     return render(request, 'reservation/resultReservation.html', data)
 

@@ -89,33 +89,38 @@
           이용약관
         </a>
       </span> |
-      <span style="margin-left: 1rem;">
+      <span style="margin-left: 1rem; margin-right: 1rem;">
         <a href="{% url 'informationPolicy' %}" style="text-decoration: none; color: white;">
           개인정보처리방침
+        </a>
+      </span> |
+      <span style="margin-left: 1rem;">
+        <a onclick="onopen();" style="text-decoration: none; color: white;  cursor: pointer;">
+          사업자정보확인
         </a>
       </span>
     </p>
     <div class="sns">
       <div style="display: inline-block; margin-right: 1.5rem;">
-        <a href="https://www.facebook.com/koreanfootballlover/" style="text-decoration: none; color:white;">
+        <a onclick="facebookOpen();" style="text-decoration: none; color:white;">
           <img src="{% static 'icon/facebook.png' %}" width="15px" style="padding-bottom: 3px;">
           <span>페이스북</span>
         </a> 
       </div> 
       <div style="display: inline-block; margin-right: 1.5rem;">
-        <a href="https://www.instagram.com/fblover_official/" style="text-decoration: none; color:white;">
+        <a onclick="instagramOpen();" style="text-decoration: none; color:white;">
           <img src="{% static 'icon/instagram.png' %}" width="15px" style="padding-bottom: 3px;">
           <span>인스타그램</span>
         </a>
       </div>
       <div style="display: inline-block; margin-right: 1.5rem;">
-        <a href="https://www.youtube.com/c/footballloverofficial" style="text-decoration: none; color:white;">
+        <a onclick="youtubeOpen();" style="text-decoration: none; color:white;">
           <img src="{% static 'icon/youtube.png' %}" width="15px" style="padding-bottom: 3px;">
           <span>유튜브</span>
         </a>
       </div>
       <div style="display: inline-block;">
-        <a href="https://blog.naver.com/fbloverofficial" style="text-decoration: none; color:white;">
+        <a onclick="blogOpen();" style="text-decoration: none; color:white;">
           {% load static %}
           <img src="{% static 'icon/naver.png' %}" width="15px" style="padding-bottom: 3px;">
           <span>블로그</span>
@@ -144,3 +149,39 @@
   </div>
     
 </footer>
+<script language="JavaScript">
+  function onopen()
+  {
+  var url =
+  "http://www.ftc.go.kr/bizCommPop.do?wrkr_no=4192500866";
+  window.open(url, "bizCommPop", "width=750, height=700;");
+  }
+
+  function youtubeOpen()
+  {
+  var url =
+  "https://www.youtube.com/c/footballloverofficial";
+  window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=0, left=0, width=750, height=700;");
+  }
+
+  function instagramOpen()
+  {
+  var url =
+  "https://www.instagram.com/fblover_official/";
+  window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=0, left=0, width=750, height=700;");
+  }
+
+  function facebookOpen()
+  {
+  var url =
+  "https://www.facebook.com/koreanfootballlover/";
+  window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=0, left=0, width=750, height=700;");
+  }
+
+  function blogOpen()
+  {
+  var url =
+  "https://blog.naver.com/fbloverofficial";
+  window.open(url, "_blank", "toolbar=yes, scrollbars=yes, resizable=yes, top=0, left=0, width=750, height=700;");
+  }
+</script>

@@ -167,7 +167,7 @@
   cursor:pointer;
 }
 
-.reservationMenu{
+.bookingMenu{
   max-width: 1024px;
   width: 100%;
   margin:0 auto;
@@ -176,7 +176,7 @@
   display:none;
 }
 
-.reservation{
+.booking{
   cursor:pointer;
 }
 
@@ -220,7 +220,7 @@
         <span onmouseover="ranking();" class="ranking">풋살랭킹</span>
       </div>
       <div class="navMenu">
-        <span onmouseover="reservation();" class="reservation">구장대관</span>
+        <span onmouseover="booking();" class="booking">구장대관</span>
       </div>
       <div class="navMenu">
         <span onmouseover="teamManagement();" class="teamManagement">팀관리</span>
@@ -327,15 +327,15 @@
     </span>
   </div>
 
-  <div class="reservationMenu" onmouseleave="mouseLeave();">
+  <div class="bookingMenu" onmouseleave="mouseLeave();">
     <span class="secondMenu">
-      <a href="{% url 'playground_list' %}" style="text-decoration:none; color:black;" class="goReservation"
-      onmouseover="goReservation();">
+      <a href="{% url 'playground_list' %}" style="text-decoration:none; color:black;" class="goBooking"
+      onmouseover="goBooking();">
       대관하기
       </a>
     </span>
     <span class="secondMenu">
-      <a href="#" style="text-decoration:none; color:black;" class="teamRanking"
+      <a href="#" style="text-decoration:none; color:black;" class=""
       onmouseover="teamRanking();">
       구장제휴
       </a>
@@ -384,11 +384,11 @@
     $('.matchingMenu').css('display', 'block');
     $('.secondNav').css('position', 'fixed');
     $('.rankingMenu').css('display', 'none');
-    $('.reservationMenu').css('display', 'none');
+    $('.bookingMenu').css('display', 'none');
     $('.teamManagementMenu').css('display', 'none');
     $('.matching').css('color', '#35C5F0');
     $('.ranking').css('color', 'black');
-    $('.reservation').css('color', 'black');
+    $('.booking').css('color', 'black');
     $('.teamManagement').css('color', 'black');
   }
 
@@ -396,23 +396,23 @@
     $('.secondNav').css('position', 'fixed');
     $('.matchingMenu').css('display', 'none');
     $('.rankingMenu').css('display', 'block');
-    $('.reservationMenu').css('display', 'none');
+    $('.bookingMenu').css('display', 'none');
     $('.teamManagementMenu').css('display', 'none');
     $('.ranking').css('color', '#35C5F0');
     $('.matching').css('color', 'black');
-    $('.reservation').css('color', 'black');
+    $('.booking').css('color', 'black');
     $('.teamManagement').css('color', 'black');
   }
 
-  function reservation(){
+  function booking(){
     $('.secondNav').css('position', 'fixed');
     $('.matchingMenu').css('display', 'none');
     $('.rankingMenu').css('display', 'none');
-    $('.reservationMenu').css('display', 'block');
+    $('.bookingMenu').css('display', 'block');
     $('.teamManagementMenu').css('display', 'none');
     $('.matching').css('color', 'black');
     $('.ranking').css('color', 'black');
-    $('.reservation').css('color', '#35C5F0');
+    $('.booking').css('color', '#35C5F0');
     $('.teamManagement').css('color', 'black');
   }
 
@@ -420,11 +420,11 @@
     $('.secondNav').css('position', 'fixed');
     $('.matchingMenu').css('display', 'none');
     $('.rankingMenu').css('display', 'none');
-    $('.reservationMenu').css('display', 'none');
+    $('.bookingMenu').css('display', 'none');
     $('.teamManagementMenu').css('display', 'block');
     $('.matching').css('color', 'black');
     $('.ranking').css('color', 'black');
-    $('.reservation').css('color', 'black');
+    $('.booking').css('color', 'black');
     $('.teamManagement').css('color', '#35C5F0');
   }
 
@@ -495,20 +495,20 @@
     $('.ranking').css('color', 'black');
   }
 
-  function goReservation(){
-    $('.goReservation').css('color', '#35C5F0');
+  function goBooking(){
+    $('.goBooking').css('color', '#35C5F0');
   }
 
   function mouseLeave(){
     $('.secondNav').css('position', 'relative');
     $('.matchingMenu').css('display', 'block');
     $('.rankingMenu').css('display', 'none');
-    $('.reservationMenu').css('display', 'none');
+    $('.bookingMenu').css('display', 'none');
     $('.teamManagementMenu').css('display', 'none');
     
     $('.matching').css('color', '#35C5F0');
     $('.ranking').css('color', 'black');
-    $('.reservation').css('color', 'black');
+    $('.booking').css('color', 'black');
     $('.teamManagement').css('color', 'black');
 
     $('.individualRanking').css('color', 'black');
@@ -517,7 +517,7 @@
     $('.league').css('color', 'black');
     $('.individualRanking').css('color', 'black');
     $('.teamRanking').css('color', 'black');
-    $('.goReservation').css('color', 'black');
+    $('.goBooking').css('color', 'black');
 
   }
 

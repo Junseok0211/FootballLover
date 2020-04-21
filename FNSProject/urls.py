@@ -41,6 +41,10 @@ urlpatterns = [
     path('personalAcceptAll/<int:personalId>', match.views.personalAcceptAll, name="personalAcceptAll"),
     path('personalDeny/<int:userId>/<int:personalId>', match.views.personalDeny, name="personalDeny"),
     path('personalAttendanceCancel/<int:personalId>', match.views.personalAttendanceCancel, name="personalAttendanceCancel"),
+
+    path('pCheckReservation', match.views.pCheckReservation, name = "pCheckReservation"),
+    path('pIsReserved', match.views.pIsReserved, name = "pIsReserved"),
+
     path('personalComment/<int:personalId>', match.views.personalComment, name="personalComment"),
     path('personalcm_write/', match.views.personalcm_write, name = "personalcm_write"),
     path('deletePC/<int:personalComment_id>', match.views.deletePC, name='deletePC'),

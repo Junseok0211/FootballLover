@@ -38,6 +38,9 @@
     .mobile{
         display: none;
     }
+    .marginForNav{
+        margin-top:80px;
+    }
 
     @media only screen and (max-device-width : 720px) {
         .pc{
@@ -45,6 +48,9 @@
         }
         .mobile{
         display: block;
+        }
+        .marginForNav{
+            margin-top: 60px;
         }
     }
 
@@ -60,7 +66,7 @@
 </span>
 <div class="common_area">
 
-    <div class="date_nav">
+    <div class="date_nav marginForNav">
         {% for possibleDate in weekArray %}
 
         {% if possibleDate == selectedDay %}

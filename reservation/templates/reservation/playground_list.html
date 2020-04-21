@@ -4,12 +4,15 @@
 
 {% block contents %}
 <style>
-.pc{
-    display: block;
+    .pc{
+        display: block;
     }
 
     .mobile{
         display: none;
+    }
+    .marginForNav{
+        margin-top: 80px;
     }
 
     @media only screen and (max-device-width : 720px) {
@@ -18,6 +21,9 @@
         }
         .mobile{
         display: block;
+        }
+        .marginForNav{
+            margin-top: 60px;
         }
     }
 
@@ -36,7 +42,7 @@
 
 <div id="reservation_wrap">
 
-    <div class="header_img">
+    <div class="header_img marginForNav">
         <img src="https://apjc.thecisconetwork.com/media/file-20180926195024-6291.jpg" alt="" style="width:100%;">
     </div>
 
