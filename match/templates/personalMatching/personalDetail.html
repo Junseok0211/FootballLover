@@ -441,11 +441,11 @@ i {
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_place.png' %})"></figure>
-                    <p class="txt">{{personalMatching.location}}({{personalMatching.wayToBook}})</p>
+                    <p class="txt">{{personalMatching.location}}</p>
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_cash.png' %})"></figure>
-                    <p class="txt">{{personalMatching.joinFee}}원 / {{personalMatching.wayToPay}}</p>
+                    <p class="txt">{{personalMatching.joinFee}}원</p>
                 </li>
                 <li class="item person">
                     <div class="thumb-profile">
@@ -517,7 +517,7 @@ i {
             </a>  
         </button>
         <button type="button" class="btn active">
-        {% if personalMatching.total_attendance == personalMatching.number or  personalMatching.time_from|timeuntil <= '59분'%}
+        {% if personalMatching.total_attendance == personalMatching.number or  personalMatching.time_from|timeuntil <= '1시간'%}
         참가마감
         {% else %}
             {% if isAttended %}

@@ -279,6 +279,18 @@ i {
     pointer-events: none;
 }
 
+.selectException{
+    position: relative;
+    display: inline-block;
+    padding: 0;
+    width: auto;
+    border: none;
+    text-align: center;
+    text-align-last: center;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
 .match-form select,
 .match-form input {
     border: none;
@@ -388,50 +400,45 @@ i {
         </li>
     </ul>
     
-<form name = "register" method="POST" action="{% url 'register' %}" enctype="multipart/form-data" 
+<form name = "register" method="POST" action="{% url 'personalCreate' %}" enctype="multipart/form-data" 
     autocomplete="off" onsubmit="return formCheck(this);">
     {% csrf_token %}
-    <div class="seoul" style="display: none;">
-        <p>바보</p>
-    </div>
-    <div class="match-form">
+    <div class="match-form" id="matchForm">
+        <div id="playTime">
+
+        </div>
         <div class="item">
             <label for="message">종목</label>
             <div class="select">
-                <select class="form-control">
+                <select class="form-control" name="sport">
                     <option disabled selected>선택</option>
-                    <option>풋살</option>
+                    <option value="futsal">풋살</option>
                 </select>
             </div>
         </div>
         <div class="item">
             <label for="message">일시</label>
-            <input type="text" id="origin_playDate" placeholder="날짜선택">
-            <ul class="scroll-selected-time">
-                <li class="time active">10시</li>
-                <li class="time">11시</li>
-                <li class="time">12시</li>
-                <li class="time">13시</li>
-                <li class="time">14시</li>
-                <li class="time">15시</li>
-                <li class="time">16시</li>
-                <li class="time">17시</li>
-                <li class="time">18시</li>
-                <li class="time">19시</li>
-                <li class="time">20시</li>
-                <li class="time">21시</li>
-                <li class="time">22시</li>
-                <li class="time">23시</li>
-                <li class="time">24시</li>
-                <li class="time">01시</li>
-                <li class="time">02시</li>
-                <li class="time">03시</li>
-                <li class="time">04시</li>
-                <li class="time">05시</li>
-                <li class="time">06시</li>
-                <li class="time">07시</li>
-                <li class="time">08시</li>
-                <li class="time">09시</li>
+            <input type="text" id="origin_playDate" placeholder="날짜선택" name="playDate">
+            <ul class="scroll-selected-time" id="scrollTime">
+                <li class="time" value="06">6시</li>
+                <li class="time" value="07">7시</li>
+                <li class="time" value="08">8시</li>
+                <li class="time" value="09">9시</li>
+                <li class="time" value="10">10시</li>
+                <li class="time" value="11">11시</li>
+                <li class="time" value="12">12시</li>
+                <li class="time" value="13">13시</li>
+                <li class="time" value="14">14시</li>
+                <li class="time" value="15">15시</li>
+                <li class="time" value="16">16시</li>
+                <li class="time" value="17">17시</li>
+                <li class="time" value="18">18시</li>
+                <li class="time" value="19">19시</li>
+                <li class="time" value="20">20시</li>
+                <li class="time" value="21">21시</li>
+                <li class="time" value="22">22시</li>
+                <li class="time" value="23">23시</li>
+                <li class="time" value="24">24시</li>
             </ul>
         </div>
         <div class="item">
@@ -464,7 +471,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="seoul" class="form-control" name = "seoul" style="display: none;">
+                <select id="seoul" class="form-control" name = "seoul" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="seoul">시군구</option>
                     <option value="강남구">강남구</option>
                     <option value="강동구">강동구</option>
@@ -494,7 +502,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="incheon" class="form-control" name = "incheon" style="display: none;">
+                <select id="incheon" class="form-control" name = "incheon" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="incheon">시군구</option>
                     <option value="중구">중구</option>
                     <option value="동구">동구</option>
@@ -509,7 +518,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="daejeon" class="form-control" name = "daejeon" style="display: none;">
+                <select id="daejeon" class="form-control" name = "daejeon" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="daejeon">시군구</option>
                     <option value="동구">동구</option>
                     <option value="중구">중구</option>
@@ -519,7 +529,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="gwangju" class="form-control" name = "gwangju" style="display: none;">
+                <select id="gwangju" class="form-control" name = "gwangju" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="gwangju">시군구</option>
                     <option value="동구">동구</option>
                     <option value="서구">서구</option>
@@ -529,7 +540,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="daegu"" class="form-control" name = "daegu" style="display: none;">
+                <select id="daegu"" class="form-control" name = "daegu" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="daegu">시군구</option>
                     <option value="북구">북구</option>
                     <option value="동구">동구</option>
@@ -542,7 +554,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="busan"" class="form-control" name = "busan" style="display: none;">
+                <select id="busan"" class="form-control" name = "busan" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="busan">시군구</option>
                     <option value="북구">북구</option>
                     <option value="동구">동구</option>
@@ -563,7 +576,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="ulsan"" class="form-control" name = "ulsan" style="display: none;">
+                <select id="ulsan"" class="form-control" name = "ulsan" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="ulsan">시군구</option>
                     <option value="북구">북구</option>
                     <option value="동구">동구</option>
@@ -573,7 +587,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="sejong"" class="form-control" name = "sejong" style="display: none;">
+                <select id="sejong"" class="form-control" name = "sejong" style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="sejong">시군구</option>
                     <option value="조치원읍">조치원읍</option>
                     <option value="연기면">연기면</option>
@@ -597,7 +612,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="gyeonggi" class="form-control" name = "gyeonggi"  style="display: none;">
+                <select id="gyeonggi" class="form-control" name = "gyeonggi"  style="display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="gyeonggi">시군구</option>
                     <option value="수원시">수원시</option>
                     <option value="성남시">성남시</option>
@@ -633,7 +649,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="north_chungcheong" class="form-control" name = "north_chungcheong"  style="display: none;">
+                <select id="north_chungcheong" class="form-control" name = "north_chungcheong"  
+                style="display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="north_chungcheong">시군구</label>
                     <option value="청주시">청주시</option>
                     <option value="충주시">충주시</option>
@@ -649,27 +666,29 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="south_chungcheong" class="form-control" name = "south_chungcheong"  style="width:50%; display: none;">
+                <select id="south_chungcheong" class="form-control" name = "south_chungcheong"  
+                style="display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="south_chungcheong">시군구</label>
-                    <option value="천안시">천안시</option>
-                    <option value="공주시">공주시</option>
-                    <option value="보령시">보령시</option>
-                    <option value="아산시">아산시</option>
-                    <option value="서산시">서산시</option>
-                    <option value="논산시">논산시</option>
-                    <option value="계룡시">계룡시</option>
-                    <option value="당진시">당진시</option>
-                    <option value="금산군">금산군</option>
-                    <option value="부여군">부여군</option>
-                    <option value="서천군">서천군</option>
-                    <option value="청양군">청양군</option>
-                    <option value="홍성군">홍성군</option>
-                    <option value="예산군">예산군</option>
-                    <option value="태안군">태안군</option>
+                        <option value="천안시">천안시</option>
+                        <option value="공주시">공주시</option>
+                        <option value="보령시">보령시</option>
+                        <option value="아산시">아산시</option>
+                        <option value="서산시">서산시</option>
+                        <option value="논산시">논산시</option>
+                        <option value="계룡시">계룡시</option>
+                        <option value="당진시">당진시</option>
+                        <option value="금산군">금산군</option>
+                        <option value="부여군">부여군</option>
+                        <option value="서천군">서천군</option>
+                        <option value="청양군">청양군</option>
+                        <option value="홍성군">홍성군</option>
+                        <option value="예산군">예산군</option>
+                        <option value="태안군">태안군</option>
                 </select>
             </div>
             <div class="select">
-                <select id="north_jeolla" class="form-control" name = "north_jeolla"  style="width:50%; display: none;">
+                <select id="north_jeolla" class="form-control" name = "north_jeolla"  style="width:50%; display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="north_jeolla">시군구</label>
                     <option value="전주시">전주시</option>
                     <option value="군산시">군산시</option>
@@ -688,7 +707,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="south_jeolla" class="form-control" name = "south_jeolla"  style="width:50%; display: none;">
+                <select id="south_jeolla" class="form-control" name = "south_jeolla"  style="width:50%; display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="south_jeolla">시군구</label>
                     <option value="목포시">목포시</option>
                     <option value="여수시">여수시</option>
@@ -715,7 +735,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="north_gyeongsang" class="form-control" name = "north_gyeongsang"  style="width:50%; display: none;">
+                <select id="north_gyeongsang" class="form-control" name = "north_gyeongsang"  
+                style="width:50%; display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="north_gyeongsang">시군구</label>
                     <option value="포항시">포항시</option>
                     <option value="경주시">경주시</option>
@@ -743,7 +764,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="south_gyeongsang" class="form-control" name = "south_gyeongsang"  style="width:50%; display: none;">
+                <select id="south_gyeongsang" class="form-control" name = "south_gyeongsang"  
+                style="width:50%; display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="south_gyeongsang">시군구</label>
                         <option value="창원시">창원시</option>
                         <option value="진주시">진주시</option>
@@ -766,7 +788,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="jeju" class="form-control" name = "jeju"  style="width:50%; display: none;">
+                <select id="jeju" class="form-control" name = "jeju"  style="width:50%; display: none;"
+                onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="jeju">시군구</label>
                     <option value="서귀포시">서귀포시</option>
                     <option value="제주시">제주시</option>
@@ -775,31 +798,67 @@ i {
             
         </div>
         <div class="item">
-            <label for="message">장소</label>
+            <label for="message">구장</label>
             <div class="select">
-                <select class="form-control">
+                <select class="form-control" id="playground" name="location">
                     <option disabled selected>선택</option>
                 </select>
             </div>
         </div>
         <div class="item">
-            <label for="message">대관여부</label>
+            <label for="message">참가비</label>
             <div class="select">
-                <select class="form-control">
+                <select class="form-control" name="joinFee">
                     <option disabled selected>선택</option>
+                    <option value="10000">10,000원</option>
+                    <option value="20000">20,000원</option>
+                    <option value="30000">30,000원</option>
+                    <option value="40000">40,000원</option>
+                    <option value="50000">50,000원</option>
                 </select>
+            </div>
+        </div>
+        <div class="item">
+            <label for="message">모집인원</label>
+            <div class="select">
+                <input type="number" name="number"
+                class="form-control" placeholder="모집인원"></input>
+            </div>
+        </div>
+        <div class="item">
+            <label for="message">내용</label>
+            <div class="">
+                <textarea type="number" name="content"
+                class="form-control" placeholder="내용을 입력하세요."></textarea>
             </div>
         </div>
     </div>
 
     <div class="btn-wrap">
-        <button type="button" class="btn active block">조회하기</button>
+        <button type="submit" class="btn active block">작성하기</button>
     </div>
 </form>
 </div>
+
 <!--컨텐츠 영역-->
 
 <script type="text/javascript">
+    var timeArray = new Array();
+
+    function formCheck(obj){
+        var time = ','
+        for(i=0; i<timeArray.length; i++){
+            time += timeArray[i] + ',';
+        }
+        alert(time);
+        var tag = "<input type='hidden' name = 'playTime' value ='" + time + "' />";
+        $('#playTime').html(tag);
+
+        alert($('#origin_playDate').val().substr(7,1));
+        return true;
+
+    }
+
     $.datepicker.setDefaults({
         dateFormat: 'yy년 mm월 dd일 (DD)',
         prevText: '이전 달',
@@ -819,12 +878,113 @@ i {
 
         //조회 시간 선택
         $(".scroll-selected-time .time").on("click", function () {
-            $(this).addClass("active").siblings().removeClass("active");
+            
+            let time = Number($(this).val());
+            var timeLength = $('#scrollTime').children('.active').length;
+            var firstTime = Number($('#scrollTime').children('.active').first().val());
+            var lastTime = Number($('#scrollTime').children('.active').last().val());
+            var preTimeDifference = firstTime - time;
+            var postTimeDifference = time - lastTime;
+            if(timeLength == 0){
+                $(this).addClass("active").siblings().removeClass("active"); 
+                timeArray.push(time);   
+            }
+            else if(timeLength == 1){
+                if(preTimeDifference == 1 || preTimeDifference== -1 ){
+                    $(this).addClass("active");  
+                    timeArray.push(time);  
+                }else if(preTimeDifference > 1 || preTimeDifference < -1){
+                    alert('연속된 시간을 선택해주세요.');
+                }else{
+                    $(this).removeClass("active");
+                    var index = timeArray.indexOf(time);
+                    timeArray.splice(index,1);
+                }
+            }
+            else{
+                if(firstTime < time && time < lastTime){
+                    alert('중간 시간을 취소할 수 없습니다.');
+                }
+                else if(firstTime > time){
+                    if(preTimeDifference == 1){
+                        $(this).addClass("active");  
+                        timeArray.push(time);  
+                    }else if(preTimeDifference > 1){
+                        alert('연속된 시간을 선택해주세요.');
+                    }else{
+                        $(this).removeClass("active");
+                        var index = timeArray.indexOf(time);
+                        timeArray.splice(index,1);
+                    }
+                }
+                else if(lastTime < time){
+                    if(postTimeDifference == 1){
+                        $(this).addClass("active"); 
+                        timeArray.push(time);   
+                    }else if(postTimeDifference > 1){
+                        alert('연속된 시간을 선택해주세요.');
+                    }else{
+                        $(this).removeClass("active");
+                        var index = timeArray.indexOf(time);
+                        timeArray.splice(index,1);
+                    }
+                }
+                else{
+                    $(this).removeClass("active");
+                    var index = timeArray.indexOf(time);
+                    timeArray.splice(index,1);
+                }
+            }
+            
+            
+            
+            
         })
 
     });
+    function objLength(obj){
+        var i=0;
+        for (var x in obj){
+            if(obj.hasOwnProperty(x)){
+            i++;
+            }
+        } 
+        return i;
+    }
 
+    function selectCity(obj){
+        $.ajax({
+            url: "{% url 'selectCity' %}",
+            type:"GET",
+            data : {'city':obj},
+            dataType : "json",
+            success: function(data){
+                var ground = JSON.parse(data);
+                var tag = "<option selected disabled hidden value='playground'>선택</label>"
+                for(i=0; i<objLength(ground.possibleGround); i++){
+                    console.log(ground.possibleGround[i][0]);
+                    console.log(ground.possibleGround[i][1]);
+                    var groundId = ground.possibleGround[i][0];
+                    var groundName = ground.possibleGround[i][1];
+                    tag += "<option value='"+ groundName + "'>" + groundName +"</option>";
+                    
+                }
+                for(i=0; i<objLength(ground.impossibleGround); i++){
+                    console.log(ground.impossibleGround[i][0]);
+                    console.log(ground.impossibleGround[i][1]);
+                    var groundId = ground.impossibleGround[i][0];
+                    var groundName = ground.impossibleGround[i][1];
+                    tag += "<option value='"+ groundName + "'>" + groundName +"</option>";
+                    
+                }
 
+                if(objLength(ground.impossibleGround) == 0 && objLength(ground.possibleGround) == 0){
+                    tag = "<option value='playground'>등록구장 없음</option>";
+                }
+                $('#playground').html(tag);
+            }
+        });
+    };
 
 </script>
 

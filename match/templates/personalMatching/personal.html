@@ -331,16 +331,15 @@
                 </div>
                 <div class="group">
                     <button type="button" class="btn">
-                        <a href = "{% url 'pCheckReservation' %}" style="text-decoration: none; color:white;">글쓰기</a>
+                        <a href = "{% url 'personalNew' %}" style="text-decoration: none; color:white;">글쓰기</a>
                     </button>
                 </div>
             </div>
         </div>
-
         <div class="cont">
-        {% if personalList %}
-            {% if jsonList %}
-                {% for personalMatching in jsonList %}
+        {% if personal %}
+            {% if personalList %}
+                {% for personalMatching in personalList %}
                 <a href="{% url 'personalDetail' personalMatching.id %}" style="text-decoration: none; color: black;">
                     <div class="list">
                         <div class="group first">
@@ -355,7 +354,7 @@
                         <div class="group">
                             {% if personalMatching.total_attendance == personalMatching.number %}
                             <button type="button" class="btn end">마감</button>
-                            {% elif personalMatching.time_from|timeuntil <= '59분' %}
+                            {% elif personalMatching.time_from|timeuntil <= '1시간' %}
                             <button type="button" class="btn end">마감</button>
                             {% elif personalMatching.time_from|timeuntil <= '23시간' %}
                             <button type="button" class="btn danger">마감임박</button>
@@ -363,6 +362,11 @@
                             <button type="button" class="btn danger">마감임박</button>
                             {% else %}
                             <button type="button" class="btn">자세히보기</button>
+                            {% if personalMatching.time_from|timeuntil <= '1시간' %}
+                            <button type="button" class="btn end">마감</button>
+                            {% elif personalMatching.time_from|timeuntil <= '23시간' %}
+                            <button type="button" class="btn danger">마감임박</button>
+                            {% endif %}
                             {% endif %}
                             <p class="txt">{{personalMatching.total_attendance}}/{{personalMatching.number}}</p>
                         </div>
@@ -371,6 +375,7 @@
                 {% endfor %}
             {% else %}
                 {% for personalMatching in personalList %}
+                
                 <a href="{% url 'personalDetail' personalMatching.id %}" style="text-decoration: none; color: black;">
                 <div class="list">
                     <div class="group first">

@@ -287,8 +287,8 @@
       </a>
     </span>
     <span class="secondMenu">
-      <a href="{% url 'personal' %}" style="text-decoration:none; color:black;" class="personal"
-      onmouseover="personal();">
+      <a href="{% url 'personal' %}" style="text-decoration:none; color:black;" class="personalNav"
+      onmouseover="personalNav();">
       개인매칭
       </a>
     </span>
@@ -430,15 +430,15 @@
 
   function home(){
     $('.home').css('color', '#35C5F0');
-    $('.personal').css('color', 'black');
+    $('.personalNav').css('color', 'black');
     $('.team').css('color', 'black');
     $('.recruiting').css('color', 'black');
     $('.league').css('color', 'black');
   }
 
-  function personal(){
+  function personalNav(){
     $('.home').css('color', 'black');
-    $('.personal').css('color', '#35C5F0');
+    $('.personalNav').css('color', '#35C5F0');
     $('.team').css('color', 'black');
     $('.recruiting').css('color', 'black');
     $('.league').css('color', 'black');
@@ -446,7 +446,7 @@
 
   function team(){
     $('.home').css('color', 'black');
-    $('.personal').css('color', 'black');
+    $('.personalNav').css('color', 'black');
     $('.team').css('color', '#35C5F0');
     $('.recruiting').css('color', 'black');
     $('.league').css('color', 'black');
@@ -454,7 +454,7 @@
 
   function recruiting(){
     $('.home').css('color', 'black');
-    $('.personal').css('color', 'black');
+    $('.personalNav').css('color', 'black');
     $('.team').css('color', 'black');
     $('.recruiting').css('color', '#35C5F0');
     $('.league').css('color', 'black');
@@ -462,7 +462,7 @@
 
   function league(){
     $('.home').css('color', 'black');
-    $('.personal').css('color', 'black');
+    $('.personalNav').css('color', 'black');
     $('.team').css('color', 'black');
     $('.recruiting').css('color', 'black');
     $('.league').css('color', '#35C5F0');
@@ -470,7 +470,7 @@
 
   function matchingOut(){
     $('.home').css('color', 'black');
-    $('.personal').css('color', 'black');
+    $('.personalNav').css('color', 'black');
     $('.team').css('color', 'black');
     $('.recruiting').css('color', 'black');
     $('.league').css('color', 'black');

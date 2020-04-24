@@ -117,7 +117,7 @@ if(obj == "서울특별시") {
     f.seoul.style.display = "none";
     f.gyeonggi.style.display = "none";
     f.north_chungcheong.style.display = "none";
-    f.south_chungcheong.style.display = "";
+    f.south_chungcheong.style.display = "block";
     f.north_jeolla.style.display = "none";
     f.south_jeolla.style.display = "none";
     f.north_gyeongsang.style.display = "none";

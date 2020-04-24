@@ -13,6 +13,7 @@ class PersonalMatching(models.Model):
 
     sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
     location = models.CharField(max_length=50, null=False)
+
     #모집인원
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)
@@ -26,18 +27,21 @@ class PersonalMatching(models.Model):
     # 참가신청 선수
     appliedPlayer = models.ManyToManyField(FNSUser, related_name= 'appliedPersonal', blank=True, default=None)
 
+    # 지역 시/도
+    region = models.CharField(verbose_name="지역 시/도", max_length=10, null=True, blank = True)
+
+    # 지역 시/군/구
+    city = models.CharField(verbose_name = "지역 시/군/구", max_length=10, null=True, blank = True)
+
     # 참가비
     joinFee = models.IntegerField(verbose_name="참가비", null=True, blank=True)
-    # 대관방법
-    wayToBook = models.CharField(verbose_name="대관방법", max_length=20, null=True, blank =True)
-    # 지불방법
-    wayToPay = models.CharField(verbose_name="지불방법", max_length=20, null=True, blank = True)
+
 
     def summary(self):
         return self.content[:20]
 
     def __str__(self):
-        return self.content[:10]
+        return self.location
     # def __str__(self):
     #     return '%s - %s' % (self.user.name, self.title)
 

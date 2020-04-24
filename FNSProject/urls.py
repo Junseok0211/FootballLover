@@ -30,7 +30,7 @@ urlpatterns = [
     path('personalDay', match.views.personalDay, name = "personalDay"),
     path('personalDetail/<int:personal_id>', match.views.personalDetail, name = "personalDetail"),
     path('personalNew', match.views.personalNew, name="personalNew"),
-    path('personal_create', match.views.personal_create, name = "personal_create"),
+    path('personalCreate', match.views.personalCreate, name = "personalCreate"),
     path('personal_editForm/<int:personal_id>', match.views.personal_editForm, name = "personal_editForm"),
     path('personal_edit/<int:personal_id>', match.views.personal_edit, name = "personal_edit"),
     path('personalDelete/<int:personal_id>', match.views.personalDelete, name="personalDelete"),
@@ -44,6 +44,7 @@ urlpatterns = [
 
     path('pCheckReservation', match.views.pCheckReservation, name = "pCheckReservation"),
     path('pIsReserved', match.views.pIsReserved, name = "pIsReserved"),
+    path('selectCity', match.views.selectCity, name = "selectCity"),
 
     path('personalComment/<int:personalId>', match.views.personalComment, name="personalComment"),
     path('personalcm_write/', match.views.personalcm_write, name = "personalcm_write"),

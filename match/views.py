@@ -11,6 +11,7 @@ from django.core.paginator import Paginator
 from datetime import datetime, date
 from django.utils.dateformat import DateFormat
 from django.core import serializers
+from reservation.models import PlaygroundList, ReservationList
 import json
 
 # Create your views here.
@@ -513,28 +514,132 @@ def personalNew(request):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    return render(request, 'personalMatching/personalNew.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
-def personal_create(request):
+    # 구장목록
+    possiblePlayground = PlaygroundList.objects.filter(possibleReservation = True).all()
+    impossiblePlayground = PlaygroundList.objects.filter(possibleReservation = False).all()
+
+    data = {
+        'possiblePlayground':possiblePlayground,
+        'impossiblePlayground':impossiblePlayground,
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser
+    }
+    return render(request, 'personalMatching/personalNew.html', data)
+
+def selectCity(request):
+    city = request.GET.get('city');
+    possibleList = PlaygroundList.objects.filter(city = city, possibleReservation=True).all()
+    impossibleList = PlaygroundList.objects.filter(city = city, possibleReservation=False).all()
+    possibleGround = {}
+    impossibleGround = {}
+    i = 0
+    for ground in possibleList:
+        playground = [ground.id, ground.playgroundName]
+        possibleGround[i] = playground
+        i += 1 
+
+    i = 0
+    for ground in impossibleList:
+        playground = [ground.id, ground.playgroundName]
+        impossibleGround[i] = playground
+        i += 1 
+
+    data = {'possibleGround':possibleGround, 'impossibleGround':impossibleGround}
+    json_data = json.dumps(data)
+    return JsonResponse(json_data, safe=False)
+
+
+def personalCreate(request):
     personalMatching =  PersonalMatching()
-    personalMatching.title = request.POST.get('title')
     personalMatching.sport = request.POST.get('sport')
+    personalMatching.content = request.POST.get('content')
+    personalMatching.region = request.POST.get('region')
+
+    if request.POST.get('seoul') is not None:
+        city = request.POST.get('seoul')
+    
+    elif request.POST.get('gyeonggi') is not None:
+        city = request.POST.get('gyeonggi')
+
+    elif request.POST.get('north_chungcheong') is not None:
+        city = request.POST.get('north_chungcheong')
+    
+    elif request.POST.get('south_chungcheong') is not None:
+        city = request.POST.get('south_chungcheong')
+    
+    elif request.POST.get('north_jeolla') is not None:
+        city = request.POST.get('north_jeolla')
+
+    elif request.POST.get('south_jeolla') is not None:
+        city = request.POST.get('south_jeolla')
+
+    elif request.POST.get('north_gyeongsang') is not None:
+        city = request.POST.get('north_gyeongsang')
+
+    elif request.POST.get('south_gyeongsang') is not None:
+        city = request.POST.get('south_gyeongsang')
+
+    elif request.POST.get('jeju') is not None:
+        city = request.POST.get('jeju')
+
+    elif request.POST.get('incheon') is not None:
+        city = request.POST.get('incheon')
+
+    elif request.POST.get('daejeon') is not None:
+        city = request.POST.get('daejeon')
+    
+    elif request.POST.get('gwangju') is not None:
+        city = request.POST.get('gwangju')
+
+    elif request.POST.get('daegu') is not None:
+        city = request.POST.get('daegu')
+
+    elif request.POST.get('ulsan') is not None:
+        city = request.POST.get('ulsan')
+
+    elif request.POST.get('busan') is not None:
+        city = request.POST.get('busan')
+
+    elif request.POST.get('sejong') is not None:
+        city = request.POST.get('sejong')
+
     personalMatching.location = request.POST.get('location')
-    time_from = request.POST.get('time_from')
-    year = time_from[:4]
-    month = time_from[5:7]
-    date = time_from[8:10]
-    hour = time_from[11:13]
-    minute = time_from[14:16]
-    startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + minute
+    playDate = request.POST.get('playDate')
+    playTime = request.POST.get('playTime')
+    timeValue = playTime.split(',')
+    smallNum = 0;
+    largeNum = 0;
+    for i in timeValue:
+        
+        if i is not '':
+            if int(i) > largeNum:
+                smallNum = largeNum
+                largeNum = int(i)
+                
+            elif (int(i) < largeNum):
+                if smallNum is 0:
+                    smallNum = int(i)
+                else:
+                    if int(i) < smallNum:
+                        smallNum = int(i)
+                
+        
+
+    year = playDate[0:4]
+    month = playDate[6:8]
+    date = playDate[10:12]
+    hour = str(smallNum)
+    startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + '00'
     personalMatching.time_from = startTime
-    time_to = request.POST.get('time_to')
-    endHour = time_to[:2]
-    endMin = time_to[3:5]
+    
+    endHour = str(largeNum+1)
+    endMin = '00'
     endTime = year + '-' + month + '-' + date + ' ' + endHour + ':' + endMin
     personalMatching.time_to = endTime
     personalMatching.number = request.POST.get('number')
-    personalMatching.rank = request.POST.get('rank')
+    personalMatching.joinFee = request.POST.get('joinFee')
     personalMatching.content = request.POST.get('content')
     user_id = request.session.get('userId')
     fnsUser = get_object_or_404(FNSUser, pk = user_id)
