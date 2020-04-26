@@ -246,19 +246,7 @@
         text-align: center; margin-top: 6px; margin-left: 20px;" id="cart"></i>
 
         <div style="margin-top: 0px;">
-        {% if countNotification > 0 %}
-        <a href="{% url 'notification' %}">
-            <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
-            <i class="p3 far fa-2x fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
-            </span>
-        </a>
-        {% else %}
-
-
         {% include 'alarm.html' %}
-
-
-        {% endif %}
         </div>
         
         {% else %}
@@ -534,12 +522,16 @@
   function alarm(){
     $('.bell').css('background-color', '#35C5F0');
     $('.bell').css('color', 'white');
+    $('.fa-bell').css('background-color', '#35C5F0');
+    $('.fa-bell').css('color', 'white');
     $('#alarmContent').css('display', 'block');
   }
 
   function alarmOut(){
     $('.bell').css('background-color', 'white');
     $('.bell').css('color', 'gray');
+    $('.fa-bell').css('background-color', 'white');
+    $('.fa-bell').css('color', 'gray');
     $('#alarmContent').css('display', 'none');
   }
 

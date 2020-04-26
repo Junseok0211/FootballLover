@@ -405,13 +405,13 @@ i {
     {% csrf_token %}
     <div class="match-form" id="matchForm">
         <div id="playTime">
-
+            <input type='hidden' name = 'playTime' id='reservationTime' />
         </div>
         <div class="item">
             <label for="message">종목</label>
             <div class="select">
                 <select class="form-control" name="sport">
-                    <option disabled selected>선택</option>
+                    <option disabled selected value="sport">선택</option>
                     <option value="futsal">풋살</option>
                 </select>
             </div>
@@ -419,7 +419,7 @@ i {
         <div class="item">
             <label for="message">일시</label>
             <input type="text" id="origin_playDate" placeholder="날짜선택" name="playDate">
-            <ul class="scroll-selected-time" id="scrollTime">
+            <ul class="scroll-selected-time" id="scrollTime" name="scrollTime">
                 <li class="time" value="06">6시</li>
                 <li class="time" value="07">7시</li>
                 <li class="time" value="08">8시</li>
@@ -687,8 +687,8 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="north_jeolla" class="form-control" name = "north_jeolla"  style="width:50%; display: none;"
-                onChange="selectCity(this.options[this.selectedIndex].value);">
+                <select id="north_jeolla" class="form-control" name = "north_jeolla"  
+                style="display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="north_jeolla">시군구</label>
                     <option value="전주시">전주시</option>
                     <option value="군산시">군산시</option>
@@ -707,7 +707,7 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="south_jeolla" class="form-control" name = "south_jeolla"  style="width:50%; display: none;"
+                <select id="south_jeolla" class="form-control" name = "south_jeolla"  style="display: none;"
                 onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="south_jeolla">시군구</label>
                     <option value="목포시">목포시</option>
@@ -736,7 +736,7 @@ i {
             </div>
             <div class="select">
                 <select id="north_gyeongsang" class="form-control" name = "north_gyeongsang"  
-                style="width:50%; display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
+                style="display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="north_gyeongsang">시군구</label>
                     <option value="포항시">포항시</option>
                     <option value="경주시">경주시</option>
@@ -765,7 +765,7 @@ i {
             </div>
             <div class="select">
                 <select id="south_gyeongsang" class="form-control" name = "south_gyeongsang"  
-                style="width:50%; display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
+                style="display: none;" onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="south_gyeongsang">시군구</label>
                         <option value="창원시">창원시</option>
                         <option value="진주시">진주시</option>
@@ -788,7 +788,7 @@ i {
                 </select>
             </div>
             <div class="select">
-                <select id="jeju" class="form-control" name = "jeju"  style="width:50%; display: none;"
+                <select id="jeju" class="form-control" name = "jeju"  style="display: none;"
                 onChange="selectCity(this.options[this.selectedIndex].value);">
                     <option selected disabled hidden value="jeju">시군구</label>
                     <option value="서귀포시">서귀포시</option>
@@ -801,7 +801,7 @@ i {
             <label for="message">구장</label>
             <div class="select">
                 <select class="form-control" id="playground" name="location">
-                    <option disabled selected>선택</option>
+                    <option disabled selected value="location">선택</option>
                 </select>
             </div>
         </div>
@@ -809,12 +809,12 @@ i {
             <label for="message">참가비</label>
             <div class="select">
                 <select class="form-control" name="joinFee">
-                    <option disabled selected>선택</option>
+                    <option disabled selected value="joinFee">선택</option>
                     <option value="10000">10,000원</option>
-                    <option value="20000">20,000원</option>
-                    <option value="30000">30,000원</option>
-                    <option value="40000">40,000원</option>
-                    <option value="50000">50,000원</option>
+                    <option value="20000">15,000원</option>
+                    <option value="30000">20,000원</option>
+                    <option value="40000">25,000원</option>
+                    <option value="50000">30,000원</option>
                 </select>
             </div>
         </div>
@@ -843,19 +843,193 @@ i {
 <!--컨텐츠 영역-->
 
 <script type="text/javascript">
-    var timeArray = new Array();
+    var timeArray = [];
 
-    function formCheck(obj){
-        var time = ','
-        for(i=0; i<timeArray.length; i++){
-            time += timeArray[i] + ',';
+    function formCheck(frm){
+        $('#reservationTime').val(timeArray.join(','));
+        var date = $('#origin_playDate').val();
+
+        var year = date.substr(0,4);
+        var month = date.substr(6,2);
+        var day = date.substr(10,2);
+        var today = new Date();
+        var scrollTime = document.getElementById('scrollTime');
+        console.log(today.getDate());
+
+        if(frm.sport.value == 'sport'){
+            alert("종목을 선택해주세요.");
+            frm.sport.focus();
+            return false;
         }
-        alert(time);
-        var tag = "<input type='hidden' name = 'playTime' value ='" + time + "' />";
-        $('#playTime').html(tag);
+        else if(frm.playDate.value == ""){
+            alert("날짜를 선택해주세요.");
+            frm.playDate.focus();
+            return false;
+        }
+        else if(Number(year) < Number(today.getFullYear())){
+            alert("오늘 이전 날짜를 선택할 수 없습니다.");
+            console.log(today.getFullYear());
+            frm.playDate.focus();
+            return false;
+        }
+        else if(Number(month) < Number(today.getMonth())){
+            alert("오늘 이전 날짜를 선택할 수 없습니다.");
+            frm.playDate.focus();
+            return false;
+        }
+        else if(Number(day) < Number(today.getDate())){
+            alert("오늘 이전 날짜를 선택할 수 없습니다.");
+            frm.playDate.focus();
+            return false;
+        }
+        else if(timeArray.length == 0){
+            alert("시간을 선택해 주세요.");
+            return false;
+        }
+        else if(frm.region.value == "시도"){
+            alert("활동지역 시도를 선택해주세요.");
+            frm.region.focus();
+            return false;
+        }
 
-        alert($('#origin_playDate').val().substr(7,1));
-        return true;
+        else if(frm.region.value == "서울특별시" && frm.seoul.value == "seoul"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.seoul.focus();
+            return false;
+        }
+        else if(frm.region.value == "인천광역시" && frm.seoul.value == "incheon"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.incheon.focus();
+            return false;
+        }
+        else if(frm.region.value == "대전광역시" && frm.seoul.value == "daejeon"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.daejeon.focus();
+            return false;
+        }
+        else if(frm.region.value == "광주광역시" && frm.seoul.value == "gwangju"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.gwangju.focus();
+            return false;
+        }
+        else if(frm.region.value == "대구광역시" && frm.seoul.value == "daegu"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.daegu.focus();
+            return false;
+        }
+        else if(frm.region.value == "울산광역시" && frm.seoul.value == "ulsan"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.ulsan.focus();
+            return false;
+        }
+        else if(frm.region.value == "부산광역시" && frm.seoul.value == "busan"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.busan.focus();
+            return false;
+        }
+        else if(frm.region.value == "세종특별자치시" && frm.seoul.value == "sejong"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.sejong.focus();
+            return false;
+        }
+        else if(frm.region.value == "경기도" && frm.gyeonggi.value == "gyeonggi"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.gyeonggi.focus();
+            return false;
+        }
+        else if(frm.region.value == "충청북도" && frm.north_chungcheong.value == "north_chungcheong"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.north_chungcheong.focus();
+            return false;
+        }
+        else if(frm.region.value == "충청남도" && frm.south_chungcheong.value == "south_chungcheong"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.south_chungcheong.focus();
+            return false;
+        }
+        else if(frm.region.value == "전라북도" && frm.north_jeolla.value == "north_jeolla"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.north_jeolla.focus();
+            return false;
+        }
+        else  if(frm.region.value == "전라남도" && frm.south_jeolla.value == "south_jeolla"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.south_jeolla.focus();
+            return false;
+        }
+        else if(frm.region.value == "경상북도" && frm.north_gyeongsang.value == "north_gyeongsang"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.north_gyeongsang.focus();
+            return false;
+        }
+        else if(frm.region.value == "경상남도" && frm.south_gyeongsang.value == "south_gyeongsang"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.south_gyeongsang.focus();
+            return false;
+        }
+        else if(frm.region.value == "제주특별자치도" && frm.jeju.value == "jeju"){
+            alert("활동지역 시군구를 선택해주세요.");
+            frm.jeju.focus();
+            return false;
+        }
+
+        if(frm.seoul.value == "seoul" && 
+        frm.incheon.value == "incheon" &&
+        frm.daejeon.value == "daejeon" &&
+        frm.gwangju.value == "gwangju" &&
+        frm.daegu.value == "daegu" &&
+        frm.ulsan.value == "ulsan" &&
+        frm.busan.value == "busan" &&
+        frm.sejong.value == "sejong" &&
+        frm.gyeonggi.value == "gyeonggi" &&
+        frm.north_chungcheong.value == "north_chungcheong" &&
+        frm.south_chungcheong.value == "south_chungcheong" &&
+        frm.north_jeolla.value == "north_jeolla" &&
+        frm.south_jeolla.value == "south_jeolla" &&
+        frm.north_gyeongsang.value == "north_gyeongsang" &&
+        frm.south_gyeongsang.value == "south_gyeongsang" &&
+        frm.jeju.value == "jeju"){
+            alert("시군구를 선택해주세요.");
+            frm.basic.focus();
+            return false;
+        }
+        else if(frm.location.value == 'location'){
+            alert("구장을 선택해주세요.");
+            frm.location.focus();
+            return false;
+        }
+        else if(frm.joinFee.value == 'joinFee'){
+            alert("참가비를 선택해주세요.");
+            frm.joinFee.focus();
+            return false;
+        }
+        else if(frm.number.value == ''){
+            alert("모집인원을 결정해 주세요.");
+            frm.number.focus();
+            return false;
+        }
+        else if(frm.content.value == ''){
+            alert("내용을 작성해 주세요.");
+            frm.content.focus();
+            return false;
+        }
+
+
+        else if(Number(day) == Number(today.getDate())){
+            for(i=0; t < timeArray.length; i++){
+                if(Number(timeArray[i]) < Number(today.getHours())){
+                    alert("지난 시간은 선택하실 수 없습니다.");
+                    frm.playDate.focus();
+                    return false;
+                }
+
+            }
+        }
+
+
+
+
+        return false;
 
     }
 
@@ -934,11 +1108,7 @@ i {
                     var index = timeArray.indexOf(time);
                     timeArray.splice(index,1);
                 }
-            }
-            
-            
-            
-            
+            }      
         })
 
     });
@@ -966,7 +1136,7 @@ i {
                     console.log(ground.possibleGround[i][1]);
                     var groundId = ground.possibleGround[i][0];
                     var groundName = ground.possibleGround[i][1];
-                    tag += "<option value='"+ groundName + "'>" + groundName +"</option>";
+                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
                     
                 }
                 for(i=0; i<objLength(ground.impossibleGround); i++){
@@ -979,7 +1149,7 @@ i {
                 }
 
                 if(objLength(ground.impossibleGround) == 0 && objLength(ground.possibleGround) == 0){
-                    tag = "<option value='playground'>등록구장 없음</option>";
+                    tag = "<option value='location'>등록구장 없음</option>";
                 }
                 $('#playground').html(tag);
             }

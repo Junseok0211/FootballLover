@@ -1,6 +1,7 @@
 from django.db import models
 from pytz import timezone, datetime
 from account.models import FNSUser
+from reservation.models import PlaygroundList
 from team.models import Team
 
 # Create your models here.
@@ -12,8 +13,8 @@ class PersonalMatching(models.Model):
     time_to = models.DateTimeField(null = True, blank = True)
 
     sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
-    location = models.CharField(max_length=50, null=False)
-
+    location = models.ForeignKey(PlaygroundList, related_name='personalMatching', on_delete = models.SET_NULL, blank=True, null=True)
+    #location = models.CharField(max_length=10, null=True, blank = True)
     #모집인원
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)
@@ -41,7 +42,7 @@ class PersonalMatching(models.Model):
         return self.content[:20]
 
     def __str__(self):
-        return self.location
+        return self.location.playgroundName
     # def __str__(self):
     #     return '%s - %s' % (self.user.name, self.title)
 

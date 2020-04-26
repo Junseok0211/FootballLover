@@ -5,6 +5,9 @@
 {% block contents %}
 
 <link rel="stylesheet" href="{% static 'css/match2.css' %}">
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src=“https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+<script type="text/javascript" src="{% static 'js/payment.js' %}"></script>
 
 <style>
 ul,
@@ -357,6 +360,12 @@ i {
 </script>
 {% endif %}
 
+<!--참가신청 결과-->
+{% if message %}
+<script>
+  alert("{{message}}");
+</script>
+{% endif %}
 
 <script>
     $(document).ready(function(){
@@ -365,6 +374,7 @@ i {
         });
     })
 </script>
+{% load counting %}
 
 <!--navBar -->
 <nav class="navBar sticky-top">
@@ -441,7 +451,7 @@ i {
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_place.png' %})"></figure>
-                    <p class="txt">{{personalMatching.location}}</p>
+                    <p class="txt">{{personalMatching.location.playgroundName}}</p>
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_cash.png' %})"></figure>
@@ -517,7 +527,7 @@ i {
             </a>  
         </button>
         <button type="button" class="btn active">
-        {% if personalMatching.total_attendance == personalMatching.number or  personalMatching.time_from|timeuntil <= '1시간'%}
+        {% if personalMatching.total_attendance == personalMatching.number or  personalMatching.time_from|hourDifference <= '1' or personalMatching.time_from|timeuntil == '0분' %}
         참가마감
         {% else %}
             {% if isAttended %}
@@ -525,15 +535,13 @@ i {
                 참가취소
             </a>
             {% else %}
-            <a href="{% url 'personalApply' personalMatching.id %}" style="text-decoration: none; color: white;">
-                {% if isApplied %}
-                참가취소
-                {% else %}
+            <a class="payBtn"
+            style="text-decoration: none; color: white;">
                 참가신청
-                {% endif %}
+            </a>
             {% endif %}
         {% endif %}
-          </a>
+          
         </button>
     </div>
     {% else %}
@@ -562,11 +570,100 @@ i {
   </div>
 </div>
 <!--컨텐츠 영역-->
+<form action="{% url 'personalResult' personalMatching.id %}" method="POST" id="reservationForm" name="reservationForm">
+    {% csrf_token %}
+    <input type="hidden" id="playground" value="참가신청이 완료되었습니다." name="message">
+</form>
+
+<form style="display:none;" id="paymentForm" name="paymentForm" method="POST" action="{% url 'paymentPop' %}">
+    {% csrf_token %}
+    <input type="text" id="pay_method" name="pay_method" value="card">
+    <input type="text" id="totalPrice" name="totalPrice" value="{{personalMatching.joinFee}}">
+    <input type="text" id="send_name" name="user_name" value="{{fnsuser.name}}" placeholder="예약자 성함" style="width:49%;" required>
+    <input type="text" id="send_phone" name="user_phone" value="{{fnsuser.phone_number}}" placeholder="예약자 전화번호" style="width:50%;" required>
+</form>
 
 
 <footer class="mobile">
     {% include 'playFooter.html' %}
 </footer>
 
+<script>
+    $(document).ready(function () {
+
+        $(".payBtn").click(function () {
+
+            // let amount = "{{totalPrice}}";
+            let amount = "10"; // 결제금액
+            let pay_method = "card"; // 결제방법
+            let user_id = "moonlit0130"; // 회원 아이디
+            let playground = "개인매칭({{personalMatching.location}})"
+            let user_name = $("#send_name").val(); // 예약자 성함
+            let user_phone = $("#send_phone").val(); // 예약자 전화번호
+            let writer = "{{personalMatching.user.id}}";
+            let applier = "{{fnsuser.id}}";
+
+            if(writer == applier){
+                alert("글쓴이는 참가할 수 없습니다.");
+                return;
+                
+            } else {
+
+            }
+
+            let filter = "win16|win32|win64|mac|macintel";
+            let device = "";
+
+            if (navigator.platform) {
+                if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
+                    device = "mobile"
+                } else {
+                    device = "pc";
+                }
+            }
+
+            // 모바일일 경우
+            if (device == "mobile") {
+
+                var DF = document.paymentForm;
+                var program_url = "http://54.180.149.3:8000/reservation/paymentPop";
+                window.open("", "openPopEvent");
+                DF.target = "openPopEvent";
+                DF.action = program_url;
+                DF.method = "POST";
+                DF.submit();
+                DF.target = "_blank";
+
+            }
+
+            // 웹의 경우
+            if (device == "pc") {
+
+                go_payment(amount, pay_method, playground, user_name, user_phone).then(res => {
+
+                    if (res == "SUCCESS") {
+                        $("#reservationForm").submit();
+                    }
+
+                    if (res == "FAIL") {
+                        alert("결제에 실패했습니다.");
+                        return;
+                    }
+
+                });
+
+            }
+
+        });
+
+    });
+
+    function sendForm() {
+
+        var form = document.reservationForm;
+        form.submit();
+
+    }
+</script>
 
 {% endblock %}

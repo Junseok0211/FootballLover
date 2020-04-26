@@ -12,6 +12,7 @@
         justify-content: space-around;
         align-items: center;
         font-weight: bold;
+        box-sizing: content-box;
         font-size: 0.75rem;
         color: #8c8c8c;
         background: #e1e1e1;
@@ -20,7 +21,7 @@
     .nav-justified > .item {
         position: relative;
         box-sizing: content-box;
-        padding: 0.7rem 0.3rem;
+        padding: 0.7rem 0rem;
     }
     .nav-justified > .item.active {
         color: #131313;
@@ -167,7 +168,7 @@
 </span>
 
 <!--컨텐츠 영역-->
-<div class="sec match personal" style="max-width: 720px; margin: 0 auto;">
+<div class="sec match personal" style="max-width: 720px; margin: 0 auto; min-height: 500px;">
 
     <!-- 양쪽정렬된 탭 메뉴 -->
     <ul class="nav-justified marginForNav">
@@ -301,7 +302,7 @@
       
   }
 </script>
-    <!-- 날짜이동 -->
+<!-- 날짜이동 -->
 <form action="{% url 'personalDay' %}" type = "GET" id = "getDate">
     <input type="hidden" name = "month" id = "month">
     <input type="hidden" name = "day" id = "day">
@@ -309,18 +310,16 @@
 <input type="hidden" id="Url" data-url="{% url 'personalDay' %}" />
 
 <div style="display: flex; flex-direction: row; justify-content: space-between;">
-    <button type="button" class="btn move" style="margin-left:0; width: 10%; padding-left: 0;" onclick="prevWeek()">
+    <button type="button" class="btn move" style="margin-left:0; width: 10%; padding: 0;" onclick="prevWeek()">
         <i class="fas fa-long-arrow-alt-left" style="color:#28AAE3;"></i>
     </button>
     <table id="chooseDate" boarder="3" text-align="center" style="padding:3em; width: 80%;">
         
     </table>
-    <button type="button" class="btn move" style="width: 10%; padding-right: 0;" onclick="nextWeek()">
+    <button type="button" class="btn move" style="width: 10%; padding: 0;" onclick="nextWeek()">
         <i class="fas fa-long-arrow-alt-right" style="color:#28AAE3;"></i>
     </button>
 </div>
-
-
 
     <!-- 매치 리스트 -->
     <div class="math_list">
@@ -340,6 +339,10 @@
         {% if personal %}
             {% if personalList %}
                 {% for personalMatching in personalList %}
+                <script>
+                    console.log("{{personalMatching.time_from|hourDifference}}");
+                    console.log("{{personalMatching.time_from|dayDifference}}");
+                </script>
                 <a href="{% url 'personalDetail' personalMatching.id %}" style="text-decoration: none; color: black;">
                     <div class="list">
                         <div class="group first">
@@ -347,61 +350,32 @@
                             <p class="time">{{personalMatching.time_from|date:"H:i"}}</p>
                             {% endautoescape %}
                             <div>
-                                <p class="point">{{personalMatching.location}}</p>
-                                <p>실력: {{personalMatching.rank}}</p>
+                                <p class="point">{{personalMatching.location.playgroundName}}</p>
+                                <p>참가비: {{personalMatching.joinFee}}원</p>
                             </div>
                         </div>
                         <div class="group">
                             {% if personalMatching.total_attendance == personalMatching.number %}
                             <button type="button" class="btn end">마감</button>
-                            {% elif personalMatching.time_from|timeuntil <= '1시간' %}
+                            {% elif personalMatching.time_from|timeuntil == '0분' %}
                             <button type="button" class="btn end">마감</button>
-                            {% elif personalMatching.time_from|timeuntil <= '23시간' %}
-                            <button type="button" class="btn danger">마감임박</button>
-                            {% elif personalMatching.number|subtract:personalMatching.total_attendance <= 2 %}
-                            <button type="button" class="btn danger">마감임박</button>
                             {% else %}
-                            <button type="button" class="btn">자세히보기</button>
-                            {% if personalMatching.time_from|timeuntil <= '1시간' %}
-                            <button type="button" class="btn end">마감</button>
-                            {% elif personalMatching.time_from|timeuntil <= '23시간' %}
-                            <button type="button" class="btn danger">마감임박</button>
-                            {% endif %}
+                                {% if personalMatching.number|subtract:personalMatching.total_attendance <= 2 %}
+                                <button type="button" class="btn danger">마감임박</button>
+                                {% elif personalMatching.time_from|dayDifference < 1 %}
+                                    {% if personalMatching.time_from|hourDifference < 2 %}
+                                    <button type="button" class="btn end">마감</button>
+                                    {% elif personalMatching.time_from|hourDifference > 2 %}
+                                    <button type="button" class="btn danger">마감임박</button>
+                                    {% endif %}
+                                {% else %}
+                                    <button type="button" class="btn">자세히보기</button> 
+                               
+                                {% endif %}
                             {% endif %}
                             <p class="txt">{{personalMatching.total_attendance}}/{{personalMatching.number}}</p>
                         </div>
                     </div>
-                </a>
-                {% endfor %}
-            {% else %}
-                {% for personalMatching in personalList %}
-                
-                <a href="{% url 'personalDetail' personalMatching.id %}" style="text-decoration: none; color: black;">
-                <div class="list">
-                    <div class="group first">
-                        {% autoescape on %}
-                        <p class="time">{{personalMatching.time_from|date:"H:i"}}</p>
-                        {% endautoescape %}
-                        <div>
-                            <p class="point">{{personalMatching.location}}</p>
-                            <p>실력: {{personalMatching.rank}}</p>
-                        </div>
-                    </div>
-                    <div class="group">
-                        {% if personalMatching.total_attendance == personalMatching.number %}
-                        <button type="button" class="btn end">마감</button>
-                        {% elif personalMatching.time_from|timeuntil <= '59분' %}
-                        <button type="button" class="btn end">마감</button>
-                        {% elif personalMatching.time_from|timeuntil <= '23시간' %}
-                        <button type="button" class="btn danger">마감임박</button>
-                        {% elif personalMatching.number|subtract:personalMatching.total_attendance <= 2 %}
-                        <button type="button" class="btn danger">마감임박</button>
-                        {% else %}
-                        <button type="button" class="btn">자세히보기</button>
-                        {% endif %}
-                        <p class="txt">{{personalMatching.total_attendance}}/{{personalMatching.number}}</p>
-                    </div>
-                </div>
                 </a>
                 {% endfor %}
             {% endif %}

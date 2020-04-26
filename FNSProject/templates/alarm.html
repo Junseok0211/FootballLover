@@ -51,12 +51,19 @@ toggle between hiding and showing the dropdown content */
 </script>
 
 <div class="alarmDropdown" onmouseover="alarm();" onmouseleave = "alarmOut();">
-        <i id="dropdownMenuButton" 
-        class="bell far fa-2x fa-bell dropbtn" style="z-index: 0; 
-        color: gray; border-radius: 70px; width: 35px; height: 35px;
-        text-align: center;"></i>
-        
-        <div id="alarmContent" class="alarmDropdown-content">
+  {% if countNotification > 0 %}
+    <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
+    <i class="p3 far fa-2x fa-bell fa-stack-1x xfa-inverse dropbtn" data-count="{{countNotification}}"
+    style="z-index: 0; color: gray; border-radius: 70px; width: 35px; height: 35px; 
+    margin-top: 7px;"></i>
+    </span>
+  {% else %}
+    <i id="dropdownMenuButton" 
+    class="bell far fa-2x fa-bell dropbtn" style="z-index: 0; 
+    color: gray; border-radius: 70px; width: 35px; height: 35px;
+    text-align: center;"></i>
+  {% endif %}
+        <div id="alarmContent" class="alarmDropdown-content" style="margin-top: 20px;">
           <div class="pl-3" style="border-bottom: black 1px solid;">
             <span style="font-size: 15px; font-weight: bold; color: cornflowerblue;" class="mr-3">알림</span>
             <button class="p-2 m-1 btn" onclick="return checkAllNotification()" style="background-color:lightgrey; font-size: 12px; font-weight: bold; color: black;">모두 읽은 상태로 표시</button>

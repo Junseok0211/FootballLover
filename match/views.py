@@ -7,8 +7,9 @@ from account.models import FNSUser
 from decidedMatch.models import DecidedMatch
 from team.models import Team
 from notification.models import Notification
+from reservation.models import ReservationList
 from django.core.paginator import Paginator
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from django.utils.dateformat import DateFormat
 from django.core import serializers
 from reservation.models import PlaygroundList, ReservationList
@@ -93,10 +94,10 @@ def play(request):
         return render(request, 'play.html', data)
 
 def personal(request):
+    today = date.today()
     if not request.session.get('userId'):
-        today = date.today()
         personal = PersonalMatching.objects.all().filter(
-        time_from__month = today.month, time_from__day = today.day).order_by('-created')
+        time_from__month = today.month, time_from__day = today.day).order_by('time_from')
         # 객체를 한 페이지로 자르기
         paginator = Paginator(personal, 8)
         # request에 담아주기
@@ -106,13 +107,13 @@ def personal(request):
 
         data = {
             'personalList': personalList,
-            'personal':personal
+            'personal':personal,
+            'today':today
         }
         return render(request, 'personalMatching/personal.html', data)
     else:
-        today = date.today()
         personal = PersonalMatching.objects.all().filter(
-        time_from__month = today.month, time_from__day = today.day).order_by('-created')
+        time_from__month = today.month, time_from__day = today.day).order_by('time_from')
         # 객체를 한 페이지로 자르기
         paginator = Paginator(personal, 8)
         # request에 담아주기
@@ -131,26 +132,52 @@ def personal(request):
         # request된 페이지를 얻어온 뒤 return 해 준다.
         notificationList = paginator.get_page(page)
         return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 'personal':personal, 
-        'personalList':personalList, 'notificationList':notificationList, 'fnsuser':fnsuser})
+        'personalList':personalList, 'notificationList':notificationList, 'fnsuser':fnsuser, 
+        'today':today})
 
 def personalDay(request):
+    today = datetime.today()
     month = request.GET.get('month')
     # month = int(month) + 1
     day = request.GET.get('day')
     personal = PersonalMatching.objects.all().filter(
         time_from__month = int(month) + 1, time_from__day = day
-    ).order_by('-created')
+    ).order_by('time_from')
     # 객체를 한 페이지로 자르기
     paginator = Paginator(personal, 8)
     # request에 담아주기
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     personalList = paginator.get_page(page)
+
+    if request.session.get('userId'):
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        data = {
+            'personal':personal,
+            'personalList':personalList,
+            'month' : month,
+            'day' : day,
+            'today':today,
+            'fnsuser':fnsuser,
+            'notificationList':notificationList,
+            'countNotification':countNotification
+        }
+        return render(request, 'personalMatching/personal.html', data)
     data = {
         'personal':personal,
         'personalList':personalList,
         'month' : month,
-        'day' : day
+        'day' : day,
+        'today':today
     }
     return render(request, 'personalMatching/personal.html', data)
 
@@ -500,6 +527,8 @@ def editPersonalReply(request, reply_id):
     return render(request, 'personalMatching/personalComment.html', {'personalMatching':personalMatching, 'errormessage':errormessage,
     'commentList':commentList, 'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
+
+
 def personalNew(request):
     if not (request.session.get('userId')):
         errormessage = '로그인을 해주세요.'
@@ -552,6 +581,7 @@ def selectCity(request):
 
 
 def personalCreate(request):
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     personalMatching =  PersonalMatching()
     personalMatching.sport = request.POST.get('sport')
     personalMatching.content = request.POST.get('content')
@@ -605,37 +635,64 @@ def personalCreate(request):
     elif request.POST.get('sejong') is not None:
         city = request.POST.get('sejong')
 
-    personalMatching.location = request.POST.get('location')
+    location = request.POST.get('location')
+    ground = location.split(",")
+    playgroundList = get_object_or_404(PlaygroundList, pk = ground[0])
+    personalMatching.location = playgroundList
     playDate = request.POST.get('playDate')
     playTime = request.POST.get('playTime')
     timeValue = playTime.split(',')
     smallNum = 0;
     largeNum = 0;
+    reservationTimeArray = []
     for i in timeValue:
-        
-        if i is not '':
-            if int(i) > largeNum:
-                smallNum = largeNum
-                largeNum = int(i)
-                
-            elif (int(i) < largeNum):
-                if smallNum is 0:
-                    smallNum = int(i)
-                else:
-                    if int(i) < smallNum:
-                        smallNum = int(i)
-                
+        reservationTimeArray.append(int(i))
+        if smallNum is 0 and largeNum is 0:
+            smallNum = int(i)
+            largeNum = int(i)
+
+        elif int(i) > largeNum:
+            smallNum = largeNum
+            largeNum = int(i)
+            
+        elif (int(i) < largeNum):
+            if int(i) < smallNum:
+                smallNum = int(i)
+            
         
 
     year = playDate[0:4]
     month = playDate[6:8]
     date = playDate[10:12]
     hour = str(smallNum)
-    startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + '00'
+    startDay = datetime(int(year), int(month), int(date))
+    if int(hour) is 24:
+        hour = '00'
+        changedDate = startDay + timedelta(days=1)
+        startMonth = changedDate.strftime('%m')
+        startDate = changedDate.strftime('%d')
+        startTime = year + '-' + startMonth + '-' + startDate + ' ' + hour + ':' + '00'
+    else:
+        startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + '00'
+
     personalMatching.time_from = startTime
     
+
+
     endHour = str(largeNum+1)
     endMin = '00'
+    day = datetime(int(year), int(month), int(date))
+    if int(endHour) is 24 or int(endHour) is 25:
+        if int(endHour) is 24:
+            endHour = '00'
+        elif int(endHour) is 25:
+            endHour = '01'
+
+        changedDate = day + timedelta(days=1)
+        month = changedDate.strftime('%m')
+        date = changedDate.strftime('%d')
+
+
     endTime = year + '-' + month + '-' + date + ' ' + endHour + ':' + endMin
     personalMatching.time_to = endTime
     personalMatching.number = request.POST.get('number')
@@ -644,9 +701,147 @@ def personalCreate(request):
     user_id = request.session.get('userId')
     fnsUser = get_object_or_404(FNSUser, pk = user_id)
     personalMatching.user = fnsUser
-    personalMatching.save()
 
+
+    
+    for idx, reservation in enumerate(reservationTimeArray):
+        reservationDate = str(year) + str(month) + str(date)
+        reservationTime = str(reservationTimeArray[idx]) + "00"
+        newReservation = ReservationList(user = fnsuser, playgroundName = playgroundList, 
+        reservationDate = reservationDate, reservationTime = reservationTime, 
+        resercationUserId = "moonlit0130", reservationUserName = fnsuser.name, 
+        resercationUserPhone = fnsuser.phone_number)
+        newReservation.save()
+
+    
+    personalMatching.save()
     return redirect(reverse('personal'))
+
+def personalResult(request, personalId):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    personalMatching = get_object_or_404(PersonalMatching, pk = personalId)
+
+    isAttended = personalMatching.attendedPlayer.filter(pk = request.session.get('userId')).exists()
+
+    comments = PersonalComment.objects.filter(post = personalMatching.id).order_by('-created')
+    # 객체를 한 페이지로 자르기
+    commentPaginator = Paginator(comments, 15)
+    # request에 담아주기
+    commentPage = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    commentList = commentPaginator.get_page(commentPage)
+
+    #만약 글 게시자가 신청 눌렀을 시
+    if (fnsuser == personalMatching.user):
+        error = "글 작성자는 신청을 못합니다."
+        data = {
+            'personalMatching':personalMatching, 
+            'isApplied': isApplied, 
+            'total_attendance': personalMatching.total_attendance(), 
+            'error':error, 
+            'isAttended':isAttended,
+            'commentList':commentList,
+            'countNotification':countNotification, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser,
+        }
+
+        return render(request, 'personalMatching/personalDetail.html', data)
+
+    elif (personalMatching.attendedPlayer.filter(pk = request.session.get('userId')).exists()):
+        error = "이미 참가 확정 중입니다."
+        data = {
+            'personalMatching':personalMatching, 
+            'isApplied': isApplied, 
+            'isAttended':isAttended,
+            'total_attendance': personalMatching.total_attendance(), 
+            'error':error, 
+            'commentList':commentList,
+            'countNotification':countNotification, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser,
+        }
+
+        return render(request, 'personalMatching/personalDetail.html', data)
+
+    if isApplied:
+        personalMatching.appliedPlayer.remove(fnsuser)
+        isApplied = False
+        alarm = '참가신청이 취소되었습니다.'
+    
+    
+    elif personalMatching.number <= personalMatching.total_attendance():
+        error = '모집인원이 다 모아져서 참가신청이 안됩니다.'
+        data = {
+            'personalMatching':personalMatching, 
+            'isApplied': isApplied, 
+            'isAttended':isAttended,
+            'total_attendance': personalMatching.total_attendance(), 
+            'error':error, 
+            'commentList':commentList,
+            'countNotification':countNotification, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser,
+        }
+
+        return render(request, 'personalMatching/personalDetail.html', data)
+    
+    else:    
+        personalMatching.appliedPlayer.add(fnsuser)
+        isApplied = True
+        alarm = '참가신청이 완료되었습니다.'
+        newNotification = Notification.objects.create(
+            creator = fnsuser,
+            to = personalMatching.user,
+            notification_type = Notification.personalApply,
+            personalMatching = personalMatching
+        )
+
+        newNotification.personalApplyText()
+        newNotification.save()
+
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'personalMatching':personalMatching, 
+        'isApplied': isApplied, 
+        'isAttended':isAttended,
+        'total_attendance': personalMatching.total_attendance(), 
+        'commentList':commentList,
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser,
+        'alarm':alarm,
+    }
+    return render(request, 'personalMatching/personalDetail.html', data)
+    message = request.POST.get('message', none)
+    data = {
+        'message': message
+    }
+    return render(request, 'personalDetail.html', data)
 
 def personal_editForm(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk = personal_id)

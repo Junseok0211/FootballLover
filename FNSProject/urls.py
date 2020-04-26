@@ -31,6 +31,7 @@ urlpatterns = [
     path('personalDetail/<int:personal_id>', match.views.personalDetail, name = "personalDetail"),
     path('personalNew', match.views.personalNew, name="personalNew"),
     path('personalCreate', match.views.personalCreate, name = "personalCreate"),
+    path('personalResult/<int:personalId>', match.views.personalResult, name = "personalResult"),
     path('personal_editForm/<int:personal_id>', match.views.personal_editForm, name = "personal_editForm"),
     path('personal_edit/<int:personal_id>', match.views.personal_edit, name = "personal_edit"),
     path('personalDelete/<int:personal_id>', match.views.personalDelete, name="personalDelete"),

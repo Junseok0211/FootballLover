@@ -204,17 +204,16 @@
 <nav class="navBar">
   <div class="navDesign">
     <div>
-      {% if countNotification > 0 %}
-      <a href="{% url 'notification' %}">
-        <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
-          <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
-        </span>
-      </a>
-      {% else %}
       <a href="#" onclick="openAlarm();">
+        {% if countNotification > 0 %}
+        <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
+          <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" style="z-index: 0;" data-count="{{countNotification}}"></i>
+        </span>
+        {% else %}
         <i class="bell far fa-lg fa-bell" style="z-index: 0;"></i>
+        {% endif %}
       </a>
-      {% endif %}
+      
     </div>
     <div class="d-flex justify-content-center">
       <a href="{% url 'home' %}">
