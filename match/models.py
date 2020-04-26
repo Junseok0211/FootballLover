@@ -42,7 +42,7 @@ class PersonalMatching(models.Model):
         return self.content[:20]
 
     def __str__(self):
-        return self.location.playgroundName
+        return self.content[:20]
     # def __str__(self):
     #     return '%s - %s' % (self.user.name, self.title)
 
