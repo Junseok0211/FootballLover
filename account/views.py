@@ -187,6 +187,9 @@ def register(request):
 
         elif request.POST.get('sejong') is not None:
             city = request.POST.get('sejong')
+
+        elif request.POST.get('gangwon') is not None:
+            city = request.POST.get('gangwon')
         
         school = request.POST.get('school', None)
         phone_number = request.POST.get('phone_number', None)

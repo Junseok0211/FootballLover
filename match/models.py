@@ -13,8 +13,8 @@ class PersonalMatching(models.Model):
     time_to = models.DateTimeField(null = True, blank = True)
 
     sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
-    location = models.ForeignKey(PlaygroundList, related_name='personalMatching', on_delete = models.SET_NULL, blank=True, null=True)
-    #location = models.CharField(max_length=10, null=True, blank = True)
+    #location = models.ForeignKey(PlaygroundList, related_name='personalMatching', on_delete = models.SET_NULL, blank=True, null=True)
+    location = models.CharField(max_length=10, null=True, blank = True)
     #모집인원
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)

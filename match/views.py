@@ -95,8 +95,10 @@ def play(request):
 
 def personal(request):
     today = date.today()
+    month = today.month
+    day = today.day
     if not request.session.get('userId'):
-        personal = PersonalMatching.objects.all().filter(
+        personal = PersonalMatching.objects.all().filter(region = '충청남도', city = '천안시',
         time_from__month = today.month, time_from__day = today.day).order_by('time_from')
         # 객체를 한 페이지로 자르기
         paginator = Paginator(personal, 8)
@@ -108,11 +110,14 @@ def personal(request):
         data = {
             'personalList': personalList,
             'personal':personal,
-            'today':today
+            'today':today,
+            'month':month,
+            'day':day
         }
         return render(request, 'personalMatching/personal.html', data)
     else:
-        personal = PersonalMatching.objects.all().filter(
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        personal = PersonalMatching.objects.all().filter(region = fnsuser.region, city = fnsuser.city,
         time_from__month = today.month, time_from__day = today.day).order_by('time_from')
         # 객체를 한 페이지로 자르기
         paginator = Paginator(personal, 8)
@@ -121,7 +126,7 @@ def personal(request):
         # request된 페이지를 얻어온 뒤 return 해 준다.
         personalList = paginator.get_page(page)
 
-        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
         countNotification = notification.filter(userCheck = False).count()
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
@@ -131,16 +136,78 @@ def personal(request):
         page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
         notificationList = paginator.get_page(page)
-        return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 'personal':personal, 
-        'personalList':personalList, 'notificationList':notificationList, 'fnsuser':fnsuser, 
-        'today':today})
+        
+        data = {
+            'month':month,
+            'day':day,
+            'countNotification':countNotification, 
+            'personal':personal, 
+            'personalList':personalList, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser, 
+            'today':today
+        }
+        return render(request, 'personalMatching/personal.html', data)
 
 def personalDay(request):
     today = datetime.today()
     month = request.GET.get('month')
     # month = int(month) + 1
     day = request.GET.get('day')
-    personal = PersonalMatching.objects.all().filter(
+    region = request.GET.get('region')
+
+    if request.GET.get('seoul') is not None:
+        city = request.GET.get('seoul')
+    
+    elif request.GET.get('gyeonggi') is not None:
+        city = request.GET.get('gyeonggi')
+
+    elif request.GET.get('north_chungcheong') is not None:
+        city = request.GET.get('north_chungcheong')
+    
+    elif request.GET.get('south_chungcheong') is not None:
+        city = request.GET.get('south_chungcheong')
+    
+    elif request.GET.get('north_jeolla') is not None:
+        city = request.GET.get('north_jeolla')
+
+    elif request.GET.get('south_jeolla') is not None:
+        city = request.GET.get('south_jeolla')
+
+    elif request.GET.get('north_gyeongsang') is not None:
+        city = request.GET.get('north_gyeongsang')
+
+    elif request.GET.get('south_gyeongsang') is not None:
+        city = request.GET.get('south_gyeongsang')
+
+    elif request.GET.get('jeju') is not None:
+        city = request.GET.get('jeju')
+
+    elif request.GET.get('incheon') is not None:
+        city = request.GET.get('incheon')
+
+    elif request.GET.get('daejeon') is not None:
+        city = request.GET.get('daejeon')
+    
+    elif request.GET.get('gwangju') is not None:
+        city = request.GET.get('gwangju')
+
+    elif request.GET.get('daegu') is not None:
+        city = request.GET.get('daegu')
+
+    elif request.GET.get('ulsan') is not None:
+        city = request.GET.get('ulsan')
+
+    elif request.GET.get('busan') is not None:
+        city = request.GET.get('busan')
+
+    elif request.GET.get('sejong') is not None:
+        city = request.GET.get('sejong')
+
+    elif request.GET.get('gangwon') is not None:
+        city = request.GET.get('gangwon')
+
+    personal = PersonalMatching.objects.all().filter(region=region, city=city,
         time_from__month = int(month) + 1, time_from__day = day
     ).order_by('time_from')
     # 객체를 한 페이지로 자르기
@@ -169,15 +236,20 @@ def personalDay(request):
             'today':today,
             'fnsuser':fnsuser,
             'notificationList':notificationList,
-            'countNotification':countNotification
+            'countNotification':countNotification,
+            'region':region,
+            'city':city
         }
         return render(request, 'personalMatching/personal.html', data)
+
     data = {
         'personal':personal,
         'personalList':personalList,
         'month' : month,
         'day' : day,
-        'today':today
+        'today':today,
+        'region':region,
+        'city':city
     }
     return render(request, 'personalMatching/personal.html', data)
 
@@ -635,6 +707,10 @@ def personalCreate(request):
     elif request.POST.get('sejong') is not None:
         city = request.POST.get('sejong')
 
+    elif request.POST.get('gangwon') is not None:
+        city = request.POST.get('gangwon')
+
+    personalMatching.city = city
     location = request.POST.get('location')
     ground = location.split(",")
     playgroundList = get_object_or_404(PlaygroundList, pk = ground[0])

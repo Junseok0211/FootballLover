@@ -466,7 +466,7 @@ alert("{{errormessage}}");
             {% if forloop.counter < 3 %}
             <div style="background-color: white; display:flex; justify-content: space-between; padding: 10px;
             border-bottom: 1px solid black;">
-              <div style="width: 40%;" class="scheduleSubText">{{personal.location.playgroundName}}</div>
+              <div style="width: 40%;" class="scheduleSubText">장소입니다.</div>
               {% autoescape on %}
               <div style="width: 30%; text-align: center;" class="scheduleSubText">{{personal.time_from|date:"H:i"}}-{{personal.time_to|date:"H:i"}}</div>
               {% endautoescape %}
