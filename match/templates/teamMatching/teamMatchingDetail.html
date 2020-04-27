@@ -555,12 +555,12 @@ alert("{{error}}");
     <nav class="navBar">
         <div class="navDesign">
             <div>
-                <a href="{% url 'personal' %}" style="color: gray; margin-top: 0.5rem;">
+                <a href="{% url 'teamMatching' %}" style="color: gray; margin-top: 0.5rem;">
                     <i class="fas fa-lg fa-chevron-left" style="margin-top: 12px;"></i>
                 </a>
             </div>
             <div style="margin-top: 5px;">
-                <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">개인매칭</span>
+                <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">팀매칭</span>
             </div>
             <div>
             </div>
@@ -577,19 +577,19 @@ alert("{{error}}");
 
 <div style="max-width: 720px; margin:0 auto; width: 100%;">
 <!--컨텐츠 영역-->
-<div class="sec match  marginForNav">
+<div class="sec match marginForNav">
     <!-- 양쪽정렬된 탭 메뉴 -->
     <ul class="nav-justified">
-      <li class="item active">
+      <li class="item">
           <p class="txt">
-              <a href = "{% url 'personal' %}" style="text-decoration: none; color: #131313;">
+              <a href = "{% url 'personal' %}" style="text-decoration: none; color: #8c8c8c;">
                   개인 매칭
               </a>
           </p>
       </li>
-      <li class="item">
+      <li class="item active">
           <p class="txt">
-              <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#8c8c8c;">
+              <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#131313;">
                   팀 매칭
               </a>
           </p>
@@ -620,31 +620,31 @@ alert("{{error}}");
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_calendar.png' %})"></figure>
                     {% autoescape on %}
-                    <p class="txt">{{personalMatching.time_from|date:"Y년 n월 j일 (D)"}}</p>
+                    <p class="txt">{{teamMatching.time_from|date:"Y년 n월 j일 (D)"}}</p>
                     {% endautoescape %}
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_time.png' %})"></figure>
                     {% autoescape on %}
                     <p class="txt">
-                      {{personalMatching.time_from|date:"G:i"}} - {{personalMatching.time_to|date:"G:i"}}
+                      {{teamMatching.time_from|date:"G:i"}} - {{teamMatching.time_to|date:"G:i"}}
                     </p>
                     {% endautoescape %}
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_place.png' %})"></figure>
-                    <p class="txt">{{personalMatching.location.playgroundName}}</p>
+                    <p class="txt">{{teamMatching.location.playgroundName}}({{teamMatching.isReserved}})</p>
                 </li>
                 <li class="item">
                     <figure style="background-image: url({% static 'icon_cash.png' %})"></figure>
-                    <p class="txt">{{personalMatching.joinFee}}원</p>
+                    <p class="txt">{{teamMatching.joinFee}}원</p>
                 </li>
                 <li class="item person">
                     <div class="thumb-profile">
                         <figure></figure>
                         <div class="group">
-                            <p class="txt point">{{personalMatching.user.name}} / 호스트</p>
-                            <p class="txt">{{personalMatching.content}}</p>
+                            <p class="txt point">{{teamMatching.user.name}} / 호스트({{teamMatching.user.phone_number}})</p>
+                            <p class="txt">{{teamMatching.content}}</p>
                         </div>
                     </div>
                 </li>
@@ -655,11 +655,11 @@ alert("{{error}}");
     <!-- 개인매칭 - 참가자 -->
     <div class="matchDetial people">
         <div class="head">
-            <h3 class="tit">참가확정자</h3>
+            <h3 class="tit">매칭확정팀</h3>
         </div>
-        {% if personalMatching.attendedPlayer.all %}
+        {% if teamMatching.attendedPlayer.all %}
         <div class="grid-container">
-          {% for player in personalMatching.attendedPlayer.all %}
+          {% for player in teamMatching.attendedPlayer.all %}
           
             <div>
                 <a href="{% url 'myPage' player.id %}" style="text-decoration: none; color:black;">
@@ -679,11 +679,11 @@ alert("{{error}}");
     <!-- 개인매칭 - 참가신청자 -->
     <div class="matchDetial people">
       <div class="head">
-          <h3 class="tit">참가신청자</h3>
+          <h3 class="tit">매칭신청팀</h3>
       </div>
-      {% if personalMatching.appliedPlayer.all %}
+      {% if teamMatching.appliedPlayer.all %}
       <div class="grid-container">
-      {% for player in personalMatching.appliedPlayer.all %}
+      {% for player in teamMatching.appliedPlayer.all %}
        
         <div>
             <a href="{% url 'myPage' player.id %}" style="text-decoration: none; color:black;">
@@ -700,20 +700,20 @@ alert("{{error}}");
       <p class="name" style="padding: 10px;">참가 신청자가 없습니다.</p>
       {% endif %}
     </div>
-    {% if fnsuser != personalMatching.user %}
+    {% if fnsuser != teamMatching.user %}
     <div class="btn-wrap">
         <button type="button" class="btn">
-            <a href="{% url 'personalComment' personalMatching.id %}" 
+            <a href="{% url 'personalComment' teamMatching.id %}" 
             style="text-decoration: none; color: white;">
                 댓글
             </a>  
         </button>
         <button type="button" class="btn active">
-        {% if personalMatching.total_attendance == personalMatching.number or  personalMatching.time_from|hourDifference <= '1' or personalMatching.time_from|timeuntil == '0분' %}
+        {% if teamMatching.total_attendance == teamMatching.number or  teamMatching.time_from|hourDifference <= '1' or teamMatching.time_from|timeuntil == '0분' %}
         참가마감
         {% else %}
             {% if isAttended %}
-            <a href="{% url 'personalAttendanceCancel' personalMatching.id %}" style="text-decoration: none; color: white;">
+            <a href="{% url 'personalAttendanceCancel' teamMatching.id %}" style="text-decoration: none; color: white;">
                 참가취소
             </a>
             {% else %}
@@ -729,23 +729,23 @@ alert("{{error}}");
     {% else %}
     <div class="btn-wrap">
         <button type="button" class="btn">
-            <a href="{% url 'personalComment' personalMatching.id %}" 
+            <a href="{% url 'personalComment' teamMatching.id %}" 
             style="text-decoration: none; color: white;">
                 댓글
             </a>  
         </button>
       <button type="button" class="btn active">
-        <a href="{% url 'appliedPlayer' personalMatching.id %}" style="text-decoration: none; color: white;">
+        <a href="{% url 'appliedPlayer' teamMatching.id %}" style="text-decoration: none; color: white;">
           신청현황
         </a>
       </button>
     </div>
     <div class="btn-wrap" style="margin-top:5px;">
         <button type="button" class="btn" style="background-color: lightslategray;">
-        <a href="{% url 'personalEdit' personalMatching.id %}" style="text-decoration: none; color:white;">수정</a>
+        <a href="{% url 'personalEdit' teamMatching.id %}" style="text-decoration: none; color:white;">수정</a>
         </button>
       <button type="button" class="btn" style="background-color: lightslategray" onclick="return deletePersonal();">
-        <a href="{% url 'personalDelete' personalMatching.id %}" style="text-decoration: none; color: white;">
+        <a href="{% url 'personalDelete' teamMatching.id %}" style="text-decoration: none; color: white;">
           삭제
         </a>
       </button>
@@ -755,7 +755,7 @@ alert("{{error}}");
 </div>
 <!--컨텐츠 영역-->
 </div>
-<form action="{% url 'personalResult' personalMatching.id %}" method="POST" id="reservationForm" name="reservationForm">
+<form action="{% url 'personalResult' teamMatching.id %}" method="POST" id="reservationForm" name="reservationForm">
     {% csrf_token %}
     <input type="hidden" id="playground" value="참가신청이 완료되었습니다." name="message">
 </form>
@@ -763,7 +763,7 @@ alert("{{error}}");
 <form style="display:none;" id="paymentForm" name="paymentForm" method="POST" action="{% url 'paymentPop' %}">
     {% csrf_token %}
     <input type="text" id="pay_method" name="pay_method" value="card">
-    <input type="text" id="totalPrice" name="totalPrice" value="{{personalMatching.joinFee}}">
+    <input type="text" id="totalPrice" name="totalPrice" value="{{teamMatching.joinFee}}">
     <input type="text" id="send_name" name="user_name" value="{{fnsuser.name}}" placeholder="예약자 성함" style="width:49%;" required>
     <input type="text" id="send_phone" name="user_phone" value="{{fnsuser.phone_number}}" placeholder="예약자 전화번호" style="width:50%;" required>
 </form>
@@ -786,10 +786,10 @@ alert("{{error}}");
             let amount = "10"; // 결제금액
             let pay_method = "card"; // 결제방법
             let user_id = "moonlit0130"; // 회원 아이디
-            let playground = "개인매칭({{personalMatching.location}})"
+            let playground = "개인매칭({{teamMatching.location}})"
             let user_name = $("#send_name").val(); // 예약자 성함
             let user_phone = $("#send_phone").val(); // 예약자 전화번호
-            let writer = "{{personalMatching.user.id}}";
+            let writer = "{{teamMatching.user.id}}";
             let applier = "{{fnsuser.id}}";
 
             if(writer == applier){

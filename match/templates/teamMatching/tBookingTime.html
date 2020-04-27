@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load hDate %}
+
+{% block contents %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+
+<style>
+    .date_nav {
+        max-width: 720px;
+        margin: 10px;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: auto;
+    }
+
+    .selectDay {
+        width: 100px;
+        text-align: center;
+        height: 50px;
+        line-height: 50px;
+        font-size: 12px;
+        border: 1px solid #eaeaea;
+    }
+
+    .active {
+        background-color: #28AAE3;
+        color: #FFFFFF;
+        font-weight: bold;
+    }
+
+    .pc{
+    display: block;
+    }
+
+    .mobile{
+        display: none;
+    }
+    .marginForNav{
+        margin-top:80px;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+        .marginForNav{
+            margin-top: 60px;
+        }
+    }
+
+</style>
+
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+  </div>
+  
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
+<div class="common_area">
+
+    <div class="date_nav marginForNav">
+        <div class="selectDay active" style="width: 100%; font-family: 'Noto Sans KR'; font-size: 1rem;
+        font-weight: bold;">
+            {{playDate}}
+        </div>
+    </div>
+
+    <div>
+        {% for reservation in reservationPossible %}
+        {% if reservation.2 == 0 %}
+
+        <div class="reservation_list not">
+            <input type="hidden" value="{{reservation.0}}" class="selectedTime">
+            <input type="hidden" value="{{reservation.1}}" class="price">
+            <p>{{reservation.0}}:00</p>
+            <p>{{reservation.1}} 원</p>
+            <p style="color:#28AAE3;">예약가능</p>
+        </div>
+
+        {% else %}
+
+        <div class="reservation_list done">
+            <p>{{reservation.0}}:00</p>
+            <p>{{reservation.1}} 원</p>
+            <p style="color:red;">예약불가</p>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <form action="{% url 'tMatchingCreate' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="reservationTime" name="reservationTime">
+        <input type="hidden" id="region" name="region" value="{{region}}">
+        <input type="hidden" id="city" name="city" value="{{city}}">
+        <input type="hidden" id="joinFee" name="joinFee" value="{{joinFee}}">
+        <input type="hidden" id="playDate" name="playDate" value="{{playDate}}">
+        <input type="hidden" id="rank" name="rank" value="{{rank}}">
+        <input type="hidden" id="playground" name="playgroundId" value="{{playground}}">
+        <input type="hidden" id="content" name="content" value="{{content}}">
+        <input type="hidden" value="예약">
+        <div class="payBtn" style="width:90%; margin:20px auto;">
+            예약하기
+        </div>
+    </form>
+
+</div>
+<footer class="mobile">
+    {% include 'stickyFooter.html' %}
+</footer>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+    crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+
+        let reservationTimeArray = [];
+        $(".reservation_list").not(".done").click(function () {
+            let selectedTime = $(this).children(".selectedTime").val();
+            let price = $(this).children(".price").val();
+
+            let totalPrice = $("#totalPrice").val();
+
+            let check = reservationTimeArray.indexOf(selectedTime);
+            if (check == -1) {
+
+                reservationTimeArray.push(selectedTime);
+                $("#reservationTime").val(reservationTimeArray.join(","));
+                $(this).css("background-color", "#28AAE3");
+                $(this).children().css("color", "black");
+
+                let sumPrice = parseInt(totalPrice) + parseInt(price);
+                $("#totalPrice").val(sumPrice);
+
+            } else {
+
+                reservationTimeArray.splice(check, 1);
+                $("#reservationTime").val(reservationTimeArray.join(","));
+                $(this).css("background-color", "#EEEEEE");
+                $(this).children().css("color", "black");
+
+                let sumPrice = parseInt(totalPrice) - parseInt(price);
+                $("#totalPrice").val(sumPrice);
+
+            }
+        });
+
+        $(".payBtn").click(function () {
+            $(this).parent().submit();
+        });
+
+    });
+</script>
+
+{% endblock %}

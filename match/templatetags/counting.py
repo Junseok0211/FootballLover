@@ -23,3 +23,10 @@ def dayDifference(value):
     delta = value - now
     
     return int(delta.days)
+
+@register.filter
+def hourMinute(value):
+    hour = value[0:2]
+    minute = value[2:4]
+    
+    return hour + ':' + minute

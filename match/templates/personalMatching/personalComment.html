@@ -69,20 +69,25 @@
     <link rel="stylesheet" type="text/css" href="{% static 'match/css/comment.css' %}" />
 
     <style>
-        .navBar{
-            background-color: #F3F3F3;
-            height: 45px;
-            
-        }
+    .navBar{
+        background-color: #F3F3F3;
+        height: 60px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 1;
         
-        .navDesign{
-            max-width: 720px;
-            width: 100%;
-            padding:10px;
-            margin:0 auto;
-            display: flex;
-            justify-content: space-between;
-        }
+    }
+
+
+    .navDesign{
+        max-width: 720px;
+        width: 100%;
+        padding:10px;
+        margin:0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
 
         </style>
 
@@ -95,20 +100,12 @@
       <nav class="navBar sticky-top">
         <div class="navDesign">
           <div>
-            {% if countNotification > 0 %}
-            <a href="{% url 'notification' %}" style="color: gray;">
-              <span class="bellNum p1 fa-stack has-badge" data-count="{{countNotification}}">
-                <i class="p3 far fa-lg fa-bell fa-stack-1x xfa-inverse" data-count="{{countNotification}}"></i>
-              </span>
-            </a>
-            {% else %}
             <a href="{% url 'personalDetail' personalMatching.id %}" style="color: gray; margin-top: 0.3rem;">
-                <i class="fas fa-lg fa-chevron-left"></i>
+                <i class="fas fa-lg fa-chevron-left" style="margin-top:12px;"></i>
             </a>
-            {% endif %}
           </div>
-          <div>
-            <span style="font-family: 'Noto Sans KR'; font-weight: bold;">댓글</span>
+          <div style="margin-top: 5px;">
+            <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">댓글</span>
           </div>
           <div>
           </div>

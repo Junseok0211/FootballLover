@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block contents %}
+{% load static %}
+{% load hDate %}
+
+<head>
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+<!-- font awesome -->
+<script src="https://kit.fontawesome.com/8b80c27e4f.js" crossorigin="anonymous"></script>
+
+<style>
+    /* 플레이 */
+.sec.play {
+    padding: 5.3rem 3.5rem;
+    background: url("{% static 'bg_play.png' %}") no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.sec.play .list {
+    display: flex;
+    align-items: center;
+    height: 3.375rem;
+    line-height: 3.375rem;
+    margin-bottom: 2.5rem;
+    background-color: #333333;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.sec.play .list figure {
+    display: block;
+    margin: -4px 1rem 0 0;
+    height: 100%;
+}
+.sec.play .list .tit {
+    padding: 1rem;
+    font-weight: bold;
+    font-size: 1.125rem;
+    color: #ffffff;
+}
+
+.navBar{
+    background-color: #F3F3F3;
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    
+}
+
+
+.navDesign{
+    max-width: 720px;
+    width: 100%;
+    padding:10px;
+    margin:0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.marginForNav{
+    margin-top: 80px;
+}
+.pc{
+display: block;
+}
+
+.mobile{
+display: none;
+}
+
+@media only screen and (max-device-width : 720px) {
+.pc{
+    display: none;
+}
+.mobile{
+    display: block;
+}
+.marginForNav{
+    margin-top: 60px;
+}
+}
+</style>
+</head>
+<div class="mobile">
+      <!--navBar -->
+      <nav class="navBar">
+        <div class="navDesign">
+            <div>
+                <a href="{% url 'tCheckReservation' %}" style="color: gray; margin-top: 0.5rem;">
+                    <i class="fas fa-lg fa-chevron-left" style="margin-top: 12px;"></i>
+                </a>
+            </div>
+            <div style="margin-top: 5px;">
+                <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">글쓰기</span>
+            </div>
+            <div>
+            </div>
+        
+        </div>
+    </nav>
+    <!--navBar 끝--> 
+</div>
+
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
+<!--컨텐츠 영역-->
+<div style="max-width: 720px; width: 100%; margin:0 auto;">
+<div class="sec play marginForNav" style="background-image: url({% static 'bg_play.png' %})">
+    <ul>
+        <li class="list">
+                <h4 class="tit">구장을 대관하시겠습니까?</h4>
+        </li>
+        <a href="{% url 'tBookingFirst' %}">
+            <li class="list">
+                <figure>
+                    <img src="{% static 'menu_icon02.png' %}" height="100%" />
+                </figure><h4 class="tit">네 (대관&매칭)</h4>
+            </li>
+        </a>
+        <a href="{% url 'tMatchingFirst' %}">
+            <li class="list">
+                <figure>
+                    <img src="{% static 'menu_icon03.png' %}" height="100%" />
+                </figure>
+                <h4 class="tit">아니오(매칭만)</h4>    
+            </li>
+        </a>
+    </ul>
+</div>
+</div>
+<!--컨텐츠 영역-->
+
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+  </footer>
+{% endblock %}

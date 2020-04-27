@@ -18,9 +18,10 @@ i {
 /* 공통 - 양쪽정렬된 탭 메뉴 */
 .nav-justified {
     display: flex;
-    justify-content: space-around;
+    flex-direction: row;
     align-items: center;
     font-weight: bold;
+    box-sizing: content-box;
     font-size: 0.75rem;
     color: #8c8c8c;
     background: #e1e1e1;
@@ -28,7 +29,10 @@ i {
 }
 .nav-justified > .item {
     position: relative;
-    padding: 0.7rem 0.3rem;
+    box-sizing: content-box;
+    padding: 0.7rem 0rem;
+    text-align: center;
+    width:25%;
 }
 .nav-justified > .item.active {
     color: #131313;

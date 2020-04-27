@@ -13,7 +13,7 @@ from datetime import datetime, date, timedelta
 from django.utils.dateformat import DateFormat
 from django.core import serializers
 from reservation.models import PlaygroundList, ReservationList
-import json
+import json, logging
 
 # Create your views here.
 def home(request):
@@ -712,9 +712,12 @@ def personalCreate(request):
 
     personalMatching.city = city
     location = request.POST.get('location')
-    ground = location.split(",")
-    playgroundList = get_object_or_404(PlaygroundList, pk = ground[0])
-    personalMatching.location = playgroundList
+    if location == 'playground':
+        personalMatching.location = None
+    else:
+        ground = location.split(",")
+        playgroundList = get_object_or_404(PlaygroundList, pk = ground[0])
+        personalMatching.location = playgroundList
     playDate = request.POST.get('playDate')
     playTime = request.POST.get('playTime')
     timeValue = playTime.split(',')
@@ -722,7 +725,7 @@ def personalCreate(request):
     largeNum = 0;
     reservationTimeArray = []
     for i in timeValue:
-        reservationTimeArray.append(int(i))
+        reservationTimeArray.append(i)
         if smallNum is 0 and largeNum is 0:
             smallNum = int(i)
             largeNum = int(i)
@@ -740,6 +743,8 @@ def personalCreate(request):
     year = playDate[0:4]
     month = playDate[6:8]
     date = playDate[10:12]
+    if smallNum < 10:
+        smallNum = '0' + str(smallNum)
     hour = str(smallNum)
     startDay = datetime(int(year), int(month), int(date))
     if int(hour) is 24:
@@ -754,8 +759,11 @@ def personalCreate(request):
     personalMatching.time_from = startTime
     
 
-
-    endHour = str(largeNum+1)
+    if largeNum < 9:
+        largeNum = '0' + str(largeNum+1)
+    else:
+        largeNum = int(largeNum) + 1
+    endHour = str(largeNum)
     endMin = '00'
     day = datetime(int(year), int(month), int(date))
     if int(endHour) is 24 or int(endHour) is 25:
@@ -778,16 +786,34 @@ def personalCreate(request):
     fnsUser = get_object_or_404(FNSUser, pk = user_id)
     personalMatching.user = fnsUser
 
-
+    # check 예약 있는지 없는지
+    for idx, reservation in enumerate(reservationTimeArray):
+        if personalMatching.location is not None:
+            reservationDate = str(year) + str(month) + str(date)
+            #if int(reservationTimeArray[idx]) < 10:
+            #    reservationTimeArray[idx] = '0' + str(reservationTimeArray[idx])
+            reservationTime = str(reservationTimeArray[idx]) + "00"
+            
+            if playgroundList.reservation.filter(user = fnsuser, playgroundName = playgroundList, 
+            reservationDate = reservationDate, reservationTime = reservationTime, 
+            reservationUserName = fnsuser.name, resercationUserPhone = fnsuser.phone_number).exists():
+                error = '작성한 시간대는 이미 예약되어 있습니다.'
+                data = {
+                    'error':error
+                }
+                return render(request, 'personalMatching/personalNew.html', data)
     
     for idx, reservation in enumerate(reservationTimeArray):
-        reservationDate = str(year) + str(month) + str(date)
-        reservationTime = str(reservationTimeArray[idx]) + "00"
-        newReservation = ReservationList(user = fnsuser, playgroundName = playgroundList, 
-        reservationDate = reservationDate, reservationTime = reservationTime, 
-        resercationUserId = "moonlit0130", reservationUserName = fnsuser.name, 
-        resercationUserPhone = fnsuser.phone_number)
-        newReservation.save()
+        if personalMatching.location is not None:
+            reservationDate = str(year) + str(month) + str(date)
+            #if int(reservationTimeArray[idx]) < 10:
+            #    reservationTimeArray[idx] = '0' + str(reservationTimeArray[idx])
+            reservationTime = str(reservationTimeArray[idx]) + "00"
+            newReservation = ReservationList(user = fnsuser, playgroundName = playgroundList, 
+            reservationDate = reservationDate, reservationTime = reservationTime, 
+            resercationUserId = "moonlit0130", reservationUserName = fnsuser.name, 
+            resercationUserPhone = fnsuser.phone_number)
+            newReservation.save()
 
     
     personalMatching.save()
@@ -919,30 +945,254 @@ def personalResult(request, personalId):
     }
     return render(request, 'personalDetail.html', data)
 
-def personal_editForm(request, personal_id):
-    personalMatching = get_object_or_404(PersonalMatching, pk = personal_id)
-    userId = request.session.get('userId')
-    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
-    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
-    countNotification = notification.filter(userCheck = False).count()
-    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
-    # 객체를 한 페이지로 자르기
-    paginator = Paginator(notification, 5)
-    # request에 담아주기
-    page = request.GET.get('page')
-    # request된 페이지를 얻어온 뒤 return 해 준다.
-    notificationList = paginator.get_page(page)
-    if(userId != personalMatching.user.id):
-        personal = PersonalMatching.objects.order_by('-created')
+def personalEdit(request, personalId):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    if request.method == 'GET':
+        personalMatching = get_object_or_404(PersonalMatching, pk = personalId)
+        userId = request.session.get('userId')
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
         # 객체를 한 페이지로 자르기
-        paginator = Paginator(personal, 8)
+        paginator = Paginator(notification, 5)
         # request에 담아주기
         page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
-        personalList = paginator.get_page(page)
-        error = '글을 작성한 사용자만 수정할 수 있습니다.'
-        return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
-    return render(request, 'personalMatching/personal_editForm.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalMatching':personalMatching})
+        notificationList = paginator.get_page(page)
+
+        if(userId != personalMatching.user.id):
+            personal = PersonalMatching.objects.all().filter(region = fnsuser.region, city = fnsuser.city,
+            time_from__month = today.month, time_from__day = today.day).order_by('time_from')
+            # 객체를 한 페이지로 자르기
+            paginator = Paginator(personal, 10)
+            # request에 담아주기
+            page = request.GET.get('page')
+            # request된 페이지를 얻어온 뒤 return 해 준다.
+            personalList = paginator.get_page(page)
+            error = '글을 작성한 사용자만 수정할 수 있습니다.'
+            data = {
+                'countNotification':countNotification, 
+                'notificationList':notificationList, 
+                'fnsuser':fnsuser, 
+                'personal': personal,
+                'personalList':personalList, 
+                'error':error
+            }
+            return render(request, 'personalMatching/personal.html', data)
+
+        else:
+            data = {
+                'countNotification':countNotification, 
+                'notificationList':notificationList, 
+                'fnsuser':fnsuser, 
+                'personalMatching':personalMatching
+            }
+            return render(request, 'personalMatching/personalEdit.html', data)
+
+    # 글 수정하기
+    elif request.method == 'POST':
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        personalMatching =  get_object_or_404(PersonalMatching, pk = personalId)
+
+        # 이전 시간 구장 및 시간(예약삭제용)
+        preTimeFrom = personalMatching.time_from
+        preTimeTo = personalMatching.time_to
+        prePlayground = personalMatching.location
+
+        personalMatching.sport = request.POST.get('sport')
+        personalMatching.content = request.POST.get('content')
+        personalMatching.region = request.POST.get('region')
+
+        if request.POST.get('seoul') is not None:
+            city = request.POST.get('seoul')
+        
+        elif request.POST.get('gyeonggi') is not None:
+            city = request.POST.get('gyeonggi')
+
+        elif request.POST.get('north_chungcheong') is not None:
+            city = request.POST.get('north_chungcheong')
+        
+        elif request.POST.get('south_chungcheong') is not None:
+            city = request.POST.get('south_chungcheong')
+        
+        elif request.POST.get('north_jeolla') is not None:
+            city = request.POST.get('north_jeolla')
+
+        elif request.POST.get('south_jeolla') is not None:
+            city = request.POST.get('south_jeolla')
+
+        elif request.POST.get('north_gyeongsang') is not None:
+            city = request.POST.get('north_gyeongsang')
+
+        elif request.POST.get('south_gyeongsang') is not None:
+            city = request.POST.get('south_gyeongsang')
+
+        elif request.POST.get('jeju') is not None:
+            city = request.POST.get('jeju')
+
+        elif request.POST.get('incheon') is not None:
+            city = request.POST.get('incheon')
+
+        elif request.POST.get('daejeon') is not None:
+            city = request.POST.get('daejeon')
+        
+        elif request.POST.get('gwangju') is not None:
+            city = request.POST.get('gwangju')
+
+        elif request.POST.get('daegu') is not None:
+            city = request.POST.get('daegu')
+
+        elif request.POST.get('ulsan') is not None:
+            city = request.POST.get('ulsan')
+
+        elif request.POST.get('busan') is not None:
+            city = request.POST.get('busan')
+
+        elif request.POST.get('sejong') is not None:
+            city = request.POST.get('sejong')
+
+        elif request.POST.get('gangwon') is not None:
+            city = request.POST.get('gangwon')
+
+        personalMatching.city = city
+        location = request.POST.get('location')
+        if location == 'playground':
+            personalMatching.location = None
+        else:
+            ground = location.split(",")
+            playgroundList = get_object_or_404(PlaygroundList, pk = ground[0])
+            personalMatching.location = playgroundList
+
+        playDate = request.POST.get('playDate')
+        playTime = request.POST.get('playTime')
+        timeValue = playTime.split(',')
+        smallNum = 0;
+        largeNum = 0;
+        reservationTimeArray = []
+        for i in timeValue:
+            reservationTimeArray.append(int(i))
+            if smallNum is 0 and largeNum is 0:
+                smallNum = int(i)
+                largeNum = int(i)
+
+            elif int(i) > largeNum:
+                smallNum = largeNum
+                largeNum = int(i)
+                
+            elif (int(i) < largeNum):
+                if int(i) < smallNum:
+                    smallNum = int(i)
+                
+        
+
+            year = playDate[0:4]
+            month = playDate[6:8]
+            date = playDate[10:12]
+            hour = str(smallNum)
+            startDay = datetime(int(year), int(month), int(date))
+            if int(hour) is 24:
+                hour = '00'
+                changedDate = startDay + timedelta(days=1)
+                startMonth = changedDate.strftime('%m')
+                startDate = changedDate.strftime('%d')
+                startTime = year + '-' + startMonth + '-' + startDate + ' ' + hour + ':' + '00'
+            else:
+                startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + '00'
+
+            personalMatching.time_from = startTime
+    
+
+
+            endHour = str(largeNum+1)
+            endMin = '00'
+            day = datetime(int(year), int(month), int(date))
+            if int(endHour) is 24 or int(endHour) is 25:
+                if int(endHour) is 24:
+                    endHour = '00'
+                elif int(endHour) is 25:
+                    endHour = '01'
+
+                changedDate = day + timedelta(days=1)
+                month = changedDate.strftime('%m')
+                date = changedDate.strftime('%d')
+
+
+            endTime = year + '-' + month + '-' + date + ' ' + endHour + ':' + endMin
+            personalMatching.time_to = endTime
+            personalMatching.number = request.POST.get('number')
+            personalMatching.joinFee = request.POST.get('joinFee')
+            personalMatching.content = request.POST.get('content')
+            user_id = request.session.get('userId')
+            fnsUser = get_object_or_404(FNSUser, pk = user_id)
+            personalMatching.user = fnsUser
+
+
+
+            preYear = preTimeFrom.strftime("%Y")
+            preMonth = preTimeFrom.strftime("%m")
+            preDay = preTimeFrom.strftime("%d")
+            preReservationDate = str(preYear) + str(preMonth) + str(preDay)
+            preStartTime = preTimeFrom.strftime("%H")
+            preEndTime = preTimeTo.strftime("%H")
+            preReservation = []
+            for i in range(int(preEndTime) - int(preStartTime)):
+                preReservationTime = str(preStartTime) + '00'
+                preReservation.append(preReservationTime)
+                preStartTime = int(preStartTime) + 1
+                if int(preStartTime) < 10:
+                    preStartTime = '0' + str(preStartTime)
+
+            backupObject = []
+            for i in preReservation:
+                if prePlayground is not None:
+                    reservation = prePlayground.reservation.filter(reservationTime = i).all()
+                    for reList in reservation:
+                        preReservation = get_object_or_404(ReservationList, pk= reList.id)
+                        if preReservation.reservationTime == i and preReservation.user == fnsuser and preReservation.playgroundName == prePlayground and preReservation.reservationDate == preReservationDate and preReservation.resercationUserId == "moonlit0130" and preReservation.reservationUserName == fnsuser.name and preReservation.resercationUserPhone == fnsuser.phone_number:
+                            backupObject.append(preReservation)
+                            preReservation.delete()            
+
+            # check 예약 있는지 없는지  
+            for idx, reservation in enumerate(reservationTimeArray):
+                if personalMatching.location is not None:
+                    reservationDate = str(year) + str(month) + str(date)
+                    if int(reservationTimeArray[idx]) < 10:
+                        reservationTimeArray[idx] = '0' + str(reservationTimeArray[idx])
+                    reservationTime = str(reservationTimeArray[idx]) + "00"
+                    
+                    if playgroundList.reservation.filter(user = fnsuser, playgroundName = playgroundList, 
+                    reservationDate = reservationDate, reservationTime = reservationTime, 
+                    reservationUserName = fnsuser.name, resercationUserPhone = fnsuser.phone_number).exists():
+                        error = '작성한 시간대는 이미 예약되어 있습니다.'
+                        for i in backupObject:
+                            i.save()
+                        data = {
+                            'error':error,
+                            'personalMatching':personalMatching
+                        }
+                        return render(request, 'personalMatching/personalEdit.html', data)
+
+
+            for idx, reservation in enumerate(reservationTimeArray):
+                if personalMatching.location is not None:
+                    reservationDate = str(year) + str(month) + str(date)
+                    if int(reservationTimeArray[idx]) < 10:
+                        reservationTimeArray[idx] = '0' + str(reservationTimeArray[idx])
+                    reservationTime = str(reservationTimeArray[idx]) + "00"
+                    newReservation = ReservationList(user = fnsuser, playgroundName = playgroundList, 
+                    reservationDate = reservationDate, reservationTime = reservationTime, 
+                    resercationUserId = "moonlit0130", reservationUserName = fnsuser.name, 
+                    resercationUserPhone = fnsuser.phone_number)
+                    newReservation.save()
+
+            
+            personalMatching.save()
+        return redirect(reverse('personal'))
+    return render(request, 'personalMatching/personalDetail.html', {'countNotification':countNotification, 'notificationList':notificationList, 'fnsuser':fnsuser, 'personalMatching':personalMatching})
 
 def personal_edit(request, personal_id):
     personalMatching = get_object_or_404(PersonalMatching, pk=personal_id)
@@ -994,7 +1244,7 @@ def personalDelete(request, personal_id):
         return render(request, 'personalMatching/personal.html', {'countNotification':countNotification, 
         'notificationList':notificationList, 'fnsuser':fnsuser, 'personalList':personalList, 'error':error})
     personalMatching.delete()
-    return redirect('personalMatching/personal')
+    return redirect('personal')
     
 
 def personalApply(request, personalId):
@@ -1359,27 +1609,129 @@ def personal_attendance(request):
 
 
 def teamMatching(request):
-    if not (request.session.get('userId')):
-        teamMatching = TeamMatching.objects.all().filter(is_applied=False).order_by('-created')
+    today = date.today()
+    month = today.month
+    day = today.day
+    if not request.session.get('userId'):
+        teamMatching = PersonalMatching.objects.all().filter(region = '충청남도', city = '천안시',
+        time_from__month = today.month, time_from__day = today.day).order_by('time_from')
         # 객체를 한 페이지로 자르기
         paginator = Paginator(teamMatching, 8)
         # request에 담아주기
-        teamPage = request.GET.get('page')
+        page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
-        teamList = paginator.get_page(teamPage)
-        return render(request, 'teamMatching/teamMatching.html', {'teamList':teamList})
+        teamList = paginator.get_page(page)
 
+        data = {
+            'teamList': teamList,
+            'teamMatching':teamMatching,
+            'today':today,
+            'month':month,
+            'day':day
+        }
+        return render(request, 'teamMatching/teamMatching.html', data)
     else:
-        teamMatching = TeamMatching.objects.all().filter(is_applied=False).order_by('-created')
-
+        fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+        teamMatching = TeamMatching.objects.all().filter(region = fnsuser.region, city = fnsuser.city,
+        time_from__month = today.month, time_from__day = today.day).order_by('time_from')
         # 객체를 한 페이지로 자르기
         paginator = Paginator(teamMatching, 8)
         # request에 담아주기
-        teamPage = request.GET.get('page')
+        page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
-        teamList = paginator.get_page(teamPage)
+        teamList = paginator.get_page(page)
 
-        errormessage = ''
+        
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        
+        data = {
+            'month':month,
+            'day':day,
+            'countNotification':countNotification, 
+            'teamMatching':teamMatching, 
+            'teamList':teamList, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser, 
+            'today':today
+        }
+        return render(request, 'teamMatching/teamMatching.html', data)
+
+def teamDay(request):
+    today = datetime.today()
+    month = request.GET.get('month')
+    day = request.GET.get('day')
+    region = request.GET.get('region')
+
+    if request.GET.get('seoul') is not None:
+        city = request.GET.get('seoul')
+    
+    elif request.GET.get('gyeonggi') is not None:
+        city = request.GET.get('gyeonggi')
+
+    elif request.GET.get('north_chungcheong') is not None:
+        city = request.GET.get('north_chungcheong')
+    
+    elif request.GET.get('south_chungcheong') is not None:
+        city = request.GET.get('south_chungcheong')
+    
+    elif request.GET.get('north_jeolla') is not None:
+        city = request.GET.get('north_jeolla')
+
+    elif request.GET.get('south_jeolla') is not None:
+        city = request.GET.get('south_jeolla')
+
+    elif request.GET.get('north_gyeongsang') is not None:
+        city = request.GET.get('north_gyeongsang')
+
+    elif request.GET.get('south_gyeongsang') is not None:
+        city = request.GET.get('south_gyeongsang')
+
+    elif request.GET.get('jeju') is not None:
+        city = request.GET.get('jeju')
+
+    elif request.GET.get('incheon') is not None:
+        city = request.GET.get('incheon')
+
+    elif request.GET.get('daejeon') is not None:
+        city = request.GET.get('daejeon')
+    
+    elif request.GET.get('gwangju') is not None:
+        city = request.GET.get('gwangju')
+
+    elif request.GET.get('daegu') is not None:
+        city = request.GET.get('daegu')
+
+    elif request.GET.get('ulsan') is not None:
+        city = request.GET.get('ulsan')
+
+    elif request.GET.get('busan') is not None:
+        city = request.GET.get('busan')
+
+    elif request.GET.get('sejong') is not None:
+        city = request.GET.get('sejong')
+
+    elif request.GET.get('gangwon') is not None:
+        city = request.GET.get('gangwon')
+
+    teamMatching = TeamMatching.objects.all().filter(region=region, city=city,
+        time_from__month = int(month) + 1, time_from__day = day
+    ).order_by('time_from')
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(teamMatching, 8)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    teamList = paginator.get_page(page)
+
+    if request.session.get('userId'):
         fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
         notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
         countNotification = notification.filter(userCheck = False).count()
@@ -1390,18 +1742,97 @@ def teamMatching(request):
         page = request.GET.get('page')
         # request된 페이지를 얻어온 뒤 return 해 준다.
         notificationList = paginator.get_page(page)
-        if not (request.session.get('userId')):
-            errormessage = '로그인을 해주세요.'
+        data = {
+            'teamMatching':teamMatching,
+            'teamList':teamList,
+            'month' : month,
+            'day' : day,
+            'today':today,
+            'fnsuser':fnsuser,
+            'notificationList':notificationList,
+            'countNotification':countNotification,
+            'region':region,
+            'city':city
+        }
+        return render(request, 'teamMatching/teamMatching.html', data)
 
-        return render(request, 'teamMatching/teamMatching.html', {'countNotification':countNotification, 
-        'teamList':teamList, 'notificationList':notificationList, 'fnsuser':fnsuser, 'teamMatching':teamMatching, 'errormessage':errormessage})
+    data = {
+        'teamMatching':teamMatching,
+        'teanList':teamList,
+        'month' : month,
+        'day' : day,
+        'today':today,
+        'region':region,
+        'city':city
+    }
+    return render(request, 'teamMatching/teamMatching.html', data)
 
 def teamMatchingNew(request):
+    today = date.today()
+    month = today.month
+    day = today.day
     if not (request.session.get('userId')):
         errormessage = '로그인을 해주세요.'
         return render(request, 'login.html', {'errormessage':errormessage})
-    fnsuser = get_object_or_404(FNSUser, pk=request.session.get('userId'))
-    errormessage = ''
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    if not (fnsuser.teamname):
+        error = '팀에 가입해야 글을 작성할 수 있습니다.'    
+        teamMatching = TeamMatching.objects.all().filter(region = fnsuser.region, city = fnsuser.city,
+        time_from__month = today.month, time_from__day = today.day).order_by('time_from')
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(teamMatching, 8)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        teamList = paginator.get_page(page)
+        
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+        countNotification = notification.filter(userCheck = False).count()
+        notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+        # 객체를 한 페이지로 자르기
+        paginator = Paginator(notification, 5)
+        # request에 담아주기
+        page = request.GET.get('page')
+        # request된 페이지를 얻어온 뒤 return 해 준다.
+        notificationList = paginator.get_page(page)
+        
+        data = {
+            'month':month,
+            'day':day,
+            'countNotification':countNotification, 
+            'teamMatching':teamMatching, 
+            'teamList':teamList, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser, 
+            'today':today,
+            'error':error
+        }
+        return render(request, 'teamMatching/teamMatching.html', data)
+
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser
+    }  
+    return render(request, 'teamMatching/teamMatchingNew.html', data)
+
+# 대관확인 페이지
+def tCheckReservation(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
     fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
     notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
     countNotification = notification.filter(userCheck = False).count()
@@ -1412,17 +1843,960 @@ def teamMatchingNew(request):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    if not (fnsuser.teamname):
-        errormessage = '팀에 가입해야 글을 작성할 수 있습니다.'
-        
-    return render(request, 'teamMatching/teamMatchingNew.html', {'countNotification':countNotification, 
-    'errormessage':errormessage, 'notificationList':notificationList, 'fnsuser':fnsuser})
 
-def teamMatching_detail(request, teamMatching_id):
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser
+    }  
+    return render(request, 'teamMatching/tCheckReservation.html', data)
+
+def tIsReserved(request):
     if not (request.session.get('userId')):
         errormessage = '로그인을 해주세요.'
         return render(request, 'login.html', {'errormessage':errormessage})
-    teamMatching = get_object_or_404(TeamMatching, pk=teamMatching_id)
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    groundList = fnsuser.reservedGround.order_by('reservationDate')
+
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser,
+        'groundList':groundList
+    }  
+    return render(request, 'teamMatching/tIsReserved.html', data)
+
+def tPartnerNew(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    groundList = fnsuser.reservedGround.order_by('reservationDate')
+
+    selectedReservation = request.POST.get('selectedReservation')
+    selected = selectedReservation.split(',')
+
+
+    timeArray = []
+    preReservation = None
+    playground = None
+    reservationDate = None
+    for idx, reservationId in enumerate(selected):
+        reservation = get_object_or_404(ReservationList, pk = reservationId)
+        playground = reservation.playgroundName
+        if preReservation == None: #첫 예약이면
+            preReservation = reservation
+            timeArray.append(preReservation.reservationTime)
+        else:
+            if preReservation.playgroundName.playgroundName != reservation.playgroundName.playgroundName:
+                error = '2개의 구장을 선택할 수 없습니다.'
+                data = {
+                    'countNotification':countNotification, 
+                    'notificationList':notificationList, 
+                    'fnsuser':fnsuser,
+                    'groundList':groundList,
+                    'error':error
+                }  
+                return render(request, 'teamMatching/tIsReserved.html', data)
+
+            elif preReservation.reservationDate != reservation.reservationDate:
+                error = '다른 날짜의 예약을 동시에 선택할 수 없습니다.'
+                data = {
+                    'countNotification':countNotification, 
+                    'notificationList':notificationList, 
+                    'fnsuser':fnsuser,
+                    'groundList':groundList,
+                    'error':error
+                }  
+                return render(request, 'teamMatching/tIsReserved.html', data)
+
+            else:
+                reservationDate = reservation.reservationDate
+                timeArray.append(reservation.reservationTime)
+
+    minTime = None # 가장 이른 시간
+    maxTime = None # 가장 나중 시간
+    # 예약 시간 중 가장 빠른 시간과 늦은 시간을 구하는 for문
+    for time in timeArray:
+        if minTime == None and maxTime == None:
+            minTime = time
+            maxTime = time
+
+        else:
+            if int(time[0:2]) > int(maxTime[0:2]):
+                maxTime = time
+
+            elif int(time[0:2]) < int(minTime[0:2]):
+                minTime = time
+
+    # 예약 선택 시간이 연속된 시간이 아닐 시
+    if len(selected) < ((int(maxTime[0:2])+1) - int(minTime[0:2])):
+        error = '연속된 시간을 선택해주세요.'
+        data = {
+            'countNotification':countNotification, 
+            'notificationList':notificationList, 
+            'fnsuser':fnsuser,
+            'groundList':groundList,
+            'error':error
+        }  
+        return render(request, 'teamMatching/tIsReserved.html', data)
+
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser,
+        'playground':playground.id,
+        'maxTime':maxTime,
+        'minTime':minTime,
+        'reservationDate':reservationDate
+    }
+    return render(request, 'teamMatching/tPartnerNew.html', data)
+
+def tPartnerCreate(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    teamMatching = TeamMatching()
+    maxTime = request.POST.get('maxTime')
+    minTime = request.POST.get('minTime')
+    playgroundId = request.POST.get('playground')
+    playground = get_object_or_404(PlaygroundList, pk = playgroundId)
+    rank = request.POST.get('rank')
+    content = request.POST.get('content')
+    joinFee = request.POST.get('joinFee')
+    playDate = request.POST.get('reservationDate')
+    year = playDate[0:4]
+    month = playDate[4:6]
+    day = playDate[6:8]
+    startTime = year + '-' + month + '-' + day + ' ' + minTime[0:2] + ':' + '00'
+    endTime = year + '-' + month + '-' + day + ' ' + maxTime[0:2] + ':' + '00'
+
+    teamMatching.user = fnsuser
+    teamMatching.location = playground
+    teamMatching.region = playground.region
+    teamMatching.city = playground.city
+    teamMatching.time_from = startTime
+    teamMatching.time_to = endTime
+    teamMatching.rank = rank
+    teamMatching.content = content
+    teamMatching.joinFee = joinFee
+    teamMatching.isReserved = '대관완료'
+    teamMatching.save()
+
+    redirectTo = reverse('teamMatchingDetail', kwargs = {'teamMatchingId':teamMatching.id})
+    return HttpResponseRedirect(redirectTo)
+
+def tNonPartnerNew(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    groundList = fnsuser.reservedGround.order_by('reservationDate')
+
+    return render(request, 'teamMatching/tNonPartnerNew.html')
+
+def tNonPartnerCreate(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    teamMatching =  TeamMatching()
+    teamMatching.region = request.POST.get('region')
+
+    if request.POST.get('seoul') is not None:
+        city = request.POST.get('seoul')
+    
+    elif request.POST.get('gyeonggi') is not None:
+        city = request.POST.get('gyeonggi')
+
+    elif request.POST.get('north_chungcheong') is not None:
+        city = request.POST.get('north_chungcheong')
+    
+    elif request.POST.get('south_chungcheong') is not None:
+        city = request.POST.get('south_chungcheong')
+    
+    elif request.POST.get('north_jeolla') is not None:
+        city = request.POST.get('north_jeolla')
+
+    elif request.POST.get('south_jeolla') is not None:
+        city = request.POST.get('south_jeolla')
+
+    elif request.POST.get('north_gyeongsang') is not None:
+        city = request.POST.get('north_gyeongsang')
+
+    elif request.POST.get('south_gyeongsang') is not None:
+        city = request.POST.get('south_gyeongsang')
+
+    elif request.POST.get('jeju') is not None:
+        city = request.POST.get('jeju')
+
+    elif request.POST.get('incheon') is not None:
+        city = request.POST.get('incheon')
+
+    elif request.POST.get('daejeon') is not None:
+        city = request.POST.get('daejeon')
+    
+    elif request.POST.get('gwangju') is not None:
+        city = request.POST.get('gwangju')
+
+    elif request.POST.get('daegu') is not None:
+        city = request.POST.get('daegu')
+
+    elif request.POST.get('ulsan') is not None:
+        city = request.POST.get('ulsan')
+
+    elif request.POST.get('busan') is not None:
+        city = request.POST.get('busan')
+
+    elif request.POST.get('sejong') is not None:
+        city = request.POST.get('sejong')
+
+    elif request.POST.get('gangwon') is not None:
+        city = request.POST.get('gangwon')
+
+    teamMatching.city = city
+    location = request.POST.get('location')
+    if location == 'playground':
+        teamMatching.location = None
+    else:
+        ground = location.split(",")
+        playgroundList = get_object_or_404(PlaygroundList, pk = ground[0])
+        teamMatching.location = playgroundList
+    playDate = request.POST.get('playDate')
+    playTime = request.POST.get('playTime')
+    timeValue = playTime.split(',')
+    smallNum = 0;
+    largeNum = 0;
+    reservationTimeArray = []
+    for i in timeValue:
+        reservationTimeArray.append(i)
+        if smallNum is 0 and largeNum is 0:
+            smallNum = int(i)
+            largeNum = int(i)
+
+        elif int(i) > largeNum:
+            smallNum = largeNum
+            largeNum = int(i)
+            
+        elif (int(i) < largeNum):
+            if int(i) < smallNum:
+                smallNum = int(i)
+            
+        
+
+    year = playDate[0:4]
+    month = playDate[6:8]
+    date = playDate[10:12]
+    if smallNum < 10:
+        smallNum = '0' + str(smallNum)
+    hour = str(smallNum)
+    startDay = datetime(int(year), int(month), int(date))
+    if int(hour) is 24:
+        hour = '00'
+        changedDate = startDay + timedelta(days=1)
+        startMonth = changedDate.strftime('%m')
+        startDate = changedDate.strftime('%d')
+        startTime = year + '-' + startMonth + '-' + startDate + ' ' + hour + ':' + '00'
+    else:
+        startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + '00'
+
+    teamMatching.time_from = startTime
+    
+
+    if largeNum < 9:
+        largeNum = '0' + str(largeNum+1)
+    else:
+        largeNum = int(largeNum) + 1
+    endHour = str(largeNum)
+    endMin = '00'
+    day = datetime(int(year), int(month), int(date))
+    if int(endHour) is 24 or int(endHour) is 25:
+        if int(endHour) is 24:
+            endHour = '00'
+        elif int(endHour) is 25:
+            endHour = '01'
+
+        changedDate = day + timedelta(days=1)
+        month = changedDate.strftime('%m')
+        date = changedDate.strftime('%d')
+
+
+    endTime = year + '-' + month + '-' + date + ' ' + endHour + ':' + endMin
+    teamMatching.time_to = endTime
+    teamMatching.joinFee = request.POST.get('joinFee')
+    teamMatching.content = request.POST.get('content')
+    teamMatching.rank = request.POST.get('rank')
+    teamMatching.user = fnsuser
+    teamMatching.save()
+
+    redirectTo = reverse('teamMatchingDetail', kwargs = {'teamMatchingId':teamMatching.id})
+    return HttpResponseRedirect(redirectTo)
+
+# 대관X -> 매칭글 옵션 선택창
+def tChoice(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser
+    }  
+    return render(request, 'teamMatching/tChoice.html', data)
+
+# 대관 x -> 매칭만
+def tMatchingFirst(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser
+    }  
+    return render(request, 'teamMatching/tMatchingFirst.html', data)
+
+# 매치먼저 시간선택
+def tSelectTime(request):
+
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+
+    location = request.POST.get('location')
+    if location == 'playground':
+        location = None
+    else:
+        ground = location.split(",")
+        playground = get_object_or_404(PlaygroundList, pk = ground[0])
+        
+    reservationPossible = [["06"],["07"],["08"],["09"],["10"],["11"],["12"],["13"],["14"],["15"],["16"],["17"],["18"],["19"],["20"],["21"],["22"]]
+    weekArray = []
+
+    today = datetime.now()
+    for i in range(0, 10):
+        tomorrow = today + timedelta(days=i)
+        tomorrow_format = tomorrow.strftime("%Y%m%d") 
+        weekArray.append(tomorrow_format)
+
+    selectedDay = request.GET.get('selectedDay')
+    if not (selectedDay):
+        selectedDay = datetime.now().strftime("%Y%m%d") 
+
+    for idx, reservation in enumerate(reservationPossible): 
+        
+        playgroundName = playground.playgroundName
+        reservationTime = reservation[0] + "00"
+
+        price = playground.weekDayPrice
+        if reservation[0] > '17':
+            price = playground.weekNightPrice
+
+        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = selectedDay ,reservationTime = reservationTime)      
+
+        existReservation = 0
+        if checkReservation:
+            existReservation = 1
+
+        reservationPossible[idx].append(price)
+        reservationPossible[idx].append(existReservation)
+
+    region = request.POST.get('region')
+
+    if request.POST.get('seoul') is not None:
+        city = request.POST.get('seoul')
+    
+    elif request.POST.get('gyeonggi') is not None:
+        city = request.POST.get('gyeonggi')
+
+    elif request.POST.get('north_chungcheong') is not None:
+        city = request.POST.get('north_chungcheong')
+    
+    elif request.POST.get('south_chungcheong') is not None:
+        city = request.POST.get('south_chungcheong')
+    
+    elif request.POST.get('north_jeolla') is not None:
+        city = request.POST.get('north_jeolla')
+
+    elif request.POST.get('south_jeolla') is not None:
+        city = request.POST.get('south_jeolla')
+
+    elif request.POST.get('north_gyeongsang') is not None:
+        city = request.POST.get('north_gyeongsang')
+
+    elif request.POST.get('south_gyeongsang') is not None:
+        city = request.POST.get('south_gyeongsang')
+
+    elif request.POST.get('jeju') is not None:
+        city = request.POST.get('jeju')
+
+    elif request.POST.get('incheon') is not None:
+        city = request.POST.get('incheon')
+
+    elif request.POST.get('daejeon') is not None:
+        city = request.POST.get('daejeon')
+    
+    elif request.POST.get('gwangju') is not None:
+        city = request.POST.get('gwangju')
+
+    elif request.POST.get('daegu') is not None:
+        city = request.POST.get('daegu')
+
+    elif request.POST.get('ulsan') is not None:
+        city = request.POST.get('ulsan')
+
+    elif request.POST.get('busan') is not None:
+        city = request.POST.get('busan')
+
+    elif request.POST.get('sejong') is not None:
+        city = request.POST.get('sejong')
+
+    elif request.POST.get('gangwon') is not None:
+        city = request.POST.get('gangwon')
+
+    rank = request.POST.get('rank')
+    joinFee = request.POST.get('joinFee')
+    content = request.POST.get('content')
+    playDate = request.POST.get('playDate')
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'fnsuser':fnsuser,
+        'notification':notification,
+        'countNotification':countNotification,
+        'notificationList': notificationList,
+        'playground' : playground.id,
+        "reservationPossible" : reservationPossible, 
+        "today" : today, 
+        "weekArray" : weekArray, 
+        "selectedDay" : selectedDay,
+        'region':region,
+        'city':city,
+        'rank':rank,
+        'joinFee':joinFee,
+        'content':content,
+        'playDate':playDate
+    }
+
+    return render(request, 'teamMatching/tSelectTime.html', data)
+
+# 매칭만 글쓰기
+def tMatchingCreate(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    teamMatching =  TeamMatching()
+    teamMatching.region = request.POST.get('region')
+    teamMatching.city = request.POST.get('city')
+    playgroundId = request.POST.get('playground')
+    playground = get_object_or_404(PlaygroundList, pk = playgroundId)
+    teamMatching.location = playground
+    playDate = request.POST.get('playDate')
+    playTime = request.POST.get('reservationTime')
+    timeValue = playTime.split(',')
+    smallNum = 0;
+    largeNum = 0;
+    reservationTimeArray = []
+    for i in timeValue:
+        reservationTimeArray.append(i)
+        if smallNum is 0 and largeNum is 0:
+            smallNum = int(i)
+            largeNum = int(i)
+
+        elif int(i) > largeNum:
+            smallNum = largeNum
+            largeNum = int(i)
+            
+        elif (int(i) < largeNum):
+            if int(i) < smallNum:
+                smallNum = int(i)    
+
+    year = playDate[0:4]
+    month = playDate[6:8]
+    date = playDate[10:12]
+    if smallNum < 10:
+        smallNum = '0' + str(smallNum)
+    hour = str(smallNum)
+    startDay = datetime(int(year), int(month), int(date))
+    if int(hour) is 24:
+        hour = '00'
+        changedDate = startDay + timedelta(days=1)
+        startMonth = changedDate.strftime('%m')
+        startDate = changedDate.strftime('%d')
+        startTime = year + '-' + startMonth + '-' + startDate + ' ' + hour + ':' + '00'
+    else:
+        startTime = year + '-' + month + '-' + date + ' ' + hour + ':' + '00'
+
+    teamMatching.time_from = startTime
+    
+
+    if largeNum < 9:
+        largeNum = '0' + str(largeNum+1)
+    else:
+        largeNum = int(largeNum) + 1
+    endHour = str(largeNum)
+    endMin = '00'
+    day = datetime(int(year), int(month), int(date))
+    if int(endHour) is 24 or int(endHour) is 25:
+        if int(endHour) is 24:
+            endHour = '00'
+        elif int(endHour) is 25:
+            endHour = '01'
+
+        changedDate = day + timedelta(days=1)
+        month = changedDate.strftime('%m')
+        date = changedDate.strftime('%d')
+
+
+    endTime = year + '-' + month + '-' + date + ' ' + endHour + ':' + endMin
+    teamMatching.time_to = endTime
+    teamMatching.isReserved = '매칭 후 대관'
+    teamMatching.joinFee = request.POST.get('joinFee')
+    teamMatching.content = request.POST.get('content')
+    teamMatching.rank = request.POST.get('rank')
+    teamMatching.user = fnsuser
+    teamMatching.save()
+
+    redirectTo = reverse('teamMatchingDetail', kwargs = {'teamMatchingId':teamMatching.id})
+    return HttpResponseRedirect(redirectTo)
+
+# 대관 x -> 대관 후 매칭
+def tBookingFirst(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'countNotification':countNotification, 
+        'notificationList':notificationList, 
+        'fnsuser':fnsuser
+    }  
+    return render(request, 'teamMatching/tBookingFirst.html', data)
+
+# 매치먼저 시간선택
+def tBookingTime(request):
+
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+
+    location = request.POST.get('location')
+    if location == 'playground':
+        location = None
+    else:
+        ground = location.split(",")
+        playground = get_object_or_404(PlaygroundList, pk = ground[0])
+        
+    reservationPossible = [["06"],["07"],["08"],["09"],["10"],["11"],["12"],["13"],["14"],["15"],["16"],["17"],["18"],["19"],["20"],["21"],["22"]]
+    weekArray = []
+
+    today = datetime.now()
+    for i in range(0, 10):
+        tomorrow = today + timedelta(days=i)
+        tomorrow_format = tomorrow.strftime("%Y%m%d") 
+        weekArray.append(tomorrow_format)
+
+    selectedDay = request.GET.get('selectedDay')
+    if not (selectedDay):
+        selectedDay = datetime.now().strftime("%Y%m%d") 
+
+    for idx, reservation in enumerate(reservationPossible): 
+        
+        playgroundName = playground.playgroundName
+        reservationTime = reservation[0] + "00"
+
+        price = playground.weekDayPrice
+        if reservation[0] > '17':
+            price = playground.weekNightPrice
+
+        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = selectedDay ,reservationTime = reservationTime)      
+
+        existReservation = 0
+        if checkReservation:
+            existReservation = 1
+
+        reservationPossible[idx].append(price)
+        reservationPossible[idx].append(existReservation)
+
+    region = request.POST.get('region')
+
+    if request.POST.get('seoul') is not None:
+        city = request.POST.get('seoul')
+    
+    elif request.POST.get('gyeonggi') is not None:
+        city = request.POST.get('gyeonggi')
+
+    elif request.POST.get('north_chungcheong') is not None:
+        city = request.POST.get('north_chungcheong')
+    
+    elif request.POST.get('south_chungcheong') is not None:
+        city = request.POST.get('south_chungcheong')
+    
+    elif request.POST.get('north_jeolla') is not None:
+        city = request.POST.get('north_jeolla')
+
+    elif request.POST.get('south_jeolla') is not None:
+        city = request.POST.get('south_jeolla')
+
+    elif request.POST.get('north_gyeongsang') is not None:
+        city = request.POST.get('north_gyeongsang')
+
+    elif request.POST.get('south_gyeongsang') is not None:
+        city = request.POST.get('south_gyeongsang')
+
+    elif request.POST.get('jeju') is not None:
+        city = request.POST.get('jeju')
+
+    elif request.POST.get('incheon') is not None:
+        city = request.POST.get('incheon')
+
+    elif request.POST.get('daejeon') is not None:
+        city = request.POST.get('daejeon')
+    
+    elif request.POST.get('gwangju') is not None:
+        city = request.POST.get('gwangju')
+
+    elif request.POST.get('daegu') is not None:
+        city = request.POST.get('daegu')
+
+    elif request.POST.get('ulsan') is not None:
+        city = request.POST.get('ulsan')
+
+    elif request.POST.get('busan') is not None:
+        city = request.POST.get('busan')
+
+    elif request.POST.get('sejong') is not None:
+        city = request.POST.get('sejong')
+
+    elif request.POST.get('gangwon') is not None:
+        city = request.POST.get('gangwon')
+
+    rank = request.POST.get('rank')
+    joinFee = request.POST.get('joinFee')
+    content = request.POST.get('content')
+    playDate = request.POST.get('playDate')
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+
+    data = {
+        'fnsuser':fnsuser,
+        'notification':notification,
+        'countNotification':countNotification,
+        'notificationList': notificationList,
+        'playground' : playground.id,
+        "reservationPossible" : reservationPossible, 
+        "today" : today, 
+        "weekArray" : weekArray, 
+        "selectedDay" : selectedDay,
+        'region':region,
+        'city':city,
+        'rank':rank,
+        'joinFee':joinFee,
+        'content':content,
+        'playDate':playDate
+    }
+
+    return render(request, 'teamMatching/tBookingTime.html', data)
+
+# 결제 바로 이전 창
+def tTryReservation(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+    region = request.POST.get('region', None)
+    city = request.POST.get('city', None)
+    joinFee = request.POST.get('joinFee', None)
+    rank = request.POST.get('rank', None)
+    content = request.POST.get('content', None)
+    playgroundId = request.POST.get('playgroundId', None)
+    playground = get_object_or_404(PlaygroundList, id = playgroundId)
+    reservationTime = request.POST.get('reservationTime', None)
+    playDate = request.POST.get('playDate', None)
+    year = playDate[0:4]
+    month = playDate[6:8]
+    day = playDate[10:12]
+    totalPrice = request.POST.get('totalPrice', None)
+    reservationTimeArray = reservationTime.split(",")
+    reservationDate = year + month + day
+    reservationLength = len(reservationTimeArray)
+
+    # 유저정보
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page)
+    # 유저정보 끝
+
+    err_msg = ""
+    for reservation in reservationTimeArray:
+        # 중복 예약을 체크
+        checkReservation = ReservationList.objects.filter(playgroundName = playground, reservationDate = reservationDate ,reservationTime = reservation)
+
+        if checkReservation:
+            err_msg = "duplicate reservation"
+
+    
+            data = {
+                'fnsuser':fnsuser,
+                'notification':notification,
+                'countNotification':countNotification,
+                'notificationList': notificationList,
+                'err_msg' : err_msg, 
+                'id' : id
+            }
+
+            return render(request, 'reservation/tryReservation.html', data)  
+        
+    if err_msg != "duplicate reservation":
+        err_msg = "try reservation"
+        reserved_time = []
+
+        for idx, reservation in enumerate(reservationTimeArray):
+            print(reservation)
+            if idx == 0:
+                reserved_time.append(reservation[0:2])
+            if idx == (len(reservationTimeArray) - 1):
+                reserved_time.append(int(reservation[0:2]) + 1)
+
+
+        data = {
+            'fnsuser':fnsuser,
+            'notification':notification,
+            'countNotification':countNotification,
+            'notificationList': notificationList,
+            'err_msg' : err_msg, 
+            "totalPrice" : totalPrice, 
+            "reserved_time" : reserved_time, 
+            "playground" : playground, 
+            "playDate" : playDate, 
+            "reservationLength" : reservationLength, 
+            "reservationTime" : reservationTime, 
+            "reservationDate" : reservationDate,
+            'region':region,
+            'city':city,
+            'joinFee':joinFee,
+            'content':content,
+            'rank':rank
+        }
+
+
+        return render(request, 'teamMatching/tTryReservation.html', data)
+
+# 대관 후 매칭 결과창
+def tResultReservation(request):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+
+   
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page) 
+
+
+    playgroundId = request.POST.get('playgroundId', None)
+    playground = get_object_or_404(PlaygroundList, id = playgroundId)
+    reservationTime = request.POST.get('reservationTime', None)
+    reservationDate = request.POST.get('reservationDate', None)
+    reservationTimeArray = reservationTime.split(",")
+    reservationLength = len(reservationTimeArray)
+    reservationName = fnsuser.name
+    reservationPhone = fnsuser.phone_number
+    totalPrice = request.POST.get('totalPrice', None)
+    err_msg = ""
+    reserved_time = []
+
+    for idx, reservation in enumerate(reservationTimeArray):
+        newReservation = ReservationList(user = fnsuser, playgroundName = playground, reservationDate = reservationDate, reservationTime = reservation, resercationUserId = "moonlit0130", reservationUserName = reservationName, resercationUserPhone = reservationPhone)
+        newReservation.save()
+
+        if idx == 0:
+            reserved_time.append(reservation[0:2])
+        if idx == (len(reservationTimeArray) - 1):
+            reserved_time.append(int(reservation[0:2]) + 1)
+
+    teamMatching =  TeamMatching()
+    teamMatching.region = request.POST.get('region', None)
+    teamMatching.city = request.POST.get('city', None)
+    teamMatching.location = playground   
+
+    year = reservationDate[0:4]
+    month = reservationDate[4:6]
+    date = reservationDate[6:8]
+    startTime = year + '-' + month + '-' + date + ' ' + str(reserved_time[0]) + ':' + '00'
+
+    teamMatching.time_from = startTime
+    endTime = year + '-' + month + '-' + date + ' ' + str(reserved_time[1]) + ':' + '00'
+    teamMatching.time_to = endTime
+    teamMatching.joinFee = request.POST.get('joinFee', None)
+    teamMatching.content = request.POST.get('content', None)
+    teamMatching.rank = request.POST.get('rank', None)
+    teamMatching.user = fnsuser
+    teamMatching.save()
+
+    
+    data = {
+        'fnsuser':fnsuser,
+        'notification':notification,
+        'countNotification':countNotification,
+        'notificationList': notificationList,
+        'err_msg' : err_msg, 
+        'playgroundId' : playgroundId, 
+        "reserved_time" : reserved_time, 
+        "reservationLength" : reservationLength, 
+        "playground" : playground, 
+        "totalPrice" : totalPrice
+    }  
+    
+    return render(request, 'teamMatching/tResultReservation.html', data)
+
+
+def teamMatchingDetail(request, teamMatchingId):
+    if not (request.session.get('userId')):
+        errormessage = '로그인을 해주세요.'
+        return render(request, 'login.html', {'errormessage':errormessage})
+    
+    if teamMatchingId == None:
+        teamMatchingId = request.session.get('teamMatchingId')
+    teamMatching = get_object_or_404(TeamMatching, pk=teamMatchingId)
     comments = TMComment.objects.filter(post = teamMatching.id).order_by('-created')
     # 객체를 한 페이지로 자르기
     commentPaginator = Paginator(comments, 15)
@@ -1449,7 +2823,7 @@ def teamMatching_detail(request, teamMatching_id):
     page = request.GET.get('page')
     # request된 페이지를 얻어온 뒤 return 해 준다.
     notificationList = paginator.get_page(page)
-    return render(request, 'teamMatching/teamMatching_detail.html', {'countNotification':countNotification, 'commentList':commentList,
+    return render(request, 'teamMatching/teamMatchingDetail.html', {'countNotification':countNotification, 'commentList':commentList,
     'notificationList':notificationList, 'is_applied':is_applied, 'fnsuser':fnsuser, 'comments':comments, 'applied_teams':applied_teams, 'teamMatching':teamMatching, 'errormessage':errormessage})
 
 def tmcomment_write(request):    

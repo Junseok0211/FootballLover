@@ -37,6 +37,26 @@
     color: #ffffff;
 }
 
+.navBar{
+    background-color: #F3F3F3;
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    
+}
+
+
+.navDesign{
+    max-width: 720px;
+    width: 100%;
+    padding:10px;
+    margin:0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
 .marginForNav{
     margin-top: 80px;
 }
@@ -62,7 +82,23 @@ display: none;
 </style>
 </head>
 <div class="mobile">
-  {% include 'navBar.html' %}
+      <!--navBar -->
+      <nav class="navBar">
+        <div class="navDesign">
+            <div>
+                <a href="{% url 'teamMatching' %}" style="color: gray; margin-top: 0.5rem;">
+                    <i class="fas fa-lg fa-chevron-left" style="margin-top: 12px;"></i>
+                </a>
+            </div>
+            <div style="margin-top: 5px;">
+                <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">글쓰기</span>
+            </div>
+            <div>
+            </div>
+        
+        </div>
+    </nav>
+    <!--navBar 끝--> 
 </div>
 
 <span class="pc">
@@ -75,14 +111,14 @@ display: none;
         <li class="list">
                 <h4 class="tit">구장을 대관하셨습니까?</h4>
         </li>
-        <a href="{% url 'pIsReserved' %}">
+        <a href="{% url 'tIsReserved' %}">
             <li class="list">
                 <figure>
                     <img src="{% static 'menu_icon02.png' %}" height="100%" />
                 </figure><h4 class="tit">네</h4>
             </li>
         </a>
-        <a href="#">
+        <a href="{% url 'tChoice' %}">
             <li class="list">
                 <figure>
                     <img src="{% static 'menu_icon03.png' %}" height="100%" />

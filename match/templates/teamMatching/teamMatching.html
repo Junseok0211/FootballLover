@@ -7,6 +7,27 @@
 
 <link rel="stylesheet" href="{% static 'css/match2.css' %}">
 <style>
+    .nav-justified {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-weight: bold;
+        box-sizing: content-box;
+        font-size: 0.75rem;
+        color: #8c8c8c;
+        background: #e1e1e1;
+        border-radius: 2px;
+    }
+    .nav-justified > .item {
+        position: relative;
+        box-sizing: content-box;
+        padding: 0.7rem 0rem;
+        text-align: center;
+        width:25%;
+    }
+    .nav-justified > .item.active {
+        color: #131313;
+    }
     .sec.match .move_date {
         display: flex;
         justify-content: space-between;
@@ -90,22 +111,74 @@
         font-size: 0.75rem;
     }
 
-    .underline {
+    .dateTxt{
+        font-family: 'Noto Sans KR';
+        font-size: 0.8rem;
+        font-weight: bold;
+        padding:3px;
+        text-align: center;
         
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 4px;
-        background-color: #131313;
     }
+    .dateRow{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+    }
+
+    
+    .pc{
+        display: block;
+    }
+    
+    .mobile{
+        display: none;
+    }
+
+
+
+    .marginForNav{
+        margin-top: 80px;
+    }
+
+
+
+    
+    @media all and (max-device-width : 720px) {
+        .pc{
+          display: none;
+        }
+        .mobile{
+          display: block;
+        }
+        .marginForNav{
+            margin-top: 60px;
+        }
+    }
+    
 </style>
 
+{% if error %}
+<script>
+    alert("{{error}}");
+</script>
+{% endif %}
+
+
+
+<div class="mobile">
+    {% include 'navBar.html' %}
+</div>
+
+<span class="pc">
+{% include 'pcNavBar.html' %}
+</span>
+
 <!--컨텐츠 영역-->
-<div class="sec match personal" style="max-width: 720px; margin: 0 auto;">
+<div class="sec match personal" style="max-width: 720px; margin: 0 auto; min-height: 500px;">
 
     <!-- 양쪽정렬된 탭 메뉴 -->
-    <ul class="nav-justified">
+    <ul class="nav-justified marginForNav">
         <li class="item">
             <p class="txt">
                 <a href = "{% url 'personal' %}" style="text-decoration: none; color: #8c8c8c;">
@@ -113,12 +186,11 @@
                 </a>
             </p>
         </li>
-        <li class="item">
-            <p class="txt active">
+        <li class="item active">
+            <p class="txt">
                 <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#131313;">
                     팀 매칭
                 </a>
-                <span class="underline"></span>
             </p>
         </li>
         <li class="item">
@@ -138,34 +210,481 @@
     </ul>
 
     <!-- 날짜이동 -->
-    <ul class="move_date">
-        <li class="date active">
-            <p class="txt">25</p>
-        </li>
-        <li class="date">
-            <p class="txt">26</p>
-        </li>
-        <li class="date">
-            <p class="txt">27</p>
-        </li>
-        <li class="date">
-            <p class="txt">28</p>
-        </li>
-        <li class="date">
-            <p class="txt">29</p>
-        </li>
-        <li class="date">
-            <p class="txt">30</p>
-        </li>
-        <li class="date">
-            <p class="txt">31</p>
-        </li>
-        <li class="date">
-            <button type="button" class="btn move">
-                <i class="fas fa-long-arrow-alt-right"></i>
-            </button>
-        </li>
-    </ul>
+    <form action="{% url 'teamDay' %}" type = "GET" id = "getDate" name="register">
+        <input type="hidden" name = "month" id = "month" value="{{month}}">
+        <input type="hidden" name = "day" id = "day" value="{{day}}">
+
+        <div class="d-flex mt-2">
+            <select id="region" class="form-control" name = "region" style="width:50%;"
+            onChange="showSub(this.options[this.selectedIndex].value);">
+                <option selected disabled hidden value="시도">시도</option>
+                <option value="서울특별시">서울특별시</option>
+                <option value="인천광역시">인천광역시</option>
+                <option value="대전광역시">대전광역시</option>
+                <option value="광주광역시">광주광역시</option>
+                <option value="대구광역시">대구광역시</option>
+                <option value="부산광역시">부산광역시</option>
+                <option value="울산광역시">울산광역시</option>
+                <option value="세종특별자치시">세종특별자치시</option>
+                <option value="경기도">경기도</option>
+                <option value="충청북도">충청북도</option>
+                <option value="충청남도">충청남도</option>
+                <option value="전라북도">전라북도</option>
+                <option value="전라남도">전라남도</option>
+                <option value="경상북도">경상북도</option>
+                <option value="경상남도">경상남도</option>
+                <option value="제주특별자치도">제주특별자치도</option>
+            </select>
+            
+            
+            <select id="basic" class="form-control" name = "basic" style="width:50%">
+                <option selected disabled hidden value="시군구">시군구</option>
+            </select>
+            
+          
+            <select id="seoul" class="form-control" name = "seoul" style="display: none; width: 50%;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="seoul">시군구</option>
+                <option value="강남구">강남구</option>
+                <option value="강동구">강동구</option>
+                <option value="강북구">강북구</option>
+                <option value="강서구">강서구</option>
+                <option value="관악구">관악구</option>
+                <option value="광진구">광진구</option>
+                <option value="구로구">구로구</option>
+                <option value="금천구">금천구</option>
+                <option value="노원구">노원구</option>
+                <option value="도봉구">도봉구</option>
+                <option value="동대문구">동대문구</option>
+                <option value="동작구">동작구</option>
+                <option value="마포구">마포구</option>
+                <option value="서대문구">서대문구</option>
+                <option value="서초구">서초구</option>
+                <option value="성동구">성동구</option>
+                <option value="성북구">성북구</option>
+                <option value="송파구">송파구</option>
+                <option value="양천구">양천구</option>
+                <option value="영등포구">영등포구</option>
+                <option value="용산구">용산구</option>
+                <option value="은평구">은평구</option>
+                <option value="종로구">종로구</option>
+                <option value="중구">중구</option>
+                <option value="중랑구">중랑구</option>
+            </select>
+           
+           
+            <select id="incheon" class="form-control" name = "incheon" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="incheon">시군구</option>
+                <option value="중구">중구</option>
+                <option value="동구">동구</option>
+                <option value="미추홀구">미추홀구</option>
+                <option value="연수구">연수구</option>
+                <option value="남동구">남동구</option>
+                <option value="부평구">부평구</option>
+                <option value="계양구">계양구</option>
+                <option value="서구">서구</option>
+                <option value="강화군">강화군</option>
+                <option value="옹진군">옹진군</option>
+            </select>
+      
+            <select id="daejeon" class="form-control" name = "daejeon" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="daejeon">시군구</option>
+                <option value="동구">동구</option>
+                <option value="중구">중구</option>
+                <option value="서구">서구</option>
+                <option value="유성구">유성구</option>
+                <option value="대덕구">대덕구</option>
+            </select>
+
+            <select id="gwangju" class="form-control" name = "gwangju" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="gwangju">시군구</option>
+                <option value="동구">동구</option>
+                <option value="서구">서구</option>
+                <option value="남구">남구</option>
+                <option value="북구">북구</option>
+                <option value="광산구">광산구</option>
+            </select>
+
+            <select id="daegu"" class="form-control" name = "daegu" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="daegu">시군구</option>
+                <option value="북구">북구</option>
+                <option value="동구">동구</option>
+                <option value="서구">서구</option>
+                <option value="남구">남구</option>
+                <option value="중구">중구</option>
+                <option value="수성구">수성구</option>
+                <option value="달서구">달서구</option>
+                <option value="달성군">달성군</option>
+            </select>
+
+            <select id="busan"" class="form-control" name = "busan" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="busan">시군구</option>
+                <option value="북구">북구</option>
+                <option value="동구">동구</option>
+                <option value="서구">서구</option>
+                <option value="남구">남구</option>
+                <option value="중구">중구</option>
+                <option value="영도구">영도구</option>
+                <option value="부산진구">부산진구</option>
+                <option value="동래구">동래구</option>
+                <option value="해운대구">해운대구</option>
+                <option value="사하구">사하구</option>
+                <option value="금정구">금정구</option>
+                <option value="강서구">강서구</option>
+                <option value="연제구">연제구</option>
+                <option value="수영구">수영구</option>
+                <option value="사상구">사상구</option>
+                <option value="기장군">기장군</option>
+            </select>
+
+            <select id="ulsan"" class="form-control" name = "ulsan" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="ulsan">시군구</option>
+                <option value="북구">북구</option>
+                <option value="동구">동구</option>
+                <option value="남구">남구</option>
+                <option value="중구">중구</option>
+                <option value="울주군">울주군</option>
+            </select>
+
+            <select id="sejong"" class="form-control" name = "sejong" style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="sejong">시군구</option>
+                <option value="조치원읍">조치원읍</option>
+                <option value="연기면">연기면</option>
+                <option value="연동면">연동면</option>
+                <option value="부강면">부강면</option>
+                <option value="금남면">금남면</option>
+                <option value="장군면">장군면</option>
+                <option value="연서면">연서면</option>
+                <option value="전의면">전의면</option>
+                <option value="전동면">전동면</option>
+                <option value="소정면">소정면</option>
+                <option value="한솔동">한솔동</option>
+                <option value="새롬동">새롬동</option>
+                <option value="도담동">도담동</option>
+                <option value="아름동">아름동</option>
+                <option value="종촌동">종촌동</option>
+                <option value="고운동">고운동</option>
+                <option value="보람동">보람동</option>
+                <option value="대평동">대평동</option>
+                <option value="소담동">소담동</option>
+            </select>
+
+            <select id="gangwon" class="form-control" name = "gangwon"  
+            style="width:50%; display: none;" onChange="selectCity();">
+                <option selected disabled hidden value="gangwon">시군구</option>
+                <option value="강릉시">강릉시</option>
+                <option value="고성군">고성군</option>
+                <option value="동해시">동해시</option>
+                <option value="삼척시">삼척시</option>
+                <option value="속초시">속초시</option>
+                <option value="양구군">양구군</option>
+                <option value="양양군">양양군</option>
+                <option value="영월군">영월군</option>
+                <option value="원주시">원주시</option>
+                <option value="인제군">인제군</option>
+                <option value="정선군">정선군</option>
+                <option value="철원군">철원군</option>
+                <option value="춘천시">춘천시</option>
+                <option value="태백시">태백시</option>
+                <option value="평창군">평창군</option>
+                <option value="홍천군">홍천군</option>
+                <option value="화천군">화천군</option>
+                <option value="횡성군">횡성군</option>
+            </select>
+
+            <select id="gyeonggi" class="form-control" name = "gyeonggi"  style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="gyeonggi">시군구</option>
+                <option value="수원시">수원시</option>
+                <option value="성남시">성남시</option>
+                <option value="의정부시">의정부시</option>
+                <option value="안양시">안양시</option>
+                <option value="부천시">부천시</option>
+                <option value="광명시">광명시</option>
+                <option value="평택시">평택시</option>
+                <option value="동두천시">동두천시</option>
+                <option value="안산시">안산시</option>
+                <option value="고양시">고양시</option>
+                <option value="과천시">과천시</option>
+                <option value="구리시">구리시</option>
+                <option value="남양주시">남양주시</option>
+                <option value="오산시">오산시</option>
+                <option value="시흥시">시흥시</option>
+                <option value="군포시">군포시</option>
+                <option value="의왕시">의왕시</option>
+                <option value="하남시">하남시</option>
+                <option value="용인시">용인시</option>
+                <option value="파주시">파주시</option>
+                <option value="이천시">이천시</option>
+                <option value="안성시">안성시</option>
+                <option value="김포시">김포시</option>
+                <option value="화성시">화성시</option>
+                <option value="광주시">광주시</option>
+                <option value="양주시">양주시</option>
+                <option value="포천시">포천시</option>
+                <option value="여주시">여주시</option>
+                <option value="연천군">연천군</option>
+                <option value="가평군">가평군</option>
+                <option value="양평군">양평군</option>
+            </select>
+
+            <select id="north_chungcheong" class="form-control" name = "north_chungcheong"  
+            style="width:50%; display: none;" onChange="selectCity();">
+                <option selected disabled hidden value="north_chungcheong">시군구</label>
+                <option value="청주시">청주시</option>
+                <option value="충주시">충주시</option>
+                <option value="제천시">제천시</option>
+                <option value="보은군">보은군</option>
+                <option value="옥천군">옥천군</option>
+                <option value="영동군">영동군</option>
+                <option value="증평군">증평군</option>
+                <option value="진천군">진천군</option>
+                <option value="괴산군">괴산군</option>
+                <option value="음성군">음성군</option>
+                <option value="단양군">단양군</option>
+            </select>
+
+            <select id="south_chungcheong" class="form-control" name = "south_chungcheong"  
+            style="width:50%; display: none;" onChange="selectCity();">
+                <option selected disabled hidden value="south_chungcheong">시군구</label>
+                    <option value="천안시">천안시</option>
+                    <option value="공주시">공주시</option>
+                    <option value="보령시">보령시</option>
+                    <option value="아산시">아산시</option>
+                    <option value="서산시">서산시</option>
+                    <option value="논산시">논산시</option>
+                    <option value="계룡시">계룡시</option>
+                    <option value="당진시">당진시</option>
+                    <option value="금산군">금산군</option>
+                    <option value="부여군">부여군</option>
+                    <option value="서천군">서천군</option>
+                    <option value="청양군">청양군</option>
+                    <option value="홍성군">홍성군</option>
+                    <option value="예산군">예산군</option>
+                    <option value="태안군">태안군</option>
+            </select>
+
+            <select id="north_jeolla" class="form-control" name = "north_jeolla"  
+            style="display: none; width:50%;" onChange="selectCity();">
+                <option selected disabled hidden value="north_jeolla">시군구</label>
+                <option value="전주시">전주시</option>
+                <option value="군산시">군산시</option>
+                <option value="익산시">익산시</option>
+                <option value="정읍시">정읍시</option>
+                <option value="남원시">남원시</option>
+                <option value="김제시">김제시</option>
+                <option value="완주군">완주군</option>
+                <option value="진안군">진안군</option>
+                <option value="무주군">무주군</option>
+                <option value="장수군">장수군</option>
+                <option value="임실군">임실군</option>
+                <option value="순창군">순창군</option>
+                <option value="고창군">고창군</option>
+                <option value="부안군">부안군</option>
+            </select>
+
+            <select id="south_jeolla" class="form-control" name = "south_jeolla"  style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="south_jeolla">시군구</label>
+                <option value="목포시">목포시</option>
+                <option value="여수시">여수시</option>
+                <option value="순천시">순천시</option>
+                <option value="나주시">나주시</option>
+                <option value="광양시">광양시</option>
+                <option value="담양군">담양군</option>
+                <option value="곡성군">곡성군</option>
+                <option value="구례군">구례군</option>
+                <option value="고흥군">고흥군</option>
+                <option value="보성군">보성군</option>
+                <option value="화순군">화순군</option>
+                <option value="장흥군">장흥군</option>
+                <option value="강진군">강진군</option>
+                <option value="해남군">해남군</option>
+                <option value="영암군">영암군</option>
+                <option value="무안군">무안군</option>
+                <option value="함평군">함평군</option>
+                <option value="영광군">영광군</option>
+                <option value="장성군">장성군</option>
+                <option value="완도군">완도군</option>
+                <option value="진도군">진도군</option>
+                <option value="신안군">신안군</option>
+            </select>
+
+            <select id="north_gyeongsang" class="form-control" name = "north_gyeongsang"  
+            style="width:50%; display: none;" onChange="selectCity();">
+                <option selected disabled hidden value="north_gyeongsang">시군구</label>
+                <option value="포항시">포항시</option>
+                <option value="경주시">경주시</option>
+                <option value="김천시">김천시</option>
+                <option value="안동시">안동시</option>
+                <option value="구미시">구미시</option>
+                <option value="영주시">영주시</option>
+                <option value="영천시">영천시</option>
+                <option value="상주시">상주시</option>
+                <option value="문경시">문경시</option>
+                <option value="경산시">경산시</option>
+                <option value="군위군">군위군</option>
+                <option value="의성군">의성군</option>
+                <option value="청송군">청송군</option>
+                <option value="영양군">영양군</option>
+                <option value="영덕군">영덕군</option>
+                <option value="청도군">청도군</option>
+                <option value="고령군">고령군</option>
+                <option value="성주군">성주군</option>
+                <option value="칠곡군">칠곡군</option>
+                <option value="예천군">예천군</option>
+                <option value="봉화군">봉화군</option>
+                <option value="울진군">울진군</option>
+                <option value="울릉군">울릉군</option>
+            </select>
+     
+
+            <select id="south_gyeongsang" class="form-control" name = "south_gyeongsang"  
+            style="width:50%; display: none;" onChange="selectCity();">
+                <option selected disabled hidden value="south_gyeongsang">시군구</label>
+                    <option value="창원시">창원시</option>
+                    <option value="진주시">진주시</option>
+                    <option value="통영시">통영시</option>
+                    <option value="사천시">사천시</option>
+                    <option value="김해시">김해시</option>
+                    <option value="밀양시">밀양시</option>
+                    <option value="거제시">거제시</option>
+                    <option value="양산시">양산시</option>
+                    <option value="의령군">의령군</option>
+                    <option value="함안군">함안군</option>
+                    <option value="창녕군">창녕군</option>
+                    <option value="고성군">고성군</option>
+                    <option value="남해군">남해군</option>
+                    <option value="하동군">하동군</option>
+                    <option value="산청군">산청군</option>
+                    <option value="함양군">함양군</option>
+                    <option value="거창군">거창군</option>
+                    <option value="합천군">합천군</option>
+            </select>
+   
+   
+            <select id="jeju" class="form-control" name = "jeju"  style="width:50%; display: none;"
+            onChange="selectCity();">
+                <option selected disabled hidden value="jeju">시군구</label>
+                <option value="서귀포시">서귀포시</option>
+                <option value="제주시">제주시</option>
+            </select>
+
+        </div>
+    
+    </form>
+
+<script type="text/javascript">
+    // 홈화면 오늘의 경기 달력 만드는 코드 
+    
+  var standard = new Date(); // 오늘 날짜//지신의 컴퓨터를 기준으로
+  //standard 에 Date객체를 넣어줌 //ex)5일  
+  if ("{{day}}"){
+     standard = new Date(standard.getFullYear(), "{{month}}", "{{day}}");
+    }
+
+  function prevWeek() {
+    standard = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    getDate = document.getElementById('getDate');
+    month = standard.getMonth();
+    date = standard.getDate();
+    document.getElementById('month').value = month;
+    document.getElementById('day').value = date;
+    getDate.submit();
+  }
+
+  function nextWeek() {
+        standard = new Date(standard.getFullYear(), standard.getMonth(), standard.getDate() + 7);
+        getDate = document.getElementById('getDate');
+        month = standard.getMonth();
+        date = standard.getDate();
+        document.getElementById('month').value = month;
+        document.getElementById('day').value = date;
+        getDate.submit();
+    //buildCalendar(); // 다음 달
+  }
+
+  function buildCalendar() {// 현재 달력
+    var nMonth = new Date(standard.getFullYear(), standard.getMonth(), 1);  // 이번 달의 첫째 날
+    var lastDate = new Date(standard.getFullYear(), standard.getMonth()+1, 0); // 이번 달의 마지막 날
+    var tblCalendar = document.getElementById("chooseDate");     // 테이블 달력을 만들 테이블
+    var tblCalendarYM = document.getElementById("calendarYM");    // yyyy년 m월 출력할 곳
+    var nowDate = standard.getDate();
+    var nowMonth = standard.getMonth();
+    //tblCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";  // yyyy년 m월 출력
+    // 기존 테이블에 뿌려진 줄, 칸 삭제
+  
+    while (tblCalendar.rows.length > 0) {
+      tblCalendar.deleteRow(tblCalendar.rows.length - 1);
+    }
+    var row = null;
+    row = tblCalendar.insertRow();
+    row.className = "dateRow";
+    var cnt = 0;
+    // 1일이 시작되는 칸을 맞추어 줌
+    /*
+    for (i=0; i<nMonth.getDay(); i++) {
+      cell = row.insertCell();
+      cnt = cnt + 1;
+    }*/
+    
+    for (i=1; i<=7; i++) { 
+        cell = row.insertCell();
+        var code = "<a onclick = 'teamDay("+nowMonth+","+nowDate+");' style = text-decoration:none; color:black;>" + nowDate + "</a>"
+
+        cell.innerHTML = code;
+        cell.className ="dateTxt";
+
+        var thisDate = new Date();
+        if(i == 1){
+            cell.bgColor = "#28AAE3";
+            cell.style.color = "white";
+        }
+        if (nowDate == lastDate.getDate()){
+            nowDate = 1;
+            nowMonth += 1;
+        }
+        else{
+            nowDate += 1
+        }
+    }
+  }
+  function teamDay(month, day){
+        getDate = document.getElementById('getDate');
+        document.getElementById('month').value = month;
+        document.getElementById('day').value = day;
+        getDate.submit();
+  }
+
+  function selectCity(){
+        getDate = document.getElementById('getDate');
+        month = "{{month}}";
+        day = "{{day}}";
+        document.getElementById('month').value = month;
+        document.getElementById('day').value = day;
+        getDate.submit();
+  }
+</script>
+
+
+    <div style="display: flex; flex-direction: row;">
+        <button type="button" class="btn move" style="display:inline-block; margin-left:0; width: 10%; padding: 0;" onclick="prevWeek()">
+            <i class="fas fa-long-arrow-alt-left" style="color:#28AAE3;"></i>
+        </button>
+        <table id="chooseDate" boarder="3" text-align="center" style="width: 80%;">
+            
+        </table>
+        <button type="button" class="btn move" style="width: 10%; display:inline-block;" onclick="nextWeek()">
+            <i class="fas fa-long-arrow-alt-right" style="color:#28AAE3;"></i>
+        </button>
+    </div>
 
     <!-- 매치 리스트 -->
     <div class="math_list">
@@ -176,46 +695,60 @@
                 </div>
                 <div class="group">
                     <button type="button" class="btn">
-                        <a href = "{% url 'teamMatchingNew' %}" style="text-decoration: none; color:white;">글쓰기</a>
+                        <a href = "{% url 'tCheckReservation' %}" style="text-decoration: none; color:white;">글쓰기</a>
                     </button>
                 </div>
             </div>
         </div>
-
         <div class="cont">
+        {% if teamMatching %}
             {% if teamList %}
-            {% for teamMatching in teamList %}
-            <a href="{% url 'teamMatching_detail' teamMatching.id %}" style="text-decoration: none; color:black;">
-            <div class="list">
-                <div class="group first">
-                    {% autoescape on %}
-                    <p class="time">{{teamMatching.time_from|date:"H:i"}}</p>
-                    {% endautoescape %}
-                    <div>
-                        <p class="point">{{teamMatching.location}}</p>
-                        <p>{{teamMatching.user.teamname.name}}</p>
+                {% for team in teamList %}
+                <script>
+                    console.log("{{team.time_from|hourDifference}}");
+                    console.log("{{team.time_from|dayDifference}}");
+                </script>
+                <a href="{% url 'teamMatchingDetail' team.id %}" style="text-decoration: none; color: black;">
+                    <div class="list">
+                        <div class="group first">
+                            {% autoescape on %}
+                            <p class="time">{{team.time_from|date:"H:i"}}</p>
+                            {% endautoescape %}
+                            <div>
+                                <p class="point">{{team.location.playgroundName}}</p>
+                                <p>참가비: {{team.joinFee}}원</p>
+                            </div>
+                        </div>
+                        <div class="group">
+                            {% if team.total_attendance == team.number %}
+                            <button type="button" class="btn end">마감</button>
+                            {% elif team.time_from|timeuntil == '0분' %}
+                            <button type="button" class="btn end">마감</button>
+                            {% else %}
+                                {% if team.number|subtract:team.total_attendance <= 2 %}
+                                <button type="button" class="btn danger">마감임박</button>
+                                {% elif team.time_from|dayDifference < 1 %}
+                                    {% if team.time_from|hourDifference < 2 %}
+                                    <button type="button" class="btn end">마감</button>
+                                    {% elif team.time_from|hourDifference > 2 %}
+                                    <button type="button" class="btn danger">마감임박</button>
+                                    {% endif %}
+                                {% else %}
+                                    <button type="button" class="btn">자세히보기</button> 
+                               
+                                {% endif %}
+                            {% endif %}
+                            <p class="txt">{{team.rank}}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="group">
-                    {% if teamMatching.vs_team %}
-                    <button type="button" class="btn end">마감</button>
-                    {% elif teamMatching.time_from|timeuntil <= '30분' %}
-                    <button type="button" class="btn end">마감</button>
-                    {% elif teamMatching.time_from|timeuntil <= '1일' %}
-                    <button type="button" class="btn danger">마감임박</button>
-                    {% else %}
-                    <button type="button" class="btn">자세히보기</button>
-                    {% endif %}
-                    <p class="txt">{{teamMatching.rank}}</p>
-                </div>
-            </div>
-            </a>
-            {% endfor %}
-            {% else %}
+                </a>
+                {% endfor %}
+            {% endif %}
+        {% else %}
             <div class="list">
                 <p>매칭이 없습니다.</p>
             </div>
-            {% endif %}
+        {% endif %}
 
             <!-- Pagination -->
             <nav aria-label="Page navigation example" class="mt-2">
@@ -225,7 +758,7 @@
                     <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">처음으로</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{teamList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{teamList.previous_page_number}}</a>
+                    <a class="page-link" href="?page={{teamList.previous_page_number}}" tabindex="-1" aria-disabled="true">{{personalList.previous_page_number}}</a>
                 </li>
                 {% endif %}
 
@@ -247,4 +780,203 @@
 </div>
 <!--컨텐츠 영역-->
 
+
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+</footer>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        region = "{{fnsuser.region}}";
+        city = "{{fnsuser.city}}";
+        selectedRegion = '{{region}}';
+        f = document.forms.register;
+        console.log(selectedRegion);
+        if(selectedRegion != ''){
+            
+            f.basic.style.display = "none";
+            $("#region option[value='{{region}}']").attr("selected", true);
+            if(selectedRegion == '서울특별시'){
+                f.seoul.style.display = "inline-block";
+                $("#seoul option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '인천광역시'){
+                f.incheon.style.display = "inline-block";
+                $("#incheon option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '대전광역시'){
+                f.daejeon.style.display = "inline-block";
+                $("#daejeon option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '광주광역시'){
+                f.gwangju.style.display = "inline-block";
+                $("#gwangju option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '대구광역시'){
+                f.daegu.style.display = "inline-block";
+                $("#daegu option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '부산광역시'){
+                f.busan.style.display = "inline-block";
+                $("#busan option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '울산광역시'){
+                f.ulsan.style.display = "inline-block";
+                $("#ulsan option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '세종특별자치시'){
+                f.sejong.style.display = "inline-block";
+                $("#sejong option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '강원도'){
+                f.gangwon.style.display = "inline-block";
+                $("#gangwon option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '경기도'){
+                f.gyeonggi.style.display = "inline-block";
+                $("#gyeonggi option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '충청북도'){
+                f.north_chungcheong.style.display = "inline-block";
+                $("#north_chungcheong option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '충청남도'){
+                f.south_chungcheong.style.display = "inline-block";
+                $("#south_chungcheong option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '전라북도'){
+                f.north_jeolla.style.display = "inline-block";
+                $("#north_jeolla option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '전라남도'){
+                f.south_jeolla.style.display = "inline-block";
+                $("#south_jeolla option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '경상북도'){
+                f.north_gyeongsang.style.display = "inline-block";
+                $("#north_gyeongsang option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '경상남도'){
+                f.south_gyeongsang.style.display = "inline-block";
+                $("#south_gyeongsang option[value='{{city}}']").attr("selected", true);
+            }
+            else if(selectedRegion == '제주특별자치도'){
+                f.jeju.style.display = "inline-block";
+                $("#jeju option[value='{{city}}']").attr("selected", true);
+            } 
+        }
+        else if(region != null){
+            if(region == "서울특별시") {
+                f.basic.style.display = "none";
+                f.seoul.style.display = "inline-block";
+                $("#region option[value='서울특별시']").attr("selected", true);
+                $("#seoul option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "인천광역시") {
+                f.basic.style.display = "none";
+                f.incheon.style.display = "inline-block";
+                $("#region option[value='인천광역시']").attr("selected", true);
+                $("#incheon option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "대전광역시") {
+                f.basic.style.display = "none";
+                f.daejeon.style.display = "inline-block";
+                $("#region option[value='대전광역시']").attr("selected", true);
+                $("#daejeon option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "광주광역시") {
+                f.basic.style.display = "none";
+                f.gwangju.style.display = "inline-block";
+                $("#region option[value='광주광역시']").attr("selected", true);
+                $("#gwangju option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "대구광역시") {
+                f.basic.style.display = "none";
+                f.daegu.style.display = "inline-block";
+                $("#region option[value='대구광역시']").attr("selected", true);
+                $("#daegu option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "울산광역시") {
+                f.basic.style.display = "none";
+                f.ulsan.style.display = "inline-block";
+                $("#region option[value='울산광역시']").attr("selected", true);
+                $("#ulsan option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "부산광역시") {
+                f.basic.style.display = "none";
+                f.busan.style.display = "inline-block";
+                $("#region option[value='부산광역시']").attr("selected", true);
+                $("#busan option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "세종특별자치시") {
+                f.basic.style.display = "none";
+                f.sejong.style.display = "inline-block";
+                $("#region option[value='세종특별자치시']").attr("selected", true);
+                $("#sejong option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "강원도") {
+                f.basic.style.display = "none";
+                f.gangwon.style.display = "inline-block";
+                $("#region option[value='강원도']").attr("selected", true);
+                $("#gangwon option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "경기도") {
+                f.basic.style.display = "none";
+                f.gyeonggi.style.display = "inline-block";
+                $("#region option[value='경기도']").attr("selected", true);
+                $("#gyeonggi option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "충청북도") {
+                f.basic.style.display = "none";
+                f.north_chungcheong.style.display = "inline-block";
+                $("#region option[value='충청북도']").attr("selected", true);
+                $("#north_chungcheong option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "충청남도") {
+                f.basic.style.display = "none";
+                f.south_chungcheong.style.display = "inline-block";
+                $("#region option[value='충청남도']").attr("selected", true);
+                $("#south_chungcheong option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "전라북도") {
+                f.basic.style.display = "none";
+                f.north_jeolla.style.display = "inline-block";
+                $("#region option[value='전라북도']").attr("selected", true);
+                $("#north_jeolla option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "전라남도") {
+                f.basic.style.display = "none";
+                f.south_jeolla.style.display = "inline-block";
+                $("#region option[value='전라남도']").attr("selected", true);
+                $("#south_jeolla option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "경상북도") {
+                f.basic.style.display = "none";
+                f.north_gyeongsang.style.display = "inline-block";
+                $("#region option[value='경상북도']").attr("selected", true);
+                $("#north_gyeongsang option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "경상남도") {
+                f.basic.style.display = "none";
+                f.south_gyeongsang.style.display = "inline-block";
+                $("#region option[value='경상남도']").attr("selected", true);
+                $("#south_gyeongsang option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+            else if(region == "제주특별자치도") {
+                f.basic.style.display = "none";
+                f.jeju.style.display = "inline-block";
+                $("#region option[value='제주특별자치도']").attr("selected", true);
+                $("#jeju option[value='{{fnsuser.city}}']").attr("selected", true);
+            }
+        else{
+            f.basic.style.display = "none";
+            f.south_chungcheong.style.display = "inline-block";
+            $("#region option[value='충청남도']").attr("selected", true);
+            $("#south_chungcheong option[value='천안시']").attr("selected", true);
+        }
+            
+    }})
+</script>
 {% endblock %}
+
+

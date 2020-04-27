@@ -390,7 +390,7 @@ i {
     <nav class="navBar">
         <div class="navDesign">
             <div>
-                <a href="{% url 'personal' %}" style="color: gray; margin-top: 0.5rem;">
+                <a href="{% url 'tIsReserved' %}" style="color: gray; margin-top: 0.5rem;">
                     <i class="fas fa-lg fa-chevron-left" style="margin-top: 12px;"></i>
                 </a>
             </div>
@@ -410,19 +410,20 @@ i {
 </span>
 
 <!--컨텐츠 영역-->
-<div class="sec match marginForNav">
+<div class="marginForNav">
+<div class="sec match" style="max-width: 720px; width: 100%; margin:0 auto;">
     <!-- 양쪽정렬된 탭 메뉴 -->
     <ul class="nav-justified">
-        <li class="item active">
+        <li class="item">
             <p class="txt">
-                <a href = "{% url 'personal' %}" style="text-decoration: none; color: #131313;">
+                <a href = "{% url 'personal' %}" style="text-decoration: none; color: #8c8c8c;">
                     개인 매칭
                 </a>
             </p>
         </li>
-        <li class="item">
+        <li class="item active">
             <p class="txt">
-                <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#8c8c8c;">
+                <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#131313;">
                     팀 매칭
                 </a>
             </p>
@@ -443,22 +444,14 @@ i {
         </li>
     </ul>
     
-<form name = "register" method="POST" action="{% url 'personalCreate' %}" enctype="multipart/form-data" 
+<form name = "register" method="POST" action="{% url 'tNonPartnerCreate' %}" enctype="multipart/form-data" 
     autocomplete="off" onsubmit="return formCheck(this);">
     {% csrf_token %}
     <div class="match-form" id="matchForm">
         <div id="playTime">
             <input type='hidden' name = 'playTime' id='reservationTime' />
         </div>
-        <div class="item">
-            <label for="message">종목</label>
-            <div class="select">
-                <select class="form-control" name="sport">
-                    <option disabled selected value="sport">선택</option>
-                    <option value="futsal">풋살</option>
-                </select>
-            </div>
-        </div>
+
         <div class="item">
             <label for="message">일시</label>
             <input type="text" id="origin_playDate" placeholder="날짜선택" name="playDate">
@@ -480,8 +473,6 @@ i {
                 <li class="time" value="20">20시</li>
                 <li class="time" value="21">21시</li>
                 <li class="time" value="22">22시</li>
-                <li class="time" value="23">23시</li>
-                <li class="time" value="24">24시</li>
             </ul>
         </div>
         <div class="item">
@@ -874,23 +865,32 @@ i {
             </div>
         </div>
         <div class="item">
-            <label for="message">참가비</label>
+            <label for="message">대관여부</label>
             <div class="select">
-                <select class="form-control" name="joinFee">
-                    <option disabled selected value="joinFee">선택</option>
-                    <option value="10000">10,000원</option>
-                    <option value="20000">15,000원</option>
-                    <option value="30000">20,000원</option>
-                    <option value="40000">25,000원</option>
-                    <option value="50000">30,000원</option>
+                <select class="form-control" name="isReserved">
+                    <option disabled selected value="isReserved">선택</option>
+                    <option value="대관완료">대관완료</option>
+                    <option value="매칭 후 대관">매칭 후 대관</option>
                 </select>
             </div>
         </div>
         <div class="item">
-            <label for="message">모집인원</label>
+            <label for="message">실력</label>
             <div class="select">
-                <input type="number" name="number"
-                class="form-control" placeholder="모집인원"></input>
+                <select class="form-control" name="rank">
+                    <option disabled selected value="rank">선택</option>
+                    <option value="프로">프로</option>
+                    <option value="세미프로">세미프로</option>
+                    <option value="아마추어">아마추어</option>
+                    <option value="비기너">비기너</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
+            <label for="message">참가비</label>
+            <div class="select">
+                <input type="number" name="joinFee"
+                class="form-control" placeholder="참가비"></input>
             </div>
         </div>
         <div class="item">
@@ -907,8 +907,11 @@ i {
     </div>
 </form>
 </div>
-
+</div>
 <!--컨텐츠 영역-->
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+</footer>
 
 <script type="text/javascript">
     var timeArray = [];
@@ -924,12 +927,7 @@ i {
         var scrollTime = document.getElementById('scrollTime');
         console.log(today.getDate());
 
-        if(frm.sport.value == 'sport'){
-            alert("종목을 선택해주세요.");
-            frm.sport.focus();
-            return false;
-        }
-        else if(frm.playDate.value == ""){
+        if(frm.playDate.value == ""){
             alert("날짜를 선택해주세요.");
             frm.playDate.focus();
             return false;
@@ -1077,14 +1075,19 @@ i {
             frm.location.focus();
             return false;
         }
-        else if(frm.joinFee.value == 'joinFee'){
-            alert("참가비를 선택해주세요.");
-            frm.joinFee.focus();
+        else if(frm.isReserved.value == 'isReserved'){
+            alert("대관여부를 선택해주세요.");
+            frm.isReserved.focus();
             return false;
         }
-        else if(frm.number.value == ''){
-            alert("모집인원을 결정해 주세요.");
-            frm.number.focus();
+        else if(frm.rank.value == 'rank'){
+            alert("실력을 선택해주세요.");
+            frm.rank.focus();
+            return false;
+        }
+        else if(frm.joinFee.value == ''){
+            alert("참가비를 선택해주세요.");
+            frm.joinFee.focus();
             return false;
         }
         else if(frm.content.value == ''){
@@ -1201,14 +1204,6 @@ i {
             success: function(data){
                 var ground = JSON.parse(data);
                 var tag = "<option selected disabled hidden value='location'>선택</label>"
-                for(i=0; i<objLength(ground.possibleGround); i++){
-                    console.log(ground.possibleGround[i][0]);
-                    console.log(ground.possibleGround[i][1]);
-                    var groundId = ground.possibleGround[i][0];
-                    var groundName = ground.possibleGround[i][1];
-                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
-                    
-                }
                 for(i=0; i<objLength(ground.impossibleGround); i++){
                     console.log(ground.impossibleGround[i][0]);
                     console.log(ground.impossibleGround[i][1]);

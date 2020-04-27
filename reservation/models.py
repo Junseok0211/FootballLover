@@ -39,7 +39,7 @@ class PlaygroundList(models.Model):
 
 
 class ReservationList(models.Model):
-    playgroundName = models.ForeignKey(PlaygroundList, on_delete=models.CASCADE)
+    playgroundName = models.ForeignKey(PlaygroundList, related_name="reservation", on_delete=models.CASCADE)
     reservationDate = models.CharField(max_length = 10)
     reservationTime = models.CharField(max_length = 10)
     resercationUserId = models.CharField(max_length = 45)

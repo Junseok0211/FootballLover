@@ -334,7 +334,6 @@ i {
 .scroll-selected-time .time.active {
     color: #28aae3;
 }
-
 .navBar{
     background-color: #F3F3F3;
     height: 60px;
@@ -354,6 +353,7 @@ i {
     display: flex;
     justify-content: space-between;
 }
+
     .marginForNav{
         margin-top: 80px;
     }
@@ -395,7 +395,7 @@ i {
                 </a>
             </div>
             <div style="margin-top: 5px;">
-                <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">글쓰기</span>
+                <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">수정하기</span>
             </div>
             <div>
             </div>
@@ -443,7 +443,7 @@ i {
         </li>
     </ul>
     
-<form name = "register" method="POST" action="{% url 'personalCreate' %}" enctype="multipart/form-data" 
+<form name = "register" method="POST" action="{% url 'personalEdit' personalMatching.id %}" enctype="multipart/form-data" 
     autocomplete="off" onsubmit="return formCheck(this);">
     {% csrf_token %}
     <div class="match-form" id="matchForm">
@@ -453,7 +453,7 @@ i {
         <div class="item">
             <label for="message">종목</label>
             <div class="select">
-                <select class="form-control" name="sport">
+                <select class="form-control" name="sport" id="sport">
                     <option disabled selected value="sport">선택</option>
                     <option value="futsal">풋살</option>
                 </select>
@@ -876,7 +876,7 @@ i {
         <div class="item">
             <label for="message">참가비</label>
             <div class="select">
-                <select class="form-control" name="joinFee">
+                <select class="form-control" name="joinFee" id="joinFee">
                     <option disabled selected value="joinFee">선택</option>
                     <option value="10000">10,000원</option>
                     <option value="20000">15,000원</option>
@@ -889,15 +889,15 @@ i {
         <div class="item">
             <label for="message">모집인원</label>
             <div class="select">
-                <input type="number" name="number"
-                class="form-control" placeholder="모집인원"></input>
+                <input type="number" name="number" value="{{personalMatching.number}}"
+                class="form-control" placeholder="모집인원"/>
             </div>
         </div>
         <div class="item">
             <label for="message">내용</label>
             <div class="">
                 <textarea type="number" name="content"
-                class="form-control" placeholder="내용을 입력하세요."></textarea>
+                class="form-control" placeholder="내용을 입력하세요.">{{personalMatching.content}}</textarea>
             </div>
         </div>
     </div>
@@ -1116,7 +1116,51 @@ i {
         yearSuffix: '년'
     });
 
-    $(function () {
+    function objLength(obj){
+        var i=0;
+        for (var x in obj){
+            if(obj.hasOwnProperty(x)){
+            i++;
+            }
+        } 
+        return i;
+    }
+
+    function selectCity(obj){
+        $.ajax({
+            url: "{% url 'selectCity' %}",
+            type:"GET",
+            data : {'city':obj},
+            dataType : "json",
+            success: function(data){
+                var ground = JSON.parse(data);
+                var tag = "<option selected disabled hidden value='location'>선택</label>"
+                for(i=0; i<objLength(ground.possibleGround); i++){
+                    console.log(ground.possibleGround[i][0]);
+                    console.log(ground.possibleGround[i][1]);
+                    var groundId = ground.possibleGround[i][0];
+                    var groundName = ground.possibleGround[i][1];
+                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
+                    
+                }
+                for(i=0; i<objLength(ground.impossibleGround); i++){
+                    console.log(ground.impossibleGround[i][0]);
+                    console.log(ground.impossibleGround[i][1]);
+                    var groundId = ground.impossibleGround[i][0];
+                    var groundName = ground.impossibleGround[i][1];
+                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
+                    
+                }
+
+                if(objLength(ground.impossibleGround) == 0 && objLength(ground.possibleGround) == 0){
+                    tag = "<option value='playground''>등록구장 없음</option>";
+                }
+                $('#location').html(tag);
+            }
+        });
+    };
+
+    $(document).ready(function(){
         //조회 날짜 선택
         $("#origin_playDate").datepicker();
 
@@ -1179,53 +1223,72 @@ i {
                     timeArray.splice(index,1);
                 }
             }      
-        })
+        });
+
+
+        selectedRegion = "{{personalMatching.region}}";
+        f = document.forms.register;
+        f.basic.style.display = "none";
+        if('{{personalMatching.sport}}' == 'futsal'){
+            $("#sport option[value='futsal']").attr("selected", true);
+        }
+        $("#joinFee option[value='{{personalMatching.joinFee}}']").attr("selected", true);
+        $("#region option[value='{{personalMatching.region}}']").attr("selected", true);
+        
+        if(selectedRegion == '서울특별시'){
+            f.seoul.style.display = "inline-block";
+        }
+        else if(selectedRegion == '인천광역시'){
+            f.incheon.style.display = "inline-block";
+        }
+        else if(selectedRegion == '대전광역시'){
+            f.daejeon.style.display = "inline-block";
+        }
+        else if(selectedRegion == '광주광역시'){
+            f.gwangju.style.display = "inline-block";
+        }
+        else if(selectedRegion == '대구광역시'){
+            f.daegu.style.display = "inline-block";
+        }
+        else if(selectedRegion == '부산광역시'){
+            f.busan.style.display = "inline-block";
+        }
+        else if(selectedRegion == '울산광역시'){
+            f.ulsan.style.display = "inline-block";
+        }
+        else if(selectedRegion == '세종특별자치시'){
+            f.sejong.style.display = "inline-block";
+        }
+        else if(selectedRegion == '강원도'){
+            f.gangwon.style.display = "inline-block";
+        }
+        else if(selectedRegion == '경기도'){
+            f.gyeonggi.style.display = "inline-block";
+        }
+        else if(selectedRegion == '충청북도'){
+            f.north_chungcheong.style.display = "inline-block";
+        }
+        else if(selectedRegion == '충청남도'){
+            f.south_chungcheong.style.display = "inline-block";
+        }
+        else if(selectedRegion == '전라북도'){
+            f.north_jeolla.style.display = "inline-block";
+        }
+        else if(selectedRegion == '전라남도'){
+            f.south_jeolla.style.display = "inline-block";
+        }
+        else if(selectedRegion == '경상북도'){
+            f.north_gyeongsang.style.display = "inline-block";
+        }
+        else if(selectedRegion == '경상남도'){
+            f.south_gyeongsang.style.display = "inline-block";
+        }
+        else if(selectedRegion == '제주특별자치도'){
+            f.jeju.style.display = "inline-block";
+        }
+
 
     });
-    function objLength(obj){
-        var i=0;
-        for (var x in obj){
-            if(obj.hasOwnProperty(x)){
-            i++;
-            }
-        } 
-        return i;
-    }
-
-    function selectCity(obj){
-        $.ajax({
-            url: "{% url 'selectCity' %}",
-            type:"GET",
-            data : {'city':obj},
-            dataType : "json",
-            success: function(data){
-                var ground = JSON.parse(data);
-                var tag = "<option selected disabled hidden value='location'>선택</label>"
-                for(i=0; i<objLength(ground.possibleGround); i++){
-                    console.log(ground.possibleGround[i][0]);
-                    console.log(ground.possibleGround[i][1]);
-                    var groundId = ground.possibleGround[i][0];
-                    var groundName = ground.possibleGround[i][1];
-                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
-                    
-                }
-                for(i=0; i<objLength(ground.impossibleGround); i++){
-                    console.log(ground.impossibleGround[i][0]);
-                    console.log(ground.impossibleGround[i][1]);
-                    var groundId = ground.impossibleGround[i][0];
-                    var groundName = ground.impossibleGround[i][1];
-                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
-                    
-                }
-
-                if(objLength(ground.impossibleGround) == 0 && objLength(ground.possibleGround) == 0){
-                    tag = "<option value='playground'>등록구장 없음</option>";
-                }
-                $('#location').html(tag);
-            }
-        });
-    };
-
 </script>
 
 {% endblock %}

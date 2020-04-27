@@ -410,19 +410,20 @@ i {
 </span>
 
 <!--컨텐츠 영역-->
-<div class="sec match marginForNav">
+<div class="marginForNav">
+<div class="sec match" style="max-width: 720px; width: 100%; margin:0 auto;">
     <!-- 양쪽정렬된 탭 메뉴 -->
     <ul class="nav-justified">
-        <li class="item active">
+        <li class="item">
             <p class="txt">
-                <a href = "{% url 'personal' %}" style="text-decoration: none; color: #131313;">
+                <a href = "{% url 'personal' %}" style="text-decoration: none; color: #8c8c8c;">
                     개인 매칭
                 </a>
             </p>
         </li>
-        <li class="item">
+        <li class="item active">
             <p class="txt">
-                <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#8c8c8c;">
+                <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#131313;">
                     팀 매칭
                 </a>
             </p>
@@ -443,7 +444,7 @@ i {
         </li>
     </ul>
     
-<form name = "register" method="POST" action="{% url 'personalCreate' %}" enctype="multipart/form-data" 
+<form name = "register" method="POST" action="{% url 'tSelectTime' %}" enctype="multipart/form-data" 
     autocomplete="off" onsubmit="return formCheck(this);">
     {% csrf_token %}
     <div class="match-form" id="matchForm">
@@ -451,38 +452,8 @@ i {
             <input type='hidden' name = 'playTime' id='reservationTime' />
         </div>
         <div class="item">
-            <label for="message">종목</label>
-            <div class="select">
-                <select class="form-control" name="sport">
-                    <option disabled selected value="sport">선택</option>
-                    <option value="futsal">풋살</option>
-                </select>
-            </div>
-        </div>
-        <div class="item">
             <label for="message">일시</label>
             <input type="text" id="origin_playDate" placeholder="날짜선택" name="playDate">
-            <ul class="scroll-selected-time" id="scrollTime" name="scrollTime">
-                <li class="time" value="06">6시</li>
-                <li class="time" value="07">7시</li>
-                <li class="time" value="08">8시</li>
-                <li class="time" value="09">9시</li>
-                <li class="time" value="10">10시</li>
-                <li class="time" value="11">11시</li>
-                <li class="time" value="12">12시</li>
-                <li class="time" value="13">13시</li>
-                <li class="time" value="14">14시</li>
-                <li class="time" value="15">15시</li>
-                <li class="time" value="16">16시</li>
-                <li class="time" value="17">17시</li>
-                <li class="time" value="18">18시</li>
-                <li class="time" value="19">19시</li>
-                <li class="time" value="20">20시</li>
-                <li class="time" value="21">21시</li>
-                <li class="time" value="22">22시</li>
-                <li class="time" value="23">23시</li>
-                <li class="time" value="24">24시</li>
-            </ul>
         </div>
         <div class="item">
             <label for="message">지역</label>
@@ -874,23 +845,22 @@ i {
             </div>
         </div>
         <div class="item">
-            <label for="message">참가비</label>
+            <label for="message">실력</label>
             <div class="select">
-                <select class="form-control" name="joinFee">
-                    <option disabled selected value="joinFee">선택</option>
-                    <option value="10000">10,000원</option>
-                    <option value="20000">15,000원</option>
-                    <option value="30000">20,000원</option>
-                    <option value="40000">25,000원</option>
-                    <option value="50000">30,000원</option>
+                <select class="form-control" name="rank">
+                    <option disabled selected value="rank">선택</option>
+                    <option value="프로">프로</option>
+                    <option value="세미프로">세미프로</option>
+                    <option value="아마추어">아마추어</option>
+                    <option value="비기너">비기너</option>
                 </select>
             </div>
         </div>
         <div class="item">
-            <label for="message">모집인원</label>
+            <label for="message">참가비</label>
             <div class="select">
-                <input type="number" name="number"
-                class="form-control" placeholder="모집인원"></input>
+                <input type="number" name="joinFee"
+                class="form-control" placeholder="참가비"></input>
             </div>
         </div>
         <div class="item">
@@ -903,33 +873,30 @@ i {
     </div>
 
     <div class="btn-wrap">
-        <button type="submit" class="btn active block">작성하기</button>
+        <button type="submit" class="btn active block">다음</button>
     </div>
 </form>
 </div>
-
+</div>
 <!--컨텐츠 영역-->
 
+<footer class="mobile">
+    {% include 'playFooter.html' %}
+</footer>
 <script type="text/javascript">
     var timeArray = [];
 
     function formCheck(frm){
-        $('#reservationTime').val(timeArray.join(','));
         var date = $('#origin_playDate').val();
 
         var year = date.substr(0,4);
         var month = date.substr(6,2);
         var day = date.substr(10,2);
         var today = new Date();
-        var scrollTime = document.getElementById('scrollTime');
-        console.log(today.getDate());
+        console.log(Number(day));
+        console.log(Number(today.getDate())+14);
 
-        if(frm.sport.value == 'sport'){
-            alert("종목을 선택해주세요.");
-            frm.sport.focus();
-            return false;
-        }
-        else if(frm.playDate.value == ""){
+        if(frm.playDate.value == ""){
             alert("날짜를 선택해주세요.");
             frm.playDate.focus();
             return false;
@@ -945,24 +912,31 @@ i {
             frm.playDate.focus();
             return false;
         }
-        else if(Number(day) < Number(today.getDate())){
+        else if(Number(month) == Number(today.getMonth()) && Number(day) < Number(today.getDate())){
             alert("오늘 이전 날짜를 선택할 수 없습니다.");
             frm.playDate.focus();
             return false;
         }
-        else if(timeArray.length == 0){
-            alert("시간을 선택해 주세요.");
-            return false;
+        else if(Number(month) == (Number(today.getMonth())+1)){
+            if(Number(day) > Number(today.getDate())+14){
+                alert("2주 이후의 날짜는 대관할 수 없습니다.");
+                frm.playDate.focus();
+                return false;
+            }
         }
-        else if(Number(day) == Number(today.getDate())){
-            for(i=0; i < timeArray.length; i++){
-                if(Number(timeArray[i]) < Number(today.getHours())){
-                    console.log(Number(timeArray[i]));
-                    alert("지난 시간은 선택하실 수 없습니다.");
+        else if(Number(month) > (Number(today.getMonth())+1)){
+            if((Number(month) - (Number(today.getMonth())+1)) == 1){
+                today.setDate(today.getDate()+14);
+                if(Number(day) > Number(today.getDate())){
+                    alert("2주 이후의 날짜는 대관할 수 없습니다.");
                     frm.playDate.focus();
                     return false;
                 }
-
+            }
+            else{
+                alert("2주 이후의 날짜는 대관할 수 없습니다.");
+                frm.playDate.focus();
+                return false;
             }
         }
         else if(frm.region.value == "시도"){
@@ -1077,14 +1051,14 @@ i {
             frm.location.focus();
             return false;
         }
-        else if(frm.joinFee.value == 'joinFee'){
-            alert("참가비를 선택해주세요.");
-            frm.joinFee.focus();
+        else if(frm.rank.value == 'rank'){
+            alert("실력을 선택해주세요.");
+            frm.rank.focus();
             return false;
         }
-        else if(frm.number.value == ''){
-            alert("모집인원을 결정해 주세요.");
-            frm.number.focus();
+        else if(frm.joinFee.value == ''){
+            alert("참가비를 결정해 주세요.");
+            frm.joinFee.focus();
             return false;
         }
         else if(frm.content.value == ''){

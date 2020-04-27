@@ -13,8 +13,8 @@ class PersonalMatching(models.Model):
     time_to = models.DateTimeField(null = True, blank = True)
 
     sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
-    #location = models.ForeignKey(PlaygroundList, related_name='personalMatching', on_delete = models.SET_NULL, blank=True, null=True)
-    location = models.CharField(max_length=10, null=True, blank = True)
+    location = models.ForeignKey(PlaygroundList, related_name='personalMatching', on_delete = models.SET_NULL, blank=True, null=True)
+    # location = models.CharField(max_length=10, null=True, blank = True)
     #모집인원
     number = models.IntegerField()
     rank = models.CharField(max_length = 20)
@@ -210,25 +210,37 @@ class PersonalReply(models.Model):
 class TeamMatching(models.Model):
     # false 팀에서 매칭신청을 한 것 true 팀매칭 창에서 한 것.
     is_applied = models.BooleanField(default=False)
+    
+    #구장대관 현황
+    isReserved = models.CharField(max_length=10, verbose_name="구장대관현황", default="매칭 후 대관", null=True)
+
     user = models.ForeignKey(FNSUser, on_delete=models.CASCADE, default=1)
-    title = models.CharField(max_length=80, null=False)
     content = models.TextField(null = False)
 
     time_from = models.DateTimeField()
     time_to = models.DateTimeField()
 
     sport = models.CharField(max_length=15, null = False, default = 'Futsal') #종목
-    location = models.CharField(max_length=50, null=False)
+    location = models.ForeignKey(PlaygroundList, related_name='teamMatching', on_delete = models.SET_NULL, blank=True, null=True)
     rank = models.CharField(max_length = 20, null = True)
 
-    myteam = models.ForeignKey(Team, related_name="myteam", on_delete=models.SET_NULL, null=True)
-    vs_team = models.ForeignKey(Team, related_name = "vs_team", on_delete=models.SET_NULL, null=True)
+    myTeam = models.ForeignKey(Team, related_name="myTeam", on_delete=models.SET_NULL, null=True)
+    vsTeam = models.ForeignKey(Team, related_name = "vsTeam", on_delete=models.SET_NULL, null=True)
 
     created = models.DateTimeField(auto_now_add= True)
     updated = models.DateTimeField(auto_now = True)
+    
+    # 지역 시/도
+    region = models.CharField(verbose_name="지역 시/도", max_length=10, null=True, blank = True)
+
+    # 지역 시/군/구
+    city = models.CharField(verbose_name = "지역 시/군/구", max_length=10, null=True, blank = True)
+
+    # 참가비
+    joinFee = models.IntegerField(verbose_name="참가비", null=True, blank=True)
 
     def __str__(self):
-        return self.title
+        return self.location.playgroundName
 
     def time(self):
         return time_from + '~' + time_to
@@ -242,7 +254,7 @@ class TeamMatching(models.Model):
 
 class TmAppliedTeam(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-    match = models.ForeignKey(TeamMatching, on_delete=models.CASCADE, null=True)
+    match = models.ForeignKey(TeamMatching, related_name='appliedTeam', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.team.name
