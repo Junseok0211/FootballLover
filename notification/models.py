@@ -103,7 +103,7 @@ class Notification(models.Model):
         self.save()
 
     def teamCommentText(self):
-        self.text = self.creator.name + '님이 [' + self.teamMatching.title + ']글에 댓글을 남겼습니다.'
+        self.text = self.creator.name + '님이 [팀매칭]글에 댓글을 남겼습니다.'
         self.save()
     
     def recruitingCommentText(self):
@@ -143,7 +143,7 @@ class Notification(models.Model):
         self.save()
 
     def teamMatchingApplyText(self):
-        self.text = '[' + self.creator.teamname.name + ']팀이 [' + self.teamMatching.title + ']에 팀매칭신청을 했습니다.'
+        self.text = '[' + self.creator.teamname.name + ']팀이 [' + self.teamMatching.myTeam.name + ']에 팀매치신청을 했습니다.'
         self.save()
 
     def recruitingApplyText(self):

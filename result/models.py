@@ -2,6 +2,7 @@ from django.db import models
 from team.models import Team
 from match.models import TeamMatching
 from account.models import FNSUser
+from reservation.models import PlaygroundList
 from decidedMatch.models import DecidedMatch
 # Create your models here.
 

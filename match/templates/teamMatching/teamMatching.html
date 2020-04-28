@@ -667,10 +667,26 @@
         getDate = document.getElementById('getDate');
         month = "{{month}}";
         day = "{{day}}";
+        f = document.forms.register;
+        var seoul = $("#seoul option:selected").val();
+        var value = f.region.value;
+        console.log('바보');
+        console.log(value);
         document.getElementById('month').value = month;
         document.getElementById('day').value = day;
         getDate.submit();
   }
+
+  $("#seoul").change(function(){
+        getDate = document.getElementById('getDate');
+        month = "{{month}}";
+        day = "{{day}}";
+        var seoul = $('#getDate').children('.seoul').val();
+        console.log('바보');
+        document.getElementById('month').value = month;
+        document.getElementById('day').value = day;
+        getDate.submit();
+  })
 </script>
 
 
@@ -704,9 +720,9 @@
         {% if teamMatching %}
             {% if teamList %}
                 {% for team in teamList %}
-                <script>
-                    console.log("{{team.time_from|hourDifference}}");
+                <script type="text/javascript">
                     console.log("{{team.time_from|dayDifference}}");
+                    console.log("{{team.time_from|hourDifference}}");
                 </script>
                 <a href="{% url 'teamMatchingDetail' team.id %}" style="text-decoration: none; color: black;">
                     <div class="list">
@@ -720,14 +736,12 @@
                             </div>
                         </div>
                         <div class="group">
-                            {% if team.total_attendance == team.number %}
+                            {% if team.vsTeam %}
                             <button type="button" class="btn end">마감</button>
                             {% elif team.time_from|timeuntil == '0분' %}
                             <button type="button" class="btn end">마감</button>
                             {% else %}
-                                {% if team.number|subtract:team.total_attendance <= 2 %}
-                                <button type="button" class="btn danger">마감임박</button>
-                                {% elif team.time_from|dayDifference < 1 %}
+                                {% if team.time_from|dayDifference < 1 %}
                                     {% if team.time_from|hourDifference < 2 %}
                                     <button type="button" class="btn end">마감</button>
                                     {% elif team.time_from|hourDifference > 2 %}

@@ -78,7 +78,7 @@
         {% if reservation.2 == 0 %}
 
         <div class="reservation_list not">
-            <input type="hidden" value="{{reservation.0}}00" class="selectedTime">
+            <input type="hidden" value="{{reservation.0}}" class="selectedTime">
             <input type="hidden" value="{{reservation.1}}" class="price">
             <p>{{reservation.0}}:00</p>
             <p>{{reservation.1}} 원</p>
@@ -97,10 +97,8 @@
         {% endfor %}
     </div>
 
-    <form action="{% url 'tTryReservation' %}" method="POST">
+    <form action="{% url 'tMatchingCreate' %}" method="POST">
         {% csrf_token %}
-        <input type="hidden" id="playground" value="{{playground.playgroundName}}" name="playground">
-        <input type="hidden" id="totalPrice" name="totalPrice" value="0">
         <input type="hidden" id="reservationTime" name="reservationTime">
         <input type="hidden" id="region" name="region" value="{{region}}">
         <input type="hidden" id="city" name="city" value="{{city}}">
@@ -111,7 +109,7 @@
         <input type="hidden" id="content" name="content" value="{{content}}">
         <input type="hidden" value="예약">
         <div class="payBtn" style="width:90%; margin:20px auto;">
-            작성하기
+            예약하기
         </div>
     </form>
 
@@ -138,7 +136,7 @@
                 $("#reservationTime").val(reservationTimeArray.join(","));
                 $(this).css("background-color", "#28AAE3");
                 $(this).children().css("color", "black");
-                console.log(reservationTimeArray.join(','));
+
                 let sumPrice = parseInt(totalPrice) + parseInt(price);
                 $("#totalPrice").val(sumPrice);
 
@@ -148,7 +146,7 @@
                 $("#reservationTime").val(reservationTimeArray.join(","));
                 $(this).css("background-color", "#EEEEEE");
                 $(this).children().css("color", "black");
-                console.log(reservationTimeArray.join(','));
+
                 let sumPrice = parseInt(totalPrice) - parseInt(price);
                 $("#totalPrice").val(sumPrice);
 

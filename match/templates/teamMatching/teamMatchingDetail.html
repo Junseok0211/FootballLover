@@ -548,6 +548,11 @@ alert("{{error}}");
 </script>
 {% endif %}
 
+{% if errormessage %}
+<script>
+alert("{{errormessage}}");
+</script>
+{% endif %}
 
 
 <div class="mobile">
@@ -657,39 +662,35 @@ alert("{{error}}");
         <div class="head">
             <h3 class="tit">매칭확정팀</h3>
         </div>
-        {% if teamMatching.attendedPlayer.all %}
+        {% if teamMatching.vsTeam %}
         <div class="grid-container">
-          {% for player in teamMatching.attendedPlayer.all %}
-          
             <div>
-                <a href="{% url 'myPage' player.id %}" style="text-decoration: none; color:black;">
-                    <img src="{{player.userimg.url}}" width="35px" height="35px" style="border-radius: 70px;">
+                <a href="{% url 'detail' teamMatching.vsTeam.id %}" style="text-decoration: none; color:black;">
+                    <img src="{{teamMatching.vsTeam.teamimg.url}}" width="35px" height="35px" style="border-radius: 70px;">
                     <div>
-                        <p class="name">{{player.name}}</p>
+                        <p class="name">{{teamMatching.vsTeam.name}}</p>
                     </div>
                 </a>
             </div>
-            
-          {% endfor %}
         </div>
         {% else %}
-        <p class="name" style="padding: 10px;">참가 확정자가 없습니다.</p>
+        <p class="name" style="padding: 10px;">확정된 상대팀이 없습니다.</p>
         {% endif %}
     </div>
-    <!-- 개인매칭 - 참가신청자 -->
+    <!-- 팀매칭 - 참가신청자 -->
     <div class="matchDetial people">
       <div class="head">
           <h3 class="tit">매칭신청팀</h3>
       </div>
-      {% if teamMatching.appliedPlayer.all %}
+      {% if teamMatching.appliedTeam.all %}
       <div class="grid-container">
-      {% for player in teamMatching.appliedPlayer.all %}
+      {% for appliedTeam in teamMatching.appliedTeam.all %}
        
         <div>
-            <a href="{% url 'myPage' player.id %}" style="text-decoration: none; color:black;">
-                <img src="{{player.userimg.url}}" width="35px" height="35px" style="border-radius: 70px;">
+            <a href="{% url 'detail' appliedTeam.team.id %}" style="text-decoration: none; color:black;">
+                <img src="{{appliedTeam.team.teamimg.url}}" width="35px" height="35px" style="border-radius: 70px;">
                 <div>
-                    <p class="name">{{player.name}}</p>
+                    <p class="name">{{appliedTeam.team.name}}</p>
                 </div>
             </a>
         </div>
@@ -697,7 +698,7 @@ alert("{{error}}");
       {% endfor %}
       </div>
       {% else %}
-      <p class="name" style="padding: 10px;">참가 신청자가 없습니다.</p>
+      <p class="name" style="padding: 10px;">신청팀이 없습니다.</p>
       {% endif %}
     </div>
     {% if fnsuser != teamMatching.user %}
@@ -709,15 +710,15 @@ alert("{{error}}");
             </a>  
         </button>
         <button type="button" class="btn active">
-        {% if teamMatching.total_attendance == teamMatching.number or  teamMatching.time_from|hourDifference <= '1' or teamMatching.time_from|timeuntil == '0분' %}
+        {% if teamMatching.vsTeam == fnsuser.teamname or  teamMatching.time_from|hourDifference <= '1' or teamMatching.time_from|timeuntil == '0분' %}
         참가마감
         {% else %}
-            {% if isAttended %}
-            <a href="{% url 'personalAttendanceCancel' teamMatching.id %}" style="text-decoration: none; color: white;">
+            {% if isApplied %}
+            <a href="{% url 'teamCancel' teamMatching.id %}" style="text-decoration: none; color: white;">
                 참가취소
             </a>
             {% else %}
-            <a class="payBtn"
+            <a href="{% url 'teamApplication' teamMatching.id %}"
             style="text-decoration: none; color: white;">
                 참가신청
             </a>
@@ -729,23 +730,23 @@ alert("{{error}}");
     {% else %}
     <div class="btn-wrap">
         <button type="button" class="btn">
-            <a href="{% url 'personalComment' teamMatching.id %}" 
+            <a href="{% url 'teamMatchingComment' teamMatching.id %}" 
             style="text-decoration: none; color: white;">
                 댓글
             </a>  
         </button>
       <button type="button" class="btn active">
-        <a href="{% url 'appliedPlayer' teamMatching.id %}" style="text-decoration: none; color: white;">
+        <a href="{% url 'appliedTeam' teamMatching.id %}" style="text-decoration: none; color: white;">
           신청현황
         </a>
       </button>
     </div>
     <div class="btn-wrap" style="margin-top:5px;">
         <button type="button" class="btn" style="background-color: lightslategray;">
-        <a href="{% url 'personalEdit' teamMatching.id %}" style="text-decoration: none; color:white;">수정</a>
+        <a href="{% url 'teamMatchingEditForm' teamMatching.id %}" style="text-decoration: none; color:white;">수정</a>
         </button>
-      <button type="button" class="btn" style="background-color: lightslategray" onclick="return deletePersonal();">
-        <a href="{% url 'personalDelete' teamMatching.id %}" style="text-decoration: none; color: white;">
+      <button type="button" class="btn" style="background-color: lightslategray" onclick="return deleteTeam();">
+        <a href="{% url 'teamMatchingDelete' teamMatching.id %}" style="text-decoration: none; color: white;">
           삭제
         </a>
       </button>
@@ -774,7 +775,7 @@ alert("{{error}}");
 </footer>
 
 <script>
-    function deletePersonal(){
+    function deleteTeam(){
         var returnValue = confirm('삭제하시겠습니까?');
         return returnValue;
     }

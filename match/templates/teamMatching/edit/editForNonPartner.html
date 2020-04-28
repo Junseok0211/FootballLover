@@ -390,7 +390,7 @@ i {
     <nav class="navBar">
         <div class="navDesign">
             <div>
-                <a href="{% url 'tChoice' %}" style="color: gray; margin-top: 0.5rem;">
+                <a href="{% url 'tIsReserved' %}" style="color: gray; margin-top: 0.5rem;">
                     <i class="fas fa-lg fa-chevron-left" style="margin-top: 12px;"></i>
                 </a>
             </div>
@@ -444,16 +444,36 @@ i {
         </li>
     </ul>
     
-<form name = "register" method="POST" action="{% url 'tBookingTime' %}" enctype="multipart/form-data" 
+<form name = "register" method="POST" action="{% url 'tNonPartnerCreate' %}" enctype="multipart/form-data" 
     autocomplete="off" onsubmit="return formCheck(this);">
     {% csrf_token %}
     <div class="match-form" id="matchForm">
         <div id="playTime">
             <input type='hidden' name = 'playTime' id='reservationTime' />
         </div>
+
         <div class="item">
             <label for="message">일시</label>
             <input type="text" id="origin_playDate" placeholder="날짜선택" name="playDate">
+            <ul class="scroll-selected-time" id="scrollTime" name="scrollTime">
+                <li class="time" value="06">6시</li>
+                <li class="time" value="07">7시</li>
+                <li class="time" value="08">8시</li>
+                <li class="time" value="09">9시</li>
+                <li class="time" value="10">10시</li>
+                <li class="time" value="11">11시</li>
+                <li class="time" value="12">12시</li>
+                <li class="time" value="13">13시</li>
+                <li class="time" value="14">14시</li>
+                <li class="time" value="15">15시</li>
+                <li class="time" value="16">16시</li>
+                <li class="time" value="17">17시</li>
+                <li class="time" value="18">18시</li>
+                <li class="time" value="19">19시</li>
+                <li class="time" value="20">20시</li>
+                <li class="time" value="21">21시</li>
+                <li class="time" value="22">22시</li>
+            </ul>
         </div>
         <div class="item">
             <label for="message">지역</label>
@@ -845,6 +865,16 @@ i {
             </div>
         </div>
         <div class="item">
+            <label for="message">대관여부</label>
+            <div class="select">
+                <select class="form-control" name="isReserved">
+                    <option disabled selected value="isReserved">선택</option>
+                    <option value="대관완료">대관완료</option>
+                    <option value="매칭 후 대관">매칭 후 대관</option>
+                </select>
+            </div>
+        </div>
+        <div class="item">
             <label for="message">실력</label>
             <div class="select">
                 <select class="form-control" name="rank">
@@ -873,26 +903,29 @@ i {
     </div>
 
     <div class="btn-wrap">
-        <button type="submit" class="btn active block">다음</button>
+        <button type="submit" class="btn active block">작성하기</button>
     </div>
 </form>
 </div>
 </div>
 <!--컨텐츠 영역-->
-
 <footer class="mobile">
     {% include 'playFooter.html' %}
 </footer>
+
 <script type="text/javascript">
     var timeArray = [];
 
     function formCheck(frm){
+        $('#reservationTime').val(timeArray.join(','));
         var date = $('#origin_playDate').val();
 
         var year = date.substr(0,4);
         var month = date.substr(6,2);
         var day = date.substr(10,2);
         var today = new Date();
+        var scrollTime = document.getElementById('scrollTime');
+        console.log(today.getDate());
 
         if(frm.playDate.value == ""){
             alert("날짜를 선택해주세요.");
@@ -905,36 +938,29 @@ i {
             frm.playDate.focus();
             return false;
         }
-        else if(Number(month) < Number(today.getMonth())+1){
+        else if(Number(month) < Number(today.getMonth())){
             alert("오늘 이전 날짜를 선택할 수 없습니다.");
             frm.playDate.focus();
             return false;
         }
-        else if(Number(month) == (Number(today.getMonth())+1) && Number(day) < Number(today.getDate())){
+        else if(Number(day) < Number(today.getDate())){
             alert("오늘 이전 날짜를 선택할 수 없습니다.");
             frm.playDate.focus();
             return false;
         }
-        else if(Number(month) == (Number(today.getMonth())+1)){
-            if(Number(day) > Number(today.getDate())+14){
-                alert("2주 이후의 날짜는 대관할 수 없습니다.");
-                frm.playDate.focus();
-                return false;
-            }
+        else if(timeArray.length == 0){
+            alert("시간을 선택해 주세요.");
+            return false;
         }
-        else if(Number(month) > (Number(today.getMonth())+1)){
-            if((Number(month) - (Number(today.getMonth())+1)) == 1){
-                today.setDate(today.getDate()+14);
-                if(Number(day) > Number(today.getDate())){
-                    alert("2주 이후의 날짜는 대관할 수 없습니다.");
+        else if(Number(day) == Number(today.getDate())){
+            for(i=0; i < timeArray.length; i++){
+                if(Number(timeArray[i]) < Number(today.getHours())){
+                    console.log(Number(timeArray[i]));
+                    alert("지난 시간은 선택하실 수 없습니다.");
                     frm.playDate.focus();
                     return false;
                 }
-            }
-            else{
-                alert("2주 이후의 날짜는 대관할 수 없습니다.");
-                frm.playDate.focus();
-                return false;
+
             }
         }
         else if(frm.region.value == "시도"){
@@ -1049,13 +1075,18 @@ i {
             frm.location.focus();
             return false;
         }
+        else if(frm.isReserved.value == 'isReserved'){
+            alert("대관여부를 선택해주세요.");
+            frm.isReserved.focus();
+            return false;
+        }
         else if(frm.rank.value == 'rank'){
             alert("실력을 선택해주세요.");
             frm.rank.focus();
             return false;
         }
         else if(frm.joinFee.value == ''){
-            alert("참가비를 결정해 주세요.");
+            alert("참가비를 선택해주세요.");
             frm.joinFee.focus();
             return false;
         }
@@ -1173,14 +1204,6 @@ i {
             success: function(data){
                 var ground = JSON.parse(data);
                 var tag = "<option selected disabled hidden value='location'>선택</label>"
-                for(i=0; i<objLength(ground.possibleGround); i++){
-                    console.log(ground.possibleGround[i][0]);
-                    console.log(ground.possibleGround[i][1]);
-                    var groundId = ground.possibleGround[i][0];
-                    var groundName = ground.possibleGround[i][1];
-                    tag += "<option value='"+ groundId + "," + groundName + "'>" + groundName +"</option>";
-                    
-                }
                 for(i=0; i<objLength(ground.impossibleGround); i++){
                     console.log(ground.impossibleGround[i][0]);
                     console.log(ground.impossibleGround[i][1]);

@@ -114,6 +114,9 @@
     .mobile{
         display: none;
     }
+    .marginForNav{
+        margin-top: 80px;
+    }
 
     @media only screen and (max-device-width : 720px) {
         .pc{
@@ -121,6 +124,9 @@
         }
         .mobile{
         display: block;
+        }
+        .marginForNav{
+            margin-top: 60px;
         }
     }
 
@@ -134,9 +140,9 @@
 <span class="pc">
 {% include 'pcNavBar.html' %}
 </span>
-<div class="common_area" style="max-width:720px; margin:100px auto;">
+<div class="common_area" style="max-width:720px; margin:0px auto; padding:10px;">
 
-    <div class="checkBtn">
+    <div class="checkBtn marginForNav">
         <p>예매내용 확인</p>
     </div>
 
@@ -154,6 +160,16 @@
     <div class="detailInfo">
         <p class="subTile">총 결제금액</p>
         <p class="subValue">{{totalPrice}} 원</p>
+    </div>
+
+    <div class="checkBtn" style="margin-top: 10px;">
+        
+        <p>
+            <a href="{% url 'teamMatchingDetail' teamMatching.id %}" style="text-decoration: none; color:black;">
+            돌아가기
+            </a>
+        </p>
+    
     </div>
 
 

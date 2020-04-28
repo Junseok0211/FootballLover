@@ -63,7 +63,7 @@ toggle between hiding and showing the dropdown content */
     color: gray; border-radius: 70px; width: 35px; height: 35px;
     text-align: center;"></i>
   {% endif %}
-        <div id="alarmContent" class="alarmDropdown-content" style="margin-top: 20px;">
+        <div id="alarmContent" class="alarmDropdown-content" style="margin-top: 10px;">
           <div class="pl-3" style="border-bottom: black 1px solid;">
             <span style="font-size: 15px; font-weight: bold; color: cornflowerblue;" class="mr-3">알림</span>
             <button class="p-2 m-1 btn" onclick="return checkAllNotification()" style="background-color:lightgrey; font-size: 12px; font-weight: bold; color: black;">모두 읽은 상태로 표시</button>
@@ -81,7 +81,7 @@ toggle between hiding and showing the dropdown content */
               <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
               
               {% elif alarm.notification_type == "teamComment" %}
-              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
             
               {% elif alarm.notification_type == "recruitingComment" %}
               <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
@@ -93,7 +93,7 @@ toggle between hiding and showing the dropdown content */
               <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamMatchingApply" %}
-              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "recruitingApply" %}
               <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
@@ -117,7 +117,7 @@ toggle between hiding and showing the dropdown content */
               <a href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamReply" %}
-              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "recruitingReply" %}
               <a href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
@@ -135,7 +135,7 @@ toggle between hiding and showing the dropdown content */
               <a href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "acceptSuggestion" %}
-              <a href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "resultInput" %}
               <a href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>
@@ -155,7 +155,7 @@ toggle between hiding and showing the dropdown content */
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
               
               {% elif alarm.notification_type == "teamComment" %}
-              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
             
               {% elif alarm.notification_type == "recruitingComment" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
@@ -168,7 +168,7 @@ toggle between hiding and showing the dropdown content */
 
               {% elif alarm.notification_type == "teamMatchingApply" %}
               <div class="alarm" style="width:200px; text-overflow: ellipsis; max-width: 300px;">
-              <a class="alarm" style="text-overflow: ellipsis;" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}"><span style="width:200px; text-overflow: ellipsis; max-width: 200px;">{{alarm.text}}</span></a>
+              <a class="alarm" style="text-overflow: ellipsis;" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}"><span style="width:200px; text-overflow: ellipsis; max-width: 200px;">{{alarm.text}}</span></a>
               </div>
               {% elif alarm.notification_type == "recruitingApply" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
@@ -192,7 +192,7 @@ toggle between hiding and showing the dropdown content */
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'personalDetail' alarm.personalMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "teamReply" %}
-              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "recruitingReply" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'recruiting_detail' alarm.recruiting.id %}">{{alarm.text}}</a>
@@ -210,7 +210,7 @@ toggle between hiding and showing the dropdown content */
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'detail' alarm.team.id %}">{{alarm.text}}</a>
 
               {% elif alarm.notification_type == "acceptSuggestion" %}
-              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatching_detail' alarm.teamMatching.id %}">{{alarm.text}}</a>
+              <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'teamMatchingDetail' alarm.teamMatching.id %}">{{alarm.text}}</a>
               
               {% elif alarm.notification_type == "resultInput" %}
               <a class="alarm" onclick="return checkNotification('{{alarm.id}}');" href="{% url 'decidedDetail' alarm.teamMatching.decidedMatch.id %}">{{alarm.text}}</a>

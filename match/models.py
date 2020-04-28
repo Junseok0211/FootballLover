@@ -209,7 +209,7 @@ class PersonalReply(models.Model):
 
 class TeamMatching(models.Model):
     # false 팀에서 매칭신청을 한 것 true 팀매칭 창에서 한 것.
-    is_applied = models.BooleanField(default=False)
+    isApplied = models.BooleanField(default=False)
     
     #구장대관 현황
     isReserved = models.CharField(max_length=10, verbose_name="구장대관현황", default="매칭 후 대관", null=True)
@@ -270,7 +270,7 @@ class TMComment(models.Model):
         return self.user.name
 
     def summary(self):
-        return self.content[:20]
+        return self.content[:150]
 
     def passedTime(self):
         now = datetime.datetime.now()
@@ -295,11 +295,41 @@ class TMComment(models.Model):
                             message = str(timeLap) + '분 전'
                         return message
                 else:
-                    return modified
+                    month = int(modified.strftime("%m"))
+                    date = int(modified.strftime("%d"))
+                    if month < 10:
+                        month = modified.strftime("%m")[1]
+                    else:
+                        month = modified.strftime("%m")
+
+                    if date < 10:
+                        date = modified.strftime("%d")[1]
+                    else:
+                        date = modified.strftime("%d")
+                    
+                    return month + '월 ' + date + '일'
             else:
-                return modified
+                    month = int(modified.strftime("%m"))
+                    date = int(modified.strftime("%d"))
+                    if month < 10:
+                        month = modified.strftime("%m")[1]
+                    else:
+                        month = modified.strftime("%m")
+
+                    if date < 10:
+                        date = modified.strftime("%d")[1]
+                    else:
+                        date = modified.strftime("%d")
+                    
+                    return month + '월 ' + date + '일'
         else:
-            return modified
+            month = int(modified.strftime("%m"))
+            if month < 10:
+                month = modified.strftime("%m")[1]
+            else:
+                month = modified.strftime("%m")
+            
+            return modified.strftime("%Y") + '년 ' + month + '월'
 
 class TeamReply(models.Model):
     user = models.ForeignKey(FNSUser, on_delete=models.CASCADE)

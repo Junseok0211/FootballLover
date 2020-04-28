@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load hDate %}
+
+{% block contents %}
+
+<link rel="stylesheet" href="{% static 'css/match2.css' %}">
+
+<style>
+ul,
+li,
+figure,
+h3,
+h4,
+p {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.sec * {
+    font-family: "Noto Sans KR", sans-serif;
+}
+i {
+    font-family: "Font Awesome 5 Pro" !important;
+}
+
+/* 공통 - 양쪽정렬된 탭 메뉴 */
+.nav-justified {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-weight: bold;
+    box-sizing: content-box;
+    font-size: 0.75rem;
+    color: #8c8c8c;
+    background: #e1e1e1;
+    border-radius: 2px;
+}
+.nav-justified > .item {
+    position: relative;
+    box-sizing: content-box;
+    padding: 0.7rem 0rem;
+    text-align: center;
+    width:25%;
+}
+.nav-justified > .item.active {
+    color: #131313;
+}
+.nav-justified > .item.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #131313;
+}
+
+/* 공통 - 프로필이미지 */
+.thumb-profile {
+    display: flex;
+    align-items: center;
+    font-size: 0.625rem;
+    color: #131313;
+}
+
+.thumb-profile > figure {
+    margin-right: 0.5rem;
+    width: 1.875rem;
+    height: 1.875rem;
+    border-radius: 100%;
+    background: #f1f1f1 url("https://footballlover.s3.amazonaws.com/static/onlyLogo.png") no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+/* 공통 - 버튼그룹 */
+.btn-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-wrap .btn {
+    padding: 0;
+    width: calc(50% - 0.25rem);
+    height: 3rem;
+    line-height: 3rem;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #fff;
+    border-radius: 3px;
+}
+.btn-wrap .btn.block {
+    width: 100%;
+}
+
+.btn-wrap .btn.active {
+    background-color: #28aae3 !important;
+}
+
+/* 플레이 */
+.sec.play {
+    padding: 5.3rem 3.5rem;
+    background: url("{% static 'bg_play.png' %}") no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.sec.play .list {
+    display: flex;
+    align-items: center;
+    height: 3.375rem;
+    line-height: 3.375rem;
+    margin-bottom: 2.5rem;
+    background-color: #333333;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.sec.play .list figure {
+    display: block;
+    margin: -4px 1rem 0 0;
+    height: 100%;
+}
+.sec.play .list .tit {
+    padding: 1rem 0;
+    font-weight: bold;
+    font-size: 1.125rem;
+    color: #ffffff;
+}
+
+/* 개인매칭 */
+.sec.match {
+    padding: 0.5rem 1rem 1rem;
+}
+.sec.match .btn-wrap .btn {
+    background-color: #ffb229;
+}
+
+/* 개인매칭-디테일 */
+.matchDetial .head {
+    background-color: #eeeeee;
+    border-radius: 2px;
+}
+
+.matchDetial .head > .tit {
+    padding: 0.5rem;
+    font-weight: bold;
+    font-size: 0.75rem;
+    color: #8c8c8c;
+}
+
+.matchDetial.place .head {
+    margin: 0.5rem 0;
+    background-color: #28aae3;
+}
+
+.matchDetial.place .head > .tit {
+    color: #fff;
+}
+
+.matchDetial .detail_list > .item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: #131313;
+    border-top: solid 1px #e1e1e1;
+    box-sizing: border-box;
+}
+
+.matchDetial .detail_list > .item figure {
+    margin-right: 2rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    background: #fff url("https://footballlover.s3.amazonaws.com/static/onlyLogo.png") no-repeat;
+    background-size: 100%;
+    background-position: center;
+}
+
+.matchDetial .detail_list > .item.person {
+    padding: 0.75rem 0;
+    margin-bottom: 0.5rem;
+    height: auto;
+    line-height: normal;
+    font-weight: normal;
+    border-bottom: solid 1px #e1e1e1;
+}
+
+.matchDetial .detail_list > .item.person figure {
+    margin-right: 1rem;
+    width: 3.125rem;
+    height: 3.12rem;
+}
+
+.matchDetial .detail_list > .item.person .txt.point {
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.matchDetial.people .cont {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0.75rem 0 1rem;
+    margin-bottom: 1rem;
+}
+
+.matchDetial.people .cont::before {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    bottom: 0;
+    width: calc(100% + 2rem);
+    height: 1px;
+    background-color: #f5f5f5;
+}
+
+/* 개인매치 글쓰기 */
+
+.math-form {
+    padding: 1.2rem 0 2rem;
+    text-align: center;
+}
+
+.math-form .item {
+    padding: 0.5rem 0;
+    border-bottom: solid 1px #eeeeee;
+    box-sizing: border-box;
+}
+.math-form .item.last {
+    border: none;
+}
+
+.math-form label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.6875rem;
+    color: #28aae3;
+}
+
+.math-form .group {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-bottom: solid 1px #eeeeee;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.math-form .group .line {
+    display: inline-block;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 50px;
+    background-color: #eee;
+    transform: rotate(20deg);
+}
+
+.math-form .select {
+    position: relative;
+    display: inline-block;
+    padding: 0;
+    width: auto;
+}
+
+.math-form .select::before {
+    content: "\f0dc";
+    position: absolute;
+    right: 11px;
+    top: 0px;
+    font: normal normal normal 14px/1 FontAwesome;
+    height: 100%;
+    padding: 14px 0px 0px 8px;
+    pointer-events: none;
+}
+
+.math-form select,
+.math-form input {
+    border: none;
+    text-align: center;
+    text-align-last: center;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.math-form textarea {
+    min-height: 180px;
+    border: 1px solid #eeeeee;
+    box-sizing: border-box;
+    border-radius: 0;
+    font-size: 0.75rem;
+    color: #8c8c8c;
+}
+
+.scroll-selected-time {
+    display: flex;
+    overflow-x: auto;
+    margin-top: 0.75rem;
+}
+
+.scroll-selected-time .time {
+    margin-right: 1px;
+    min-width: 60px;
+    height: 3.125rem;
+    line-height: 3.125rem;
+    font-weight: bold;
+    font-size: 0.625rem;
+    color: #8c8c8c;
+    text-align: center;
+    background-color: #eeeeee;
+}
+
+.scroll-selected-time .time.active {
+    color: #28aae3;
+}
+
+
+.grid-container {
+  display: grid;
+  align-content: space-evenly;
+  grid-template-columns: auto auto auto;
+  grid-gap: 8px;
+  padding: 5px 0;
+}
+.grid-container > div {
+  background-color: rgb(208, 226, 238);
+  text-align: center;
+  padding: 10px 0;
+  font-size: 10px;
+  border-radius: 10px;
+}
+
+.name{
+  font-family: 'Nanum Gothic';
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.accecptBtn{
+    padding: 0.3rem;
+    font-weight: bold;
+    font-size: 1rem;
+    color: black;
+    border-radius: 3px;
+    background-color: cornflowerblue;
+    border:none;
+}
+
+.navBar{
+    background-color: #F3F3F3;
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    
+}
+
+
+.navDesign{
+    max-width: 720px;
+    width: 100%;
+    padding:10px;
+    margin:0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+    .pc{
+        display: block;
+    }
+
+    .mobile{
+        display: none;
+    }
+    .marginForNav{
+        margin-top:80px;
+    }
+
+    @media only screen and (max-device-width : 720px) {
+        .pc{
+        display: none;
+        }
+        .mobile{
+        display: block;
+        }
+        .marginForNav{
+            margin-top: 60px;
+        }
+    }
+</style>
+
+<!--참가신청알림-->
+{% if alarm %}
+<script>
+  alert("{{alarm}}");
+</script>
+{% endif %}
+
+<div class="pc">
+  {% include 'pcNavBar.html' %}
+</div>
+
+<div class="mobile">
+  <!--navBar -->
+  <nav class="navBar">
+      <div class="navDesign">
+          <div>
+              <a href="{% url 'teamMatchingDetail' teamMatching.id %}" style="color: gray; margin-top: 0.5rem;">
+                  <i class="fas fa-lg fa-chevron-left" style="margin-top: 12px;"></i>
+              </a>
+          </div>
+          <div style="margin-top: 5px;">
+              <span style="font-family: 'Noto Sans KR'; font-weight: bold; font-size: 1.2rem;">매치신청팀</span>
+          </div>
+          <div>
+          </div>
+      
+      </div>
+  </nav>
+  <!--navBar 끝--> 
+</div>
+
+<div style="max-width: 720px; width: 100%; margin:0 auto;">
+<!--컨텐츠 영역-->
+<div class="sec match marginForNav">
+    <!-- 양쪽정렬된 탭 메뉴 -->
+    <ul class="nav-justified">
+      <li class="item">
+          <p class="txt">
+              <a href = "{% url 'personal' %}" style="text-decoration: none; color: #8c8c8c;">
+                  개인 매칭
+              </a>
+          </p>
+      </li>
+      <li class="item active">
+          <p class="txt">
+              <a href = "{% url 'teamMatching' %}" style="text-decoration: none; color:#131313;">
+                  팀 매칭
+              </a>
+          </p>
+      </li>
+      <li class="item">
+          <p class="txt">
+              <a href = "{% url 'recruiting' %}" style="text-decoration: none; color:#8c8c8c;">
+                  용병 매칭
+              </a>
+          </p>
+      </li>
+      <li class="item">
+          <p class="txt">
+              <a href = "{% url 'league' %}" style="text-decoration: none; color:#8c8c8c;">
+                  풋살데이
+              </a>
+          </p>
+      </li>
+  </ul>
+
+    <!-- 팀매칭 - 일시 및 장소 -->
+    <div class="matchDetial place" style="min-height: 400px;">
+        <div class="head">
+            <h3 class="tit">매치신청팀</h3>
+        </div>
+        <div class="cont">
+            <ul class="detail_list">
+                {% if teamMatching.appliedTeam.all %}
+                {% for appliedTeam in teamMatching.appliedTeam.all %}
+                <li class="item" style="display: flex; justify-content: space-between; background-color: lightslategrey;">
+                    <img src="{{appliedTeam.teamimg.url}}" width="35px" height="35px" style="border-radius:70px;">
+                    <p class="txt" style="color:white;">
+                      {{appliedTeam.team.name}}
+                    </p>
+                    <div>
+                            <a href="{% url 'matchApprove' appliedTeam.match.id appliedTeam.team.id %}" 
+                            style="text-decoration: none; color: white; font-weight: normal;">
+                                수락 
+                            </a>
+                            <span style="color: white; margin: 0 0.4rem;"> | </span>
+                            <a href="{% url 'matchDeny' appliedTeam.match.id appliedTeam.team.id %}" onclick="return teamDeny();"
+                            style="text-decoration: none; color: white; font-weight: normal;">
+                                거절
+                            </a>
+                    </div>
+                </li>
+                {% endfor %}
+                {% else %}
+                <li class="item">
+                    <p class="txt">매치신청한 팀이 없습니다.</p>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+
+
+</div>
+<!--컨텐츠 영역-->
+</div>
+
+<footer class="mobile">
+  {% include 'playFooter.html' %}
+</footer>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#back').click(function(){
+            window.history.back();
+        });
+    });
+
+    function teamDeny(){//거절 확인
+        var returnValue = confirm('거절하시겠습니까?');
+    return returnValue;
+}
+</script>
+
+
+
+
+{% endblock %}
