@@ -319,3 +319,34 @@ def mobilePayment(request):
     }
 
     return render(request, 'reservation/mobilePayment.html', data)
+
+def reservationList(request):
+    if request.session.get('userId', None) == None:
+        errormessage = '로그인을 해주세요.'
+        data = {
+            'errormessage':errormessage
+        }   
+        return render(request, 'account/login', data)
+
+    fnsuser = get_object_or_404(FNSUser, pk = request.session.get('userId'))
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')
+    countNotification = notification.filter(userCheck = False).count()
+    notification = fnsuser.to.all().exclude(creator=fnsuser).order_by('-created')[:20]
+    # 객체를 한 페이지로 자르기
+    paginator = Paginator(notification, 5)
+    # request에 담아주기
+    page = request.GET.get('page')
+    # request된 페이지를 얻어온 뒤 return 해 준다.
+    notificationList = paginator.get_page(page) 
+
+    groundList = fnsuser.reservedGround.all().order_by('reservationDate')
+
+    data = {
+        'fnsuser':fnsuser,
+        'countNotification':countNotification,
+        'notification':notification,
+        'groundList':groundList
+
+    }
+        
+    return render(request, 'reservation/reservationList.html', data)

@@ -10,5 +10,6 @@ urlpatterns = [
     path("tryReservation", views.tryReservation, name='tryReservation'),
     path("resultReservation", views.resultReservation, name='resultReservation'),
     path("mobilePayment", views.mobilePayment, name='mobilePayment'),
-    path("paymentPop", views.paymentPop, name='paymentPop')
+    path("paymentPop", views.paymentPop, name='paymentPop'),
+    path('reservationList', views.reservationList, name = 'reservationList'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -241,9 +241,11 @@
             {% endif %}
           </div>
         </div>
+        <a href="{% url 'reservationList' %}" style="text-decoration: none;">
         <i onmouseover="cart();" onmouseout = "cartOut();" class="fas fa-2x fa-shopping-cart"
         style="z-index: 0; color: gray; border-radius: 70px; width: 40px; height: 40px; padding-right: 5px; padding-top: 3px;
         text-align: center; margin-top: 6px; margin-left: 20px;" id="cart"></i>
+        </a>
 
         <div style="margin-top: 0px;">
         {% include 'alarm.html' %}
